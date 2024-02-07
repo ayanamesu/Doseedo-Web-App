@@ -18,7 +18,14 @@
 
 | Student Name | Student Email | GitHub Username | Student's role |
 | :----------: | :-----------: | :-------------: | :------------: |
-|   John Doe   | jdoe@sfsu.edu |      jdoe       |  Team Leader   |
+|   Yuto Mori   | jdoe@sfsu.edu |      jdoe       |  Team Leader   |
+| Paige Hodgkinson | phodgkinson@sfsu.edu | phodgkinson1 | Scrum master |
+| Aleia Natividad | anatividad@sfsu.edu |      leileigoose       |  Back-end Lead   |
+|  Yakoub Alkabsh   | Yalkabsh2@sfsu.edu |      Yakkubs       |  Front-end Lead   |
+|  Wing Lee  | wlee17@sfsu.edu |     Ayanamesu      |  Github Master   |
+
+
+
 
 **NO code should be stored in the root of your repository. You may rename the
 `application/` folder to your team's application name if you'd like, but all the
