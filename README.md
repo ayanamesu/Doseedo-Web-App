@@ -18,7 +18,7 @@
 
 | Student Name | Student Email | GitHub Username | Student's role |
 | :----------: | :-----------: | :-------------: | :------------: |
-|   Yuto Mori   | jdoe@sfsu.edu |      jdoe       |  Team Leader   |
+|   Yuto Mori   | ymori@sfsu.edu |      ymorisfsu   |  Team Leader   |
 | Paige Hodgkinson | phodgkinson@sfsu.edu | phodgkinson1 | Scrum master |
 | Aleia Natividad | anatividad@sfsu.edu |      leileigoose       |  Back-end Lead   |
 |  Yakoub Alkabsh   | Yalkabsh2@sfsu.edu |      Yakkubs       |  Front-end Lead   |
