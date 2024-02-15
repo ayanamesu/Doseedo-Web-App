@@ -2,8 +2,15 @@ const express = require('express');
 const router = express.Router();
 
 // defining route
-router.get('/', (req, res) => {
-    // prob res.send();
+router
+    .route("/")  //<-- to be assigned during meeting
+    .get((req, res) => {
+    // res.send("");
 })
+    // POST method route
+    .post((req, res) => {
+    res.send('POST request to the homepage')
+  });
+  
 
 module.exports = router;
