@@ -10,7 +10,7 @@ router
     // POST method route
     .post((req, res) => {
     res.send('POST request to the homepage')
-  });
+});
   
 
 module.exports = router;

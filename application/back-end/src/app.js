@@ -8,6 +8,7 @@ app.use(express.json());
 app.use("/router", router);
 // I used router.js file inside ./src/routes/router to handle /router
 
+
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', (req, res) => {
   //root
