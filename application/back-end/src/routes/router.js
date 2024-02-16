@@ -5,7 +5,7 @@ const router = express.Router();
 router
     .route("/")  //<-- to be assigned during meeting
     .get((req, res) => {
-    // res.send("");
+     res.send("testing router req");
 })
     // POST method route
     .post((req, res) => {
