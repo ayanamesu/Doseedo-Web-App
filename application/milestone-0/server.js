@@ -2,11 +2,11 @@
 
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = proves.env.PORT || 3000;
 const publicIpAddress = '18.217.138.186';
 
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Example app listening at http://${publicIpAddress}:${port}`)
+app.listen(port, () => {
+    console.log(`Server is listening at http://${publicIpAddress}:${port}`)
 });
 
 // app.get("/", (_req, res) => {
