@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
-//this is to be discussed
-const port = process.env.port || 5173; 
+//this is to be discussed 
+const port = process.env.port || 5174; 
 const router = require("./routes/router");
 
 app.use(express.json());
@@ -18,5 +18,5 @@ app.listen(port, err => {
   if(err) {
     return console.log("ERROR", err);
   }
-  console.log('Server is listening at http://localhost:${port}');
+  console.log(`Server is listening at http://localhost:${port}`);
 });
