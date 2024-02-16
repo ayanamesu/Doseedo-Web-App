@@ -1,3 +1,5 @@
+// need to connect to our server and shit
+
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -19,6 +21,3 @@ const aboutRoute = require("../routes/about.js");
 but for now this will be our about page
 */
 app.use("/", aboutRoute); 
-
-// Connect to DB
-
