@@ -1,12 +1,15 @@
 import React from 'react';
 import '../AboutUsPage.css'; // Import the CSS file
+//import each pic like this:
+//Name of the picture object, and path:
+import Yakoub from '../pics/yak.jpg'
 
 const AboutUsPage = () => {
     return (
         <>
             <header class = "AboutUs">
                 <h1 className="about-us-title">About Us</h1>
-                <p>Welcome to our company's About Us page! Here, you can learn more about who we are, what we do, and our
+                <p class="about-us-description">Welcome to our company's About Us page! Here, you can learn more about who we are, what we do, and our
                     mission.</p>
             </header>
             <h2>Team Memembers:</h2>
@@ -41,9 +44,9 @@ const AboutUsPage = () => {
                 </div>
                 <div className="team-member">
                     <h3>Yakoub Alkabsh</h3>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"></img>
+                    <img src={Yakoub}></img>
                     <p class = "title">Front-end Floater</p>
-                    <p class = "Description">The biggest bum at sfsu</p>
+                    <p class = "Description">Yakoub is a SFSU student working on obtaining a bacholers degree in computer science, Currently working on the front-end with the help of Carlos and is eager to get into the CS field and make fat racks 🗣️💵🤑</p>
                     <p><a href ="https://github.com/Yakkubs" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
                 <div className="team-member">
