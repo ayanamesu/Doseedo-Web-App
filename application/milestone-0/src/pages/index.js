@@ -25,7 +25,13 @@ const AboutUsPage = () => {
                     <h3>Paige Hodgkinson</h3>
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"></img>
                     <p class = "title">Scrum Master</p>
-                    <p class = "Description"></p>
+                    <p class = "Description">
+                        Paige is a San Francisco State student and Hispanic Foundation of Silicon Valley’s LITSI Scholar whose special
+                        interests include neural net mapping/design,  LLM, and soft computing applications in environmental data sciences.
+                        As a practitioner of Buddhist mindfulness, she organized an SFSU instructor cohort between the computer science
+                        and holistic health departments to explore a Mindfulness for Computer Science course as a potential replacement
+                        for the current Ethics in Computer Science GWAR.
+                    </p>
                     <p><a href ="https://github.com/phodgkinson1" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
                 <div className="team-member">
