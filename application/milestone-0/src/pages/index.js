@@ -4,6 +4,7 @@ import '../AboutUsPage.css'; // Import the CSS file
 //Name of the picture object, and path:
 import Yakoub from '../pics/yak.jpg'
 import Wing from '../pics/wing.jpg'
+import Paige from '../pics/paige.png'
 
 const AboutUsPage = () => {
     return (
@@ -24,7 +25,7 @@ const AboutUsPage = () => {
                 </div>
                 <div className="team-member">
                     <h3>Paige Hodgkinson</h3>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"></img>
+                    <img src={Paige}></img>
                     <p class = "title">Scrum Master</p>
                     <p class = "Description">
                         Paige is a San Francisco State student and Hispanic Foundation of Silicon Valley’s LITSI Scholar whose special
