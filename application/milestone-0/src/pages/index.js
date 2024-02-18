@@ -5,13 +5,14 @@ import '../AboutUsPage.css'; // Import the CSS file
 import Yakoub from '../pics/yak.jpg'
 import Wing from '../pics/wing.jpg'
 import Paige from '../pics/paige.png'
+import Aleia from '../pics/aleia.png'
 
 const AboutUsPage = () => {
     return (
         <>
             <header class = "AboutUs">
                 <h1 className="about-us-title">About Us</h1>
-                <p class="about-us-description">Welcome to our company's About Us page! Here, you can learn more about who we are, what we do, and our
+                <p class="about-us-description">Welcome to our company's About Us page! <br></br> Here, you can learn more about who we are, what we do, and our
                     mission.</p>
             </header>
             <h2>Team Memembers:</h2>
@@ -38,9 +39,12 @@ const AboutUsPage = () => {
                 </div>
                 <div className="team-member">
                     <h3>Aleia Natividad</h3>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"></img>
+                    <img src={Aleia}></img>
                     <p class = "title">Back-end lead</p>
-                    <p class = "Description"></p>
+                    <p class = "Description">
+                        SFSU Student by day, Bartender by night~ <br></br><br></br>
+                        Once she graduates in May with her Bachelors in Computer Science, Aleia hopes to become the very best <i>(Tech Sis)</i> that no one ever was!
+                    </p>
                     <p><a href ="https://github.com/leileigoose" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
                 <div className="team-member">
