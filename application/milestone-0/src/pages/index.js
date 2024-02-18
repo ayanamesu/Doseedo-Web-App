@@ -6,6 +6,7 @@ import Yakoub from '../pics/yak.jpg'
 import Wing from '../pics/wing.jpg'
 import Paige from '../pics/paige.png'
 import Aleia from '../pics/aleia.png'
+import carlos from '../pics/carlos.jpg'
 
 const AboutUsPage = () => {
     return (
