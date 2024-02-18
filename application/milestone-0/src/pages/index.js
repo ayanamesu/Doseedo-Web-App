@@ -49,9 +49,11 @@ const AboutUsPage = () => {
                 </div>
                 <div className="team-member">
                     <h3>Carlos Posadas</h3>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"></img>
+                    <img src={carlos}></img>
                     <p class = "title">Front-end lead</p>
-                    <p class = "Description"></p>
+                    <p class = "Description">Currently in SFSU pursuing a bachelor’s in Computer Science,
+                        Carlos is in front-end working with partner Yakoub to make amazing designs and understand the vast field of the technology realm.
+                        They are hoping to work within web development and make an impact in this generation. </p>
                     <p><a href ="https://github.com/c-posadas" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
                 <div className="team-member">
