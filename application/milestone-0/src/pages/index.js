@@ -25,7 +25,7 @@ const AboutUsPage = () => {
                     <p class = "Description">
                     Senior computer science student.
                     </p>
-                    <p><a href ="https://github.com/phodgkinson1" target = "_blank"><button class = "button">GitHub</button></a></p>
+                    <p><a href ="https://github.com/ymorisfsu" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
                 <div className="team-member">
                     <h3>Paige Hodgkinson</h3>
