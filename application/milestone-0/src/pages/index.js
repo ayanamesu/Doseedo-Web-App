@@ -13,9 +13,11 @@ const AboutUsPage = () => {
             <div className="team-members-container">
                 <div className="team-member">
                     <h3>Yuto Mori</h3>
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Windows_10_Default_Profile_Picture.svg/768px-Windows_10_Default_Profile_Picture.svg.png"></img>
-                    <p class = "title">Founder/God</p>
-                    <p class = "Description"></p>
+                    <img src="https://cdn.discordapp.com/attachments/835160897696956456/1196185042888708116/IMG_9934.png?ex=65e4d9a2&is=65d264a2&hm=e65e87059ca473dce3dd7cd72a230ba56cdb2fbaa9e1b30df4d82db3de5a1e75&"></img>
+                    <p class = "title">Team Leader</p>
+                    <p class = "Description">
+                    Senior computer science student.
+                    </p>
                     <p><a href ="https://github.com/phodgkinson1" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
                 <div className="team-member">
@@ -56,5 +58,6 @@ const AboutUsPage = () => {
             </div>
         </>
     );
+    
 };
 export default AboutUsPage;
