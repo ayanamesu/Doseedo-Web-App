@@ -1,12 +1,12 @@
 import React from 'react';
-import '../AboutUsPage.css'; // Import the CSS file
+import '../frontend/AboutUsPage.css'; // Import the CSS file
 //import each pic like this:
 //Name of the picture object, and path:
-import Yakoub from '../pics/yak.jpg'
-import Wing from '../pics/wing.jpg'
-import Paige from '../pics/paige.png'
-import Aleia from '../pics/aleia.png'
-import carlos from '../pics/carlos.jpg'
+import Yakoub from '../frontend/pics/yak.jpg'
+import Wing from '../frontend/pics/wing.jpg'
+import Paige from '../frontend/pics/paige.png'
+import Aleia from '../frontend/pics/aleia.png'
+import carlos from '../frontend/pics/carlos.jpg'
 
 const AboutUsPage = () => {
     return (
@@ -16,7 +16,7 @@ const AboutUsPage = () => {
                 <p class="about-us-description">Welcome to our company's About Us page! <br></br> Here, you can learn more about who we are, what we do, and our
                     mission.</p>
             </header>
-            <h2>Team Memembers:</h2>
+            <h2>Team Members:</h2>
             <div className="team-members-container">
                 <div className="team-member">
                     <h3>Yuto Mori</h3>
