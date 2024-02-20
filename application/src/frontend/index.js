@@ -63,7 +63,9 @@ const AboutUsPage = () => {
                     <h3>Yakoub Alkabsh</h3>
                     <img src={Yakoub}></img>
                     <p class = "title">Front-end Floater</p>
-                    <p class = "Description">Yakoub is a SFSU student working on obtaining a bacholers degree in computer science, Currently working on the front-end with the help of Carlos and is eager to get into the CS field and make fat racks 🗣️💵🤑</p>
+                    <p class = "Description">Yakoub is a SFSU student who is persuing a bacholers degree in computer science.
+                     He is currently working on the front-end of this site with the help of Carlos, and is eager to get into the
+                     CS field and make fat racks 🗣️💵🤑</p>
                     <p><a href ="https://github.com/Yakkubs" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
                 <div className="team-member">

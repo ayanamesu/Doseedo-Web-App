@@ -35,6 +35,10 @@ h2{
     flex-wrap: wrap;
     margin: 20px auto;
 }
+.team-member:hover{
+  background-color: aliceblue;
+  outline: 5px solid #394958;
+}
 .team-member {
     text-align: center;
     width: 25%;
@@ -74,6 +78,8 @@ h2{
   .team-member button:hover {
     background-color: #0062cc;
   }
+
+
   @media (max-width: 768px) {
     .team-member {
       width: 50%;
