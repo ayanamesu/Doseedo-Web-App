@@ -1,12 +1,17 @@
+//This shold be renamed to aboutUsPage or something
 import React from 'react';
-import '../frontend/AboutUsPage.css'; // Import the CSS file
+
+import { BrowserRouter as Outlet, Link } from 'react-router-dom'
+
+import '../AboutUsPage.css'; // Import the CSS file
 //import each pic like this:
 //Name of the picture object, and path:
-import Yakoub from '../frontend/pics/yak.jpg'
-import Wing from '../frontend/pics/wing.jpg'
-import Paige from '../frontend/pics/paige.png'
-import Aleia from '../frontend/pics/aleia.png'
-import carlos from '../frontend/pics/carlos.jpg'
+import Yakoub from '../pics/yak.jpg'
+import Wing from '../pics/wing.jpg'
+import Paige from '../pics/paige.png'
+import Aleia from '../pics/aleia.png'
+import carlos from '../pics/carlos.jpg'
+
 
 const AboutUsPage = () => {
     return (
@@ -49,6 +54,8 @@ const AboutUsPage = () => {
                         Once she graduates in May with her Bachelors in Computer Science, Aleia hopes to become the very best <i>(Tech Sis)</i> that no one ever was!
                     </p>
                     <p><a href ="https://github.com/leileigoose" target = "_blank"><button class = "button">GitHub</button></a></p>
+                    <Link to='/about/aleia'>Learn More About Aleia</Link> <br />
+                    
                 </div>
                 <div className="team-member">
                     <h3>Carlos Posadas</h3>
@@ -80,4 +87,5 @@ const AboutUsPage = () => {
     );
     
 };
+
 export default AboutUsPage;
