@@ -7,6 +7,8 @@ import SignUpPage from './frontend/pages/signUp';
 
 import AleiaPage from './frontend/pages/aleia';
 
+import Sidebar from './frontend/Components/Sidebar';
+
 const queryClient = new QueryClient({});
 
 function App() {
@@ -14,12 +16,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
             <div>
-                <nav>
-                    <Link to='/'>Home</Link> <br />
-                    <Link to='/about'>About Us</Link> <br/>
-                    <Link to='/login'>Login</Link> <br/> 
-                    <Link to='/signup'>Sign Up</Link> <br/>
-                </nav>
+                <Sidebar />
 
                 {/*All routes must go here in App.js*/}
                 <Routes>

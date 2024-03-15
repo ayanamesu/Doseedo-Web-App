@@ -8,6 +8,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.main-content {
+  padding-top: 75px;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -93,6 +96,8 @@ h2{
   }
   
   /*------------------------------------------------------------- START OF Login -------------------------------------------- */
+
+
 .Login-box{
   background: lightgray;
   padding: 30px 120px;
@@ -180,86 +185,5 @@ h2{
   color: #359cf0;
 }
   /*------------------------------------------------------------- START OF signup -------------------------------------------- */
-  .signup-box {
-    background-image: linear-gradient(rgba(169, 169, 169, 0.5), rgba(169, 169, 169, 0.5)), url(./pageimages/falling.jpg);
-    background-position: center;
-    background-size: cover;
-    padding: 30px 120px;
-    width: 550px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    border-radius: 10px;
-    text-decoration: none;
-}
-  .signup-box a{
-    text-decoration: none;
-  }
-  
-  .signup-box h2{
-    margin-bottom: 20px;
-  }
-  
-  .signup-box button img{
-    width: 18px;
-    margin-right: 10px;
-  }
-  .signup-box button{
-    width: 50%;
-    padding: 10px 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
-    border-radius: 30px;
-    background: transparent;
-    border: 1px solid #999;
-    font-weight: 500;
-    cursor: pointer;
-  }
-  .btn-field{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
 
-  .btn-field button{
-    flex-basis: 48%;
-    background: skyblue;
-    color: #ffff;
-    height: 40%;
-    border-radius: 20px;
-    border: 0;
-    outline: 0;
-    cursor: pointer;
-    transition: background 1s;
-  }
-  .signup-box input{
-    width: 100%;
-    padding: 15px 10px;
-    border: 1px solid black;
-    border-radius: 5px;
-    outline: 0;
-    box-sizing: border-box;
-    margin: 10px 0;
-    background: transparent;
-  }
-  ::placeholder{
-    font-weight: 500;
-    color: black;
-  }
-  .signup-box form button{
-    background: purple;
-    color: #fff;
-    border: 0;
-    margin-bottom: 15px;
-  }
-  .signup-box p{
-    text-align: left;
-    font-size: 18px;
-    color: #555;
-    margin: 40px 0 50px;
-  }
   
