@@ -17,7 +17,7 @@ function connectToDB() {
     host: "localhost",
     user: "root",
     database: "csc648db",  // insert your db info here
-    password: "Wing", //mysql password here
+    password: "Wing12345678L", //mysql password here
     port: "3306"  //default port for mysql
   }
   );

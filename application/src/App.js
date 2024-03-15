@@ -4,7 +4,7 @@ import HomePage from "./frontend/pages/home"
 import LoginPage from './frontend/pages/login';
 import { QueryClient, QueryClientProvider } from "react-query";
 import SignUpPage from './frontend/pages/signUp';
-
+import DB_Test_Page from './frontend/pages/dbtest';
 import AleiaPage from './frontend/pages/aleia';
 
 const queryClient = new QueryClient({});
@@ -19,6 +19,7 @@ function App() {
                     <Link to='/about'>About Us</Link> <br/>
                     <Link to='/login'>Login</Link> <br/> 
                     <Link to='/signup'>Sign Up</Link> <br/>
+                    <Link to='/dbtest'>DB Test</Link>
                 </nav>
 
                 {/*All routes must go here in App.js*/}
@@ -30,6 +31,8 @@ function App() {
 
                   <Route path='/login' element={<LoginPage />} />
                   <Route path='/signup' element={<SignUpPage />} />
+
+                  <Route path='/dbtest' element={<DB_Test_Page/>}/>
                 </Routes>
                 
             </div>
