@@ -17,7 +17,23 @@ app.post('/login', (req, res)  => {
         if(err) return res.json("Login Failed");
         return res.json(data);
     })
-})
+    console.log("Trying to login...");
+
+    db.query(sql, values, (err, data) => {
+        if(err) {
+            console.error("Error occurred during login:", err);
+            return res.json("Login Failed");
+        } else {
+            if (data && data.length > 0) {
+                console.log("Login successful");
+                return res.json(data);
+            } else {
+                console.log("Login failed: Invalid username or password");
+                return res.json("Login Failed: Invalid username or password");
+            }
+        }
+    });
+});
 
 // app.get("/", (_req, res) => {
 //     res.send("This is the home page!")

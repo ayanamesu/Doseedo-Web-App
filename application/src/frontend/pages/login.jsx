@@ -5,7 +5,7 @@ const LoginPage = () => {
                 <h2>Login</h2>
                 
                
-                <form action="" method="GET">
+                <form action="/" method="GET">
                     <input type="text" placeholder="Phone, email or username" />
                     <input type="password" placeholder="Password" />
                     {/* 
