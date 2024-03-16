@@ -8,12 +8,9 @@ useEffect(()=>{
     axios.get('http://localhost:3000/dbtest')
     .then(response =>{ console.log(response);
         setBackendData(response.data.message);
-    
-
     })
     .catch(error =>{
         console.error('Error fetching data from the backend:', error);
-
     });
 }, []);
     return(
