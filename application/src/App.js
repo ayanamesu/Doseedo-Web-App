@@ -7,6 +7,8 @@ import SignUpPage from './frontend/pages/signUp';
 import DB_Test_Page from './frontend/pages/dbtest';
 import AleiaPage from './frontend/pages/aleia';
 
+import Sidebar from './frontend/Components/Sidebar';
+
 const queryClient = new QueryClient({});
 
 function App() {
@@ -14,6 +16,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Router>
             <div>
+                <Sidebar />
                 <nav>
                     <Link to='/'>Home</Link> <br />
                     <Link to='/about'>About Us</Link> <br/>

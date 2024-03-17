@@ -15,7 +15,7 @@ import carlos from '../pics/carlos.jpg'
 
 const AboutUsPage = () => {
     return (
-        <>
+        <div className="main-content">
             <header class = "AboutUs">
                 <h1 className="about-us-title">About Us</h1>
                 <p class="about-us-description">Welcome to our company's About Us page! <br></br> Here, you can learn more about who we are, what we do, and our
@@ -83,7 +83,7 @@ const AboutUsPage = () => {
                     <p><a href ="https://github.com/Ayanamesu" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
             </div>
-        </>
+        </div>
     );
     
 };
