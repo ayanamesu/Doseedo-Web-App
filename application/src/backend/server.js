@@ -22,6 +22,15 @@ try {
     
     
 })
+// app.post('/dbtest', async (req, res) =>{
+//   try {
+//     const data = await inserttest();
+//     res.json(data);
+// } catch (error) {
+//     res.status(500).json({ error: 'An error occurred' });
+// }
+// })
+
 
 app.listen(port, () => {
     console.log(`Server is listening at http://${port}`)
@@ -33,10 +42,10 @@ app.listen(port, () => {
 async function connectToDB() {
   console.log("Hello from connectToDB!");
   const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    database: "csc648db",  // insert your db info here
-    password: "Wing12345678L", //mysql password here
+    host: "db-bte.ch4s2cmka1az.us-east-2.rds.amazonaws.com",
+    user: "admin", 
+    database: "doseedodb_test",  // insert your db info here
+    password: "password", //mysql password here
     port: "3306"  //default port for mysql
   }
   );
@@ -60,14 +69,16 @@ function inserttest(db) {
   const insertQuery = `INSERT INTO User (first_name, last_name, email, password, address_1, state, city, zip_code, phone) 
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
-  const values = ["Bob", "Miller", "miller74@email.com", "dada", "123 Back Street", "CA", "SF", "12345", "1234567890"];
-
-  db.query(insertQuery, values, function(err, result) {
-    if (err) {
-      console.error('Error inserting into database:', err);
-      return;
-    }
-    console.log('Insert successful:', result);
+  return new Promise((resolve, reject) => {
+    db.query(insertQuery, values, function(err, result) {
+      if (err) {
+        console.error('Error inserting into database:', err);
+        reject(err);
+        return;
+        }
+        console.log('Insert successful:', result);
+        resolve(result);
+    });
   });
 }
 
@@ -80,6 +91,8 @@ function inserttest(db) {
 //     console.log("Successfully updated table!");
 //   })
 // }
+
+
 (async function main() {
   try {
     // connection = con.connect;
