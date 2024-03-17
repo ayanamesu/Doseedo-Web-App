@@ -1,5 +1,5 @@
 body {
-  background-color: #778899; /* Cream color */
+  background-color: var(--site-background-color); /* Cream color */
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -19,7 +19,7 @@ code {
 .AboutUs{
     justify-content: center;
     text-align: center;
-    background-color: #4c5966;
+    background-color: var(--accent-colors);
     
 }
 .about-us-title{

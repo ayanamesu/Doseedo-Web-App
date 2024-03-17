@@ -9,19 +9,23 @@ function Sidebar() {
 
   const [iconClicked, setIconClicked] = useState(false);
 
-const handleClick = () => {
-  showSidebar();
-  setIconClicked(!iconClicked);
-};
+  const handleClick = () => {
+    showSidebar();
+    setIconClicked(!iconClicked);
+  };
   return (
     <div>
       <div className='navbar'>
-      <img 
-        src={iconClicked ? "https://cdn2.iconfinder.com/data/icons/media-controls-5/100/close-512.png" : "https://cdn-icons-png.freepik.com/512/9293/9293128.png"} 
-        className='menu-icon' 
-        onClick={handleClick} 
-        alt="Menu"
-      />
+        <img 
+          src={iconClicked ? "https://cdn2.iconfinder.com/data/icons/media-controls-5/100/close-512.png" : "https://cdn-icons-png.freepik.com/512/9293/9293128.png"} 
+          className='menu-icon' 
+          onClick={handleClick} 
+          alt="Menu"
+        />
+        <form className="search-bar" action="/search" method="GET">
+            <input type="text" placeholder="Search..." name="search"/>
+            <button type="submit">search</button>
+        </form>
       </div>
       <nav className={sidebar ? 'sidebar active':'sidebar'}>
         <ul className='sidebarList'>

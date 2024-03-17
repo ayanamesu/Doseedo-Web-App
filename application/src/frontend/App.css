@@ -1,6 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@1,600&display=swap');
 :root{
-    --navbar-background-color: #B19470;
+    --navbar-background-color: #76453B;
     --sidebar-background-color:#DED0B6;
+    --accent-colors: #B19470;
+    --site-background-color: #F8FAE5;
   }
 .main-content {
     padding-top: 75px;
@@ -12,14 +15,42 @@
     z-index: 2;
     display: flex;
     padding-left: 20px;
-    justify-content: start;
+    justify-content: space-between;
     align-items: center;
     background-color: var(--navbar-background-color);
     width: 100%;
+    outline: 1px solid black;
 }
-.navbar .menu-icon{
+
+.menu-icon{
     width: 30px;
     height: 30px;
+}
+
+.search-bar{
+    outline: 1px;
+    width: 40%; 
+    margin: 0 auto;
+}
+
+.search-bar input{
+    width: 80%;
+    height: 25px;
+    border: 0;
+    border-radius: 6px;
+    outline: 2px solid black;
+    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.1);
+}
+.search-bar button{
+    height: 25px;
+    border: 0;
+    border-radius: 6px;
+    outline: 2px solid black;
+    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    cursor: pointer;
+    background-color: rgb(90, 23, 23);
+    color: white;
 }
 .sidebar {
     height: 100%;
@@ -30,6 +61,7 @@
     left: -100%;
     transition: 1000ms;
     z-index: 1;
+    outline: 1px solid black;
 }
 .sidebarList{
     height: auto;
@@ -52,6 +84,7 @@
     align-items: center;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 1.5em;
+    border-radius: 10px;
 }
 .row #icon{
     width: 30px;
@@ -87,22 +120,22 @@
 #homepage-logo {
     position: relative;
     padding: 40px;
-    font-family: 'Brush Script MT', 'Brush Script Std', cursive;
+    font-family: "EB Garamond", serif;
     font-size: 4em;
-    color: white;
+    -webkit-text-stroke: 2px black;
+    color: white;;
 }
 #homepage-description {
-    padding: 10px;
-    font-family: 'Brush Script MT', 'Brush Script Std', cursive;
-    font-size: 1em;
-    color: rgb(15, 5, 5);
+    font-family: "EB Garamond", serif;
+    font-size: 2em;
+    color: black;
 }
 .signup-box {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: lightgray;
+    /* background-color: lightgray; */
     background-position: center;
     background-size: cover;
     padding: 30px 90px;
@@ -122,17 +155,12 @@
 }
 
 .signup-box button{
-    width: 50%;
+    width: 100%;
     padding: 10px 0;
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 20px 0px;
-    border-radius: 30px;
-    background: transparent;
-    border: 1px solid #999;
-    font-weight: 500;
-    cursor: pointer;
 }
 .btn-field{
     width: 100%;
@@ -140,16 +168,17 @@
     justify-content: space-between;
 }
 
-.btn-field button{
+.btn-field button, #submit{
     flex-basis: 48%;
-    background: skyblue;
-    color: #ffff;
-    height: 40%;
     border-radius: 10px;
-    border: 0;
-    outline: 0;
+    outline: solid 1px black;
     cursor: pointer;
-    transition: background 1s;
+    transition: background 0.5s;
+    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn-field .active{
+    background: #000000;
 }
 .signup-box input{
     width: 100%;
@@ -159,14 +188,14 @@
     outline: 0;
     box-sizing: border-box;
     margin: 10px 0;
-    background: transparent;
+    background: white;
 }
 ::placeholder{
     font-weight: 500;
     color: black;
 }
 .signup-box form button{
-    background: var(--navbar-background-color);
+    background: var(--accent-colors);
     color: #fff;
     border: 0;
     margin-bottom: 15px;
