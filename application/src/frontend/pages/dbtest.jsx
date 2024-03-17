@@ -3,6 +3,23 @@ import axios from 'axios';
 
 const Dbtest = () => {
     const [backendData, setBackendData] = useState(''); 
+    // const data = {
+    //     fname: 'John',
+    //     lname: 'Doe',
+    //     email: 'john.doe@example.com',
+    //     password: 'password',
+    //     address1: '123 Main St',
+    //     state: 'NY',
+    //     city: 'New York',
+    //     zipCode: '10001',
+    //     phone: '1234567890'
+    //   };
+    // axios.post('http://localhost:3000/dbtest', data)
+    // .then(response => { console.log(response.data);
+    // })
+    // .catch(error => {
+    //     console.error(error);
+    // });
 useEffect(()=>{
     axios.get('http://localhost:3000/dbtest')
     .then(response =>{ console.log(response);
@@ -13,12 +30,14 @@ useEffect(()=>{
     });
 }, []);
 
-const handleInputChange = (event) => {
-    setBackendData(event.target.value);
-};
-
 return (
     <div>
+        <br>
+        </br>
+        <br>
+        </br>
+        <br>
+        </br>
         <p>Data from backend: {backendData}</p>
         
     </div>
@@ -26,28 +45,3 @@ return (
 };
 export default Dbtest;
 
-
-
-
-
-// const [formData, setFormData] = useState({
-//     firstName: '',
-//     lastName: '',
-//     email: '',
-//     password: '',
-//     address1: '',
-//     state: '',
-//     city: '',
-//     zipCode: '',
-//     phone: ''
-// });
-// const handleChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData(prevState => ({
-//         ...prevState,
-//         [name]: value
-//     }));
-// };
-// const handleSubmit = (e) => {
-//     e.preventDefault();
-// }
