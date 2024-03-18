@@ -46,7 +46,7 @@ const Dbtest = () => {
       });
   
     axios
-      .get("http://localhost:3000/searchtest")
+      .get("http://localhost:3000/searchtest") //dummy url to get data from backend mysql
       .then((response) => {
         setMedicine(response.data.filter((item) =>
         item.med_name.toLowerCase().includes(searchParam.toLowerCase()), //returns whole item but only compares one column
@@ -64,10 +64,10 @@ const Dbtest = () => {
       <br></br>
       <p>Data from backend:</p>
       {filteredData?.map((item, index) => {
-        // return the JSX for each item here inside the mysql database
+        // this lists the mysql data from the User table you can add more fields
         return (
           <div key={index}>
-            {item.first_name} {item.last_name}
+            {item.first_name} {item.last_name} 
           </div>
         );
       })}

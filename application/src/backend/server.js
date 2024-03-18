@@ -4,7 +4,6 @@ const port = process.env.PORT || 3000;
 var mysql = require("mysql2/promise");
 const cors = require("cors");
 
-// import cors from 'cors'
 
 app.use(cors());
 
