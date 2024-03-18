@@ -21,7 +21,7 @@ const AboutUsPage = () => {
                 <p class="about-us-description">Welcome to our company's About Us page! <br></br> Here, you can learn more about who we are, what we do, and our
                     mission.</p>
             </header>
-            <h2>Team Members:</h2>
+            <h2>Team Members</h2>
             <div className="team-members-container">
                 <div className="team-member">
                     <h3>Yuto Mori</h3>
