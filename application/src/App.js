@@ -28,7 +28,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/dbtest" element={<Dbtest />} />
-            <Route path="/dbtest/:q" element={<Dbtest />} />
+            
           </Routes>
         </div>
       </Router>
