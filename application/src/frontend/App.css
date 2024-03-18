@@ -2,11 +2,12 @@
 :root{
     --navbar-background-color: #76453B;
     --sidebar-background-color:#DED0B6;
-    --accent-colors: #B19470;
-    --site-background-color: #F8FAE5;
+    --accent-colors: #DED0B6;
+    --site-background-color: #FFF7F1;
   }
 .main-content {
     padding-top: 75px;
+    display: block;
     /*padding-left: 10%;*/
 }
 .navbar {
@@ -206,3 +207,44 @@
     color: #555;
     margin: 40px 0 50px;
 }
+
+/*----------------------------------------------------------Search page----------------------------------------------------------*/
+.page-title{
+    justify-self: center;
+    text-align: center;
+}
+.search-page {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    padding: 20px;
+}
+@media (max-width: 1200px) {
+    .search-page {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 800px) {
+    .search-page {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}
+.result-container {
+    height: 200px;
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    outline: 1px solid rgb(97, 21, 21);
+    border-radius: 5px;
+    box-shadow: 5px 10px 5px rgba(97, 21, 21, 0.7);
+}
+.result-container .result-title {
+    font-weight: bold;
+    font-size: 18px;
+    font-style: italic;
+}
+.result-container:hover{
+    background-color: rgba(207, 169, 85, 0.2);
+    outline: 5px solid #000000;
+  }

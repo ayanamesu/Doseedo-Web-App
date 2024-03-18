@@ -22,7 +22,7 @@ app.get("/dbtest", async (req, res) => {
   }
 });
 
-
+//searchtest to get data from mysql
 app.get("/searchtest", async (req, res) => {
   // res.json({message: 'Hello from backend!'});
   //  console.log(`testing db`);

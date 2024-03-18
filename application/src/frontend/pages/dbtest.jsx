@@ -5,6 +5,7 @@ const Dbtest = () => {
   const [backendData, setBackendData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [medicine, setMedicine] = useState([]);
+  // testing insert for future date
   // const data = {
   //     fname: 'John',
   //     lname: 'Doe',
@@ -58,28 +59,35 @@ const Dbtest = () => {
   }, []);
 
   return (
-    <div>
-      <br></br>
-      <br></br>
-      <br></br>
-      <p>Data from backend:</p>
-      {filteredData?.map((item, index) => {
-        // this lists the mysql data from the User table you can add more fields
-        return (
-          <div key={index}>
-            {item.first_name} {item.last_name} 
-          </div>
-        );
-      })}
-      {medicine?.map((item, index) => {
-        // return the JSX for each item here
-        // this lists the mysql data from the Prescriptions table
-        return (
-          <div key={index}>
-            {item.med_name} {item.description}
-          </div>
-        );
-      })}
+    <div className="main-content">
+      <h1 className="page-title">Results:</h1>
+      <div className="search-page">
+        {filteredData?.map((item, index) => {
+          // return the JSX for each item here inside the mysql database
+          // this list the mysql data from the User table (Could add more fields later as it only show first and last name)
+          return (
+            <div key={index}>
+              <div className="result-container">
+                <h2 className="result-title">User</h2>
+                <div className="name"><strong>Name:</strong> {item.first_name} {item.last_name}</div>
+              </div>
+            </div>
+          );
+        })}
+        {medicine?.map((item, index) => {
+          // return the JSX for each item here
+          // this lists the mysql data from the Prescriptions table
+          return (
+            <div key={index}>
+              <div className="result-container">
+                <h2 className="result-title">Medicine</h2>
+                <div className="name"><strong>Type:</strong> {item.med_name}</div>
+                <p className="medicine-description"><strong>Description:</strong> {item.description}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
