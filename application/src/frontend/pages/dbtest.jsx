@@ -33,7 +33,7 @@ const Dbtest = () => {
     }
   
     axios
-      .get("http://localhost:8000/dbtest")
+      .get("http://ec2-3-139-83-222.us-east-2.compute.amazonaws.com/api/dbtest")
       .then((response) => {
         setBackendData(response.data);
         setFilteredData(
@@ -47,7 +47,7 @@ const Dbtest = () => {
       });
   
     axios
-      .get("http://localhost:8000/searchtest") //dummy url to get data from backend mysql
+      .get("http://ec2-3-139-83-222.us-east-2.compute.amazonaws.com/api/searchtest") //dummy url to get data from backend mysql
       .then((response) => {
         setMedicine(response.data.filter((item) =>
         item.med_name.toLowerCase().includes(searchParam.toLowerCase()), //returns whole item but only compares one column
