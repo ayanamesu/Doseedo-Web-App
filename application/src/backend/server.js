@@ -50,11 +50,16 @@ app.listen(port, () => {
 async function connectToDB() {
   //console.log("Hello from connectToDB!");
   const db = mysql.createConnection({
-    host: "db-bte.ch4s2cmka1az.us-east-2.rds.amazonaws.com",
-    user: "admin",
-    database: "doseedodb_test", // insert your db info here
-    password: "password", //mysql password here
-    port: "3306", //default port for mysql
+    // host: "db-bte.ch4s2cmka1az.us-east-2.rds.amazonaws.com",
+    // user: "admin",
+    // database: "doseedodb_test", // insert your db info here
+    // password: "password", //mysql password here
+    // port: "3306", //default port for mysql
+    host: "localhost",
+    user: "root",
+    database: "csc648db", // insert your db info here
+    password: "Wing12345678L", //mysql password here
+    port: "3306",
   });
   return db;
 }
