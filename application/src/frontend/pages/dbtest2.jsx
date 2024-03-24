@@ -23,7 +23,7 @@ const Dbtest2 = () => {
       <br></br>
       <br></br>
       <br></br>
-      <br></br>fuck
+      <br></br>fk
     </div>
   );
 };

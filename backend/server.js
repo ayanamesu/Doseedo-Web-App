@@ -8,6 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+//dbtest page for select * from user
 app.get("/dbtest", async (req, res) => {
   // res.json({message: 'Hello from backend!'});
   //  console.log(`testing db`);
@@ -38,12 +39,6 @@ app.post("/dbtest2", async (req, res) => {
 
 //searchtest to get data from mysql
 app.get("/searchtest", async (req, res) => {
-  // res.json({message: 'Hello from backend!'});
-  //  console.log(`testing db`);
-  // const test = JSON.stringify(selecttest(db));
-  // res.json(test);
-  // console.log(test);
-
   try {
     const data = await selectmedicine();
     res.json(data);
@@ -51,9 +46,7 @@ app.get("/searchtest", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
-// app.get("/searchtest", async (req, res) => {
-//   console.log("hello user has searched something");
-// });
+
 
 app.listen(port, () => {
   console.log(`Server is listening at http://${port}`);
@@ -92,7 +85,7 @@ async function selecttest() {
     throw error;
   }
 }
-
+//select medicine from database
 async function selectmedicine() {
   const db = await connectToDB();
   try {
@@ -105,8 +98,10 @@ async function selectmedicine() {
     throw error;
   }
 }
+
+//insert function
 function inserttest(db, req) {
-    console.log("Testing insert into db");
+  console.log("Testing insert into db");
   const reqBody = {
     first_name: req.body.firstName,
     last_name: req.body.lastName,
