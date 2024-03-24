@@ -6,23 +6,20 @@ const Dbtest = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [medicine, setMedicine] = useState([]);
   // testing insert for future date
-  // const data = {
-  //     fname: 'John',
-  //     lname: 'Doe',
-  //     email: 'john.doe@example.com',
-  //     password: 'password',
-  //     address1: '123 Main St',
-  //     state: 'NY',
-  //     city: 'New York',
-  //     zipCode: '10001',
-  //     phone: '1234567890'
-  //   };
-  // axios.post('http://localhost:3000/dbtest', data)
-  // .then(response => { console.log(response.data);
-  // })
-  // .catch(error => {
-  //     console.error(error);
-  // });
+  const data = {
+      fname: 'John',
+      lname: 'Doe',
+      email: 'john.doe@example.com',
+      password: 'password'
+      
+    };
+    console.log("endpoint");
+  axios.post('http://localhost:8000/api/dbtest', data)
+  .then(response => { console.log(response.data);
+  })
+  .catch(error => {
+      console.error(error);
+  });
   useEffect(() => {
     const currentUrl = window.location.href;
     const urlObj = new URL(currentUrl);
