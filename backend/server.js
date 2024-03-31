@@ -1,5 +1,6 @@
 const express = require("express");
-
+const db = require('./db');
+const bodyParser = require('body-parser'); // parsing middleware - parses incoming request bodies
 const port = process.env.PORT || 8000;
 var mysql = require("mysql2/promise");
 const cors = require("cors");
@@ -7,6 +8,39 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
+
+
+/* Where our get/post routes will go 
+    Will need to change to /api/... when implementing to our server
+*/
+
+//Sample Get/Post Requests request
+app.get('/api', (req, res) => {
+  res.send('This is the server!');
+});
+
+// Login page
+app.post('/api/login', async (req, res) => {
+  let { email, password } = req.body;
+  console.log(req.body);
+  try {
+    const creds = await checkCredentials(email, password);
+    console.log("creds = ", creds);
+    if (creds === true) {
+      console.log("Credentials are good B)");
+      // TODO: Need to redirect to the user's homepage
+    } else {
+      res.json({ "message": "WHOOPS something went wrong" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
+
+// Sign Up Page
+
 
 //dbtest page for select * from user
 app.get("/dbtest", async (req, res) => {
@@ -17,7 +51,7 @@ app.get("/dbtest", async (req, res) => {
   // console.log(test);
 
   try {
-    const data = await selecttest();
+    const data = await select_user();
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
@@ -29,7 +63,7 @@ app.post("/dbtest2", async (req, res) => {
   
   try {
     const db = await connectToDB();
-    inserttest(db, req);
+    insert_test(db, req);
     return res.send("fuck yes");
   
   } catch (error) {
@@ -39,8 +73,9 @@ app.post("/dbtest2", async (req, res) => {
 
 //searchtest to get data from mysql
 app.get("/searchtest", async (req, res) => {
+  console.log("/searchtest --> selectMedicine")
   try {
-    const data = await selectmedicine();
+    const data = await select_medicine();
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
@@ -48,48 +83,56 @@ app.get("/searchtest", async (req, res) => {
 });
 
 
+/* Where our app will listen from */
 app.listen(port, () => {
   console.log(`Server is listening at http://${port}`);
 });
 
 
-//my sql database
+/* Where our functions are */
 
-async function connectToDB() {
-  //console.log("Hello from connectToDB!");
-  const db = mysql.createConnection({
-    // host: "db-bte.ch4s2cmka1az.us-east-2.rds.amazonaws.com",
-    // user: "admin",
-    // database: "doseedodb_test", // insert your db info here
-    // password: "password", //mysql password here
-    // port: "3306", //default port for mysql
-    host: "localhost",
-    user: "root",
-    database: "csc648db", // insert your db info here
-    password: "Wing12345678L", //mysql password here
-    port: "3306",
-  });
-  return db;
+// Checks for user login information
+// TODO: Implement bcrypt
+async function checkCredentials(email, password) {
+  console.log("Checking credentials...");
+  try {
+    const query = "SELECT password FROM User WHERE email=?;";
+    const [results, fields] = await db.query(query, [email]);
+    if (results && results.length == 1) {
+      let dbPassword = results[0].password;
+      return password === dbPassword;
+    } else {
+      console.log("ERROR No user found :(");
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
+
 //post is safer
 //get see url database names and etc in url
-async function selecttest() {
-  const db = await connectToDB();
+
+// Selects all columns from the user table
+async function select_user() {
+  console.log("selecttest()");
   try {
     const query = "SELECT * FROM User;";
-    const [result, fields] = await db.execute(query);
-    db.end();
+    const [result, fields] = await db.query(query);
     return result;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
-//select medicine from database
-async function selectmedicine() {
+
+// Selects all columns from the prescription table
+async function select_medicine() {
   const db = await connectToDB();
+  console.log("selectmedicine()");
   try {
-    const query = "SELECT * FROM Prescription;";
+    const query = "SELECT * FROM prescription;";
     const [result, fields] = await db.execute(query);
     db.end();
     return result;
@@ -99,8 +142,8 @@ async function selectmedicine() {
   }
 }
 
-//insert function
-function inserttest(db, req) {
+// Inserts a new user to the db
+function insert_test(db, req) {
   console.log("Testing insert into db");
   const reqBody = {
     first_name: req.body.firstName,
@@ -118,16 +161,16 @@ function inserttest(db, req) {
   ]);
 }
 
-(async function main() {
-  try {
-    // connection = con.connect;
+// (async function main() {
+//   try {
+//     // connection = con.connect;
 
-    console.log("Connected!");
-    // const db = connectToDB();
-    // selecttest(db);
-    // inserttest(db);
-    // alter_test(db,4, "grand");
-  } catch (error) {
-    console.error(error);
-  }
-})();
+//     console.log("Connected!");
+//     // const db = connectToDB();
+//     // selecttest(db);
+//     // inserttest(db);
+//     // alter_test(db,4, "grand");
+//   } catch (error) {
+//     console.error(error);
+//   }
+// })();

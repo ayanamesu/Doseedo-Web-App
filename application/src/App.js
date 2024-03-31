@@ -5,7 +5,6 @@ import LoginPage from "./frontend/pages/login";
 import { QueryClient, QueryClientProvider } from "react-query";
 import SignUpPage from "./frontend/pages/signUp";
 import Dbtest2 from "./frontend/pages/dbtest2";
-import AleiaPage from "./frontend/pages/aleia";
 import Dbtest from "./frontend/pages/dbtest";
 import Sidebar from "./frontend/Components/Sidebar";
 
@@ -23,7 +22,6 @@ function App() {
             <Route path="/" element={<HomePage />} />
 
             <Route path="/about" element={<AboutUsPage />} />
-            <Route path="/about/aleia" element={<AleiaPage />} />
 
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
