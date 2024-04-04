@@ -1,3 +1,4 @@
+// TO DO: Get Post working here for the sign up page
 import React, { useState } from 'react';
 
 const HomePage = () => {
@@ -17,7 +18,7 @@ const HomePage = () => {
         <div className="main-content">
             <div className="homepage-container">
                 <div className="home-content-left">
-                    <h1 id="homepage-logo">Dosedo</h1>
+                    <h1 id="homepage-logo">Doseedo</h1>
                     <p id="homepage-description">Keep track of the ones you love</p>
                 </div>
                 
