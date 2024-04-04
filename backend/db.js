@@ -8,8 +8,8 @@ const pool = mysql.createPool({
         connectionLimit: 10,
         host: "localhost",
         user: "root",
-        database: "doseedodb", // insert your db info here
-        password: "1234", //mysql password here
+        database: "csc648db", // insert your db info here
+        password: "Wing12345678L", //mysql password here
         port: "3306",
 });
 

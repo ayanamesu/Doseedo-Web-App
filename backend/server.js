@@ -44,12 +44,6 @@ app.post('/api/login', async (req, res) => {
 
 //dbtest page for select * from user
 app.get("/dbtest", async (req, res) => {
-  // res.json({message: 'Hello from backend!'});
-  //  console.log(`testing db`);
-  // const test = JSON.stringify(selecttest(db));
-  // res.json(test);
-  // console.log(test);
-
   try {
     const data = await select_user();
     res.json(data);
@@ -161,16 +155,4 @@ function insert_test(db, req) {
   ]);
 }
 
-// (async function main() {
-//   try {
-//     // connection = con.connect;
 
-//     console.log("Connected!");
-//     // const db = connectToDB();
-//     // selecttest(db);
-//     // inserttest(db);
-//     // alter_test(db,4, "grand");
-//   } catch (error) {
-//     console.error(error);
-//   }
-// })();
