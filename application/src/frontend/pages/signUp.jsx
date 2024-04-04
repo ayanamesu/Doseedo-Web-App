@@ -1,16 +1,25 @@
 import React, {useState} from 'react';
 
 const SignUpPage = () => {
+    const [fname, setFname] = useState("");
+    const [lname, setLname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [confPassword, setConfPassword] = useState("");
     
     function handleRegisterForm(event) {
         event.preventDefault();
+        if (password !== confPassword) {
+            console.log("passwords do not match!");
+            return;
+        }
         let userData = {
+            fname: fname,
+            lname: lname,
             email: email,
             password: password
         }
-        fetch("http://localhost:8000/api/login", {
+        fetch("http://localhost:8000/api/signup", {
             method: "post",
             headers: {
                 "Content-Type": "application/json" 
@@ -28,12 +37,12 @@ const SignUpPage = () => {
                 <h2>Sign Up</h2>
                 
                
-                <form action="/index" onSubmit={handleRegisterForm}>
-                    <input type="text" placeholder="First name" />
-                    <input type="text" placeholder="Last name" />
-                    <input type="text" placeholder="Phone, email or username" />
-                    <input type="password" placeholder="Password" />
-                    <input type="password" placeholder="Confirm Password" />
+                <form onSubmit={handleRegisterForm}>
+                    <input type="text" placeholder="First name" onChange={e => setFname(e.target.value)}/>
+                    <input type="text" placeholder="Last name" onChange={e => setLname(e.target.value)}/>
+                    <input type="text" placeholder="email" onChange={e => setEmail(e.target.value)}/>
+                    <input type="password" placeholder="Password" onChange={e => setPassword(e.target.value)}/>
+                    <input type="password" placeholder="Confirm Password" onChange={e => setConfPassword(e.target.value)}/>
                     {/* 
                         this is a quick test to see functionality - wing can change later
                     */}

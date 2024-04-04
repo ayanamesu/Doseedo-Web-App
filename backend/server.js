@@ -7,9 +7,14 @@ const cors = require("cors");
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 app.use(bodyParser.json());
 
+// Configure CORS to allow requests from a specific origin
+const corsOptions = {
+  origin: 'http://localhost:3006', // Whitelist the specific origin
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+app.use(cors(corsOptions));
 
 /* Where our get/post routes will go 
     Will need to change to /api/... when implementing to our server
@@ -24,6 +29,11 @@ app.get('/api', (req, res) => {
 app.post('/api/login', async (req, res) => {
   let { email, password } = req.body;
   console.log(req.body);
+
+  // Just as an example - delete this
+  const userAgent = req.headers['user-agent'];
+  console.log("Here is the device info:" + userAgent);
+  
   try {
     const creds = await checkCredentials(email, password);
     console.log("creds = ", creds);
@@ -39,8 +49,42 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// Sign Up Page
+app.get('/login', (req, res) => {
+  res.redirect('/login'); 
+});
 
+// Sign Up Page
+app.post('/api/signup', async (req, res) => {
+  let { fname, lname, email, password } = req.body;
+  console.log("We're in the backend now!\n");
+  try {
+    // Check if the user already has an account with that email
+    const account = await hasAccount(email);
+      // Has an account --> show that they already have an account and take them back to the home page for login
+    // If the user already has an account, redirect to the login page
+    if (account) {
+      console.log("User already has an account!");
+      res.redirect('http://localhost:3006/login');
+      return;
+    } else {
+      console.log("Creating new account...");
+      const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
+                       VALUES (?, ?, ?, ?)`;
+      const [results, feilds] =  await db.query(insertQuery, [fname, lname, email, password]);
+      if (results && results.affectedRows == 1) {
+        console.log("ACCOUNT SUCCESSFULLY CREATED");
+        res.redirect('http://localhost:3006/login');
+      } else {
+        console.log("Error has occured :(");
+        res.status(500).json({ "error": "Account creation failed" });
+      } 
+    }
+      // No account --> create the account 
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
 
 //dbtest page for select * from user
 app.get("/dbtest", async (req, res) => {
@@ -60,7 +104,6 @@ app.get("/dbtest", async (req, res) => {
 
 app.post("/dbtest2", async (req, res) => {
   console.log(req.body);
-  
   try {
     const db = await connectToDB();
     insert_test(db, req);
@@ -107,6 +150,22 @@ async function checkCredentials(email, password) {
     }
   } catch (error) {
     console.error(error);
+    throw error;
+  }
+}
+
+async function hasAccount(email) {
+  console.log("Checking if they have an account...");
+  try {
+    const query = "SELECT * FROM user WHERE email = ?;"
+    const [results, fields] = await db.query(query, [email]);
+    if (results && results.length == 1) {
+      return true;
+    } else {
+      return false;
+    } 
+  } catch (error) {
+    console.log(error);
     throw error;
   }
 }

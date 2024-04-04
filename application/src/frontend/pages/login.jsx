@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 
 const LoginPage = () => {
+    console.log("We're at the login page"); // delete
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     
@@ -11,6 +12,7 @@ const LoginPage = () => {
             email: email,
             password: password
         }
+
         fetch("http://localhost:8000/api/login", {
             method: "post",
             headers: {
