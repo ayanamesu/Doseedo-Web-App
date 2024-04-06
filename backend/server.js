@@ -88,7 +88,7 @@ app.post('/api/signup', async (req, res) => {
 });
 
 //dbtest page for select * from user
-app.get("/dbtest", async (req, res) => {
+app.get("/api/dbtest", async (req, res) => {
   try {
     const data = await select_user();
     res.json(data);
@@ -131,7 +131,7 @@ app.post("/api/dbtest2", async (req, res) => {
 
 
 //searchtest to get data from mysql
-app.get("/searchtest", async (req, res) => {
+app.get("/api/searchtest", async (req, res) => {
   console.log("/searchtest --> selectMedicine")
   try {
     const data = await select_medicine();
