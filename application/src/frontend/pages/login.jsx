@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-
+import axios from 'axios';
 const LoginPage = () => {
-    console.log("We're at the login page"); // delete
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     
-    // Via fetch API
+
     function handleLoginForm(event) {
         event.preventDefault();
         let userData = {
@@ -13,19 +12,18 @@ const LoginPage = () => {
             password: password
         }
 
-        fetch("http://localhost:8000/api/login", {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json" 
-            },
-            body: JSON.stringify(userData)
+        axios.post('http://localhost:8000/api/login', userData)
+        .then(res => {
+            console.log(res.data.message);
+            if (res.data.message === "Credentials are good") {
+                console.log("successfully logged in")
+            } else {
+                console.log("You need to make an account")
+            }
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        });
-        console.log("Button has been clicked!");
-    }
+        .catch(err => console.log(err));
+    console.log("Button has been clicked!");
+}
 
     return (
         <>

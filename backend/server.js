@@ -39,6 +39,7 @@ app.post('/api/login', async (req, res) => {
     console.log("creds = ", creds);
     if (creds === true) {
       console.log("Credentials are good B)");
+      res.json({ "message": "Credentials are good" });
       // TODO: Need to redirect to the user's homepage
     } else {
       res.json({ "message": "WHOOPS something went wrong" });
