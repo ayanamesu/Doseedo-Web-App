@@ -25,7 +25,7 @@ const HomePage = () => {
                 <div className="signup-box">
                     <h1>Welcome:</h1>
                     {isLoginForm ? (
-                        <form className ="homepage-form" action="/dbtest2" method="PUT">
+                        <form className ="homepage-form" action="/dbtest2" method="POST">
                             <h2>Register</h2>
                             <div className="btn-field">
                                 <button type="button" >Register</button>

@@ -96,17 +96,38 @@ app.get("/dbtest", async (req, res) => {
   }
 });
 
-app.post("/dbtest2", async (req, res) => {
+app.post("/api/dbtest2", async (req, res) => {
+  let { first_name, last_name, email, password } = req.body;
   console.log(req.body);
   try {
-    const db = await connectToDB();
-    insert_test(db, req);
-    return res.send("fuck yes");
-  
+    // Check if the user already has an account with that email
+    const account = await hasAccount(email);
+      // Has an account --> show that they already have an account and take them back to the home page for login
+    // If the user already has an account, redirect to the login page
+    if (account) {
+      console.log("User already has an account!");
+      res.json({"data": "True"});
+      return;
+    } else {
+      console.log("Creating new account...");
+      const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
+                       VALUES (?, ?, ?, ?)`;
+      const [results, feilds] =  await db.query(insertQuery, [first_name, last_name, email, password]);
+      if (results && results.affectedRows == 1) {
+        console.log("ACCOUNT SUCCESSFULLY CREATED");
+        res.json({"data": "False"});
+      } else {
+        console.log("Error has occured :(");
+        res.status(500).json({ "error": "Account creation failed" });
+      } 
+    }
+      // No account --> create the account 
   } catch (error) {
-    return res.status(500).json({ error: "An error occurred" });
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
   }
 });
+
 
 //searchtest to get data from mysql
 app.get("/searchtest", async (req, res) => {
@@ -195,23 +216,8 @@ async function select_medicine() {
   }
 }
 
-// Inserts a new user to the db
-function insert_test(db, req) {
-  console.log("Testing insert into db");
-  const reqBody = {
-    first_name: req.body.firstName,
-    last_name: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-  }; 
-  const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
-                       VALUES (?, ?, ?, ?)`;
-  db.query(insertQuery, [
-    reqBody.first_name,
-    reqBody.last_name,
-    reqBody.email,
-    reqBody.password,
-  ]);
-}
+// Back Up method for insert test for the dbtest2 page
+
+
 
 
