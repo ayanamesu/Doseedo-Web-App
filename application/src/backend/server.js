@@ -42,6 +42,54 @@ app.get("/searchtest", async (req, res) => {
 //   console.log("hello user has searched something");
 // });
 
+app.get("/viewProfile", async (req, res) => {
+  try {
+    const userId = req.userId; // Assuming userId is available in the request object
+    const data = await viewProfile(userId);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+app.get("/viewMedicine", async (req, res) => {
+   try {
+    const data = await viewMedicine();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+app.get("/addMedicine", async (req, res) => {
+  // res.json({message: 'Hello from backend!'});
+  //  console.log(`testing db`);
+  // const test = JSON.stringify(selecttest(db));
+  // res.json(test);
+  // console.log(test);
+
+  try {
+    const data = await addMedicine();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+app.get("/RemoveMedicine", async (req, res) => {
+  // res.json({message: 'Hello from backend!'});
+  //  console.log(`testing db`);
+  // const test = JSON.stringify(selecttest(db));
+  // res.json(test);
+  // console.log(test);
+
+  try {
+    const data = await RemoveMedicine();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server is listening at http://${port}`);
 });
@@ -83,6 +131,57 @@ async function selectmedicine() {
     console.error(error);
     throw error;
   }
+
+}
+async function viewProfile(userId) {
+  
+  const db = await connectToDB();
+  try {
+    const query = "SELECT * FROM user WHERE id = ?";
+    const [result, fields] = await db.execute(query, [userId]);
+    if (result.length === 0) {
+      throw new Error("User not found");
+    }
+    return result[0]; 
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+async function viewMedicine() {
+  const db = await connectToDB();
+  try {
+    const query = "SELECT * FROM Prescription;";
+    const [result, fields] = await db.execute(query);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+async function addMedicine() {
+  const db = await connectToDB();
+  try {
+    const query = "SELECT * FROM Prescription;";
+    const [result, fields] = await db.execute(query);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+  //insert new Prescription to DB
+}
+async function removeMedicine() {
+  const db = await connectToDB();
+  try {
+    const query = "SELECT * FROM Prescription;";
+    const [result, fields] = await db.execute(query);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+    //select and remove from table
 }
 function inserttest(db) {
   //   console.log("Testing insert into db");
