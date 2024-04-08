@@ -20,14 +20,18 @@ code {
     justify-content: center;
     text-align: center;
     background-color: var(--accent-colors);
+    outline: 1px solid black;
     
 }
 .about-us-title{
     margin-top: 0px;
+    font-style: italic;
 }
 .about-us-description{
+    font-style: italic;
     font-weight: bold;
     font-size: 20px;
+    padding-bottom: 5px;
 }
 h2{
   text-align: center;
@@ -39,17 +43,18 @@ h2{
     margin: 20px auto;
 }
 .team-member:hover{
-  background-color: aliceblue;
-  outline: 5px solid #394958;
+  background-color: rgba(207, 169, 85, 0.2);
+  outline: 5px solid #000000;
 }
 .team-member {
     text-align: center;
     width: 25%;
     margin: 10px;
     padding: 20px;
-    background-color: #f5f5f5;
+    background-color: white;
+    outline: 1px solid rgb(97, 21, 21);
     border-radius: 5px;
-    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 5px 10px 5px rgba(97, 21, 21, 0.7);
   }
   
   .team-member img {
@@ -62,15 +67,18 @@ h2{
   .team-member p {
     font-size: 16px;
     margin-bottom: 5px;
+    font-style: italic;
+    font-weight: 600;
   }
   
   .team-member .title {
     font-weight: bold;
     font-size: 18px;
+    font-style: italic;
   }
   
   .team-member button {
-    background-color: #007bff;
+    background-color: var(--navbar-background-color);
     border: none;
     padding: 5px 10px;
     color: white;
@@ -79,7 +87,7 @@ h2{
   }
   
   .team-member button:hover {
-    background-color: #0062cc;
+    background-color: rgb(90, 23, 23);
   }
 
 

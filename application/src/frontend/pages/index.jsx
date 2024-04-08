@@ -8,10 +8,10 @@ import '../AboutUsPage.css'; // Import the CSS file
 //Name of the picture object, and path:
 import Yakoub from '../pics/yak.jpg'
 import Wing from '../pics/wing.jpg'
-import Paige from '../pics/paige.png'
-import Aleia from '../pics/aleia.png'
+import Paige from '../pics/paige.jpg'
+import Aleia from '../pics/aleia.jpg'
 import carlos from '../pics/carlos.jpg'
-
+import yuto from '../pics/yuto.jpg'
 
 const AboutUsPage = () => {
     return (
@@ -21,14 +21,16 @@ const AboutUsPage = () => {
                 <p class="about-us-description">Welcome to our company's About Us page! <br></br> Here, you can learn more about who we are, what we do, and our
                     mission.</p>
             </header>
-            <h2>Team Members:</h2>
+            <h2>Team Members</h2>
             <div className="team-members-container">
                 <div className="team-member">
                     <h3>Yuto Mori</h3>
-                    <img src="https://cdn.discordapp.com/attachments/835160897696956456/1196185042888708116/IMG_9934.png?ex=65e4d9a2&is=65d264a2&hm=e65e87059ca473dce3dd7cd72a230ba56cdb2fbaa9e1b30df4d82db3de5a1e75&"></img>
+                    <img src={yuto}></img>
                     <p class = "title">Team Leader</p>
                     <p class = "Description">
-                    Senior computer science student.
+                    I am the team leader of this project. I have worked on several personal and commercial projects. My major is in Computer Science, with a minor in Mathematics.
+                     My favorite topic is AI. It is fascinating to see computers overtaking human-level intelligence.
+                  
                     </p>
                     <p><a href ="https://github.com/ymorisfsu" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
