@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "../App.css";
 const settingsPage = () => {
     const handleContactsClick = () => {
         // Handle contacts click
