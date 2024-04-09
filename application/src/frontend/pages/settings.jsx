@@ -42,7 +42,7 @@ const SettingsPage = () => {
          // return <Navigate to="/Notifications" replace={true} />;
     };
     const handleAboutUsClick = () => {
-      return <Navigate to="/aboutUs" replace={true} />;
+      return <Navigate to="/about" replace={true} />;
 
     };
 
