@@ -1,42 +1,90 @@
 import React from "react";
+import { Navigate } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import "../App.css";
-const settingsPage = () => {
+const SettingsPage = () => {
+    const [LoggedInUser, setLoginUser] =  useState([]);
+    const [isSessionActive, setSession] =  useState(false);
+    const [RedirectToHome, setRedirectToHome] = React.useState(false);
+  React.useEffect(() => {
+    /*
+    axios.get('http://localhost:8000/api/settings')
+    .then((res) => res.json())
+    .then((apiRes) => {
+      console.log(apiRes);
+      
+      setProducts(apiRes.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+      axios.get('http://localhost:8000/api/session')
+    .then((res) => res.json())
+    .then((apiRes) => {
+      console.log(apiRes);
+      
+      setProducts(apiRes.data);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+*/
+
+}, []);
+    //fetchData
+//bar
     const handleContactsClick = () => {
-        // Handle contacts click
+           // return <Navigate to="/Contacts" replace={true} />;
     };
 
     const handleNotificationsClick = () => {
-        // Handle notifications click
+         // return <Navigate to="/Notifications" replace={true} />;
     };
-
     const handleAboutUsClick = () => {
-        // Handle about us click
+      return <Navigate to="/aboutUs" replace={true} />;
+
     };
 
+   
     const handleSignOutClick = () => {
-        // Handle sign out click
+        // Handle sign out
+        axios.get('http://localhost:8000/api/logout')
+        .then((res) => res.json())
+        .then((user) => {
+          console.log(user);
+          // Update the products state with the fetched data
+          setSession(false);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+        setRedirectToHome(true);
     };
 
+//
     const handleGeneralClick = () => {
-        // Handle general click
+         // return <Navigate to="/General" replace={true} />;
     };
 
     const handleAccountSettingsClick = () => {
-        // Handle account settings click
+       // return <Navigate to="/AccountSettings" replace={true} />;
     };
 
     const handleAccessibilityClick = () => {
-        // Handle accessibility click
+      // return <Navigate to="/Accessibility" replace={true} />;
     };
 
     const handleLanguageClick = () => {
-        // Handle language click
+       // return <Navigate to="/Language" replace={true} />;
     };
 
     const handleBackClick = () => {
         // Handle back click
     };
-
+    if (RedirectToHome) {
+        return <Navigate to="/" replace={true} />;
+      }
     return (
         <>
             <div className="div">
@@ -96,4 +144,4 @@ const settingsPage = () => {
         </>
     );
 }
-export default settingsPage;
+export default SettingsPage;
