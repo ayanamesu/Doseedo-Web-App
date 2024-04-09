@@ -7,8 +7,10 @@ import SignUpPage from "./frontend/pages/signUp";
 import Dbtest2 from "./frontend/pages/dbtest2";
 import Dbtest from "./frontend/pages/dbtest";
 import Sidebar from "./frontend/Components/Sidebar";
+import settingsPage from "./frontend/pages/settings";
 
 const queryClient = new QueryClient({});
+
 
 function App() {
   return (
@@ -27,6 +29,7 @@ function App() {
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/dbtest" element={<Dbtest />} />
             <Route path="/dbtest2" element={<Dbtest2 />} />
+            <Route path="/settings" element={<SettingsPage/>} />
             
           </Routes>
         </div>

@@ -248,3 +248,343 @@
     background-color: rgba(207, 169, 85, 0.2);
     outline: 5px solid #000000;
   }
+/* -------------------------------- Settings Page ------------------------------ */
+.div {
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+.div-2 {
+    background-color: #76453b;
+    display: flex;
+    width: 100%;
+    gap: 20px;
+    font-size: 36px;
+    color: #fff;
+    font-weight: 400;
+    line-height: 100%;
+    padding: 29px 30px;
+}
+@media (max-width: 991px) {
+    .div-2 {
+        max-width: 100%;
+        flex-wrap: wrap;
+        padding: 0 20px;
+    }
+}
+.div-3 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    flex-grow: 1;
+    flex-basis: auto;
+    margin: auto 0;
+}
+.div-4 {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+@media (max-width: 991px) {
+    .div-4 {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+}
+.div-5 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    align-self: stretch;
+    flex-grow: 1;
+    margin: auto 0;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.div-6 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    align-self: stretch;
+    flex-grow: 1;
+    flex-basis: auto;
+    margin: auto 0;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.div-7 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    align-self: stretch;
+    flex-grow: 1;
+    flex-basis: auto;
+    margin: auto 0;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.div-8 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    justify-content: center;
+    border-radius: 12px;
+    background-color: #ffd2bf;
+    align-self: stretch;
+    color: #000;
+    padding: 20px 46px 9px;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+}
+@media (max-width: 991px) {
+    .div-8 {
+        padding: 0 20px;
+    }
+}
+.div-9 {
+    width: 100%;
+}
+@media (max-width: 991px) {
+    .div-9 {
+        max-width: 100%;
+    }
+}
+.div-10 {
+    gap: 20px;
+    display: flex;
+}
+@media (max-width: 991px) {
+    .div-10 {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0px;
+    }
+}
+.column {
+    display: flex;
+    flex-direction: column;
+    line-height: normal;
+    width: 25%;
+    margin-left: 0px;
+}
+@media (max-width: 991px) {
+    .column {
+        width: 100%;
+    }
+}
+.div-11 {
+    justify-content: center;
+    align-items: center;
+    background-color: #ded0b6;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    font-size: 48px;
+    color: #000;
+    font-weight: 400;
+    line-height: 100%;
+    width: 100%;
+    padding: 80px 25px;
+}
+@media (max-width: 991px) {
+    .div-11 {
+        font-size: 40px;
+        padding: 0 20px;
+    }
+}
+.div-12 {
+    font-featuresettings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    margin-top: 43px;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+@media (max-width: 991px) {
+    .div-12 {
+        margin-top: 40px;
+        font-size: 40px;
+    }
+}
+.div-13 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    align-self: stretch;
+    margin-top: 173px;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+@media (max-width: 991px) {
+    .div-13 {
+        margin-top: 40px;
+        font-size: 40px;
+    }
+}
+.div-14 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    margin-top: 158px;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+@media (max-width: 991px) {
+    .div-14 {
+        margin-top: 40px;
+        font-size: 40px;
+    }
+}
+.div-15 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    margin-top: 162px;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+@media (max-width: 991px) {
+    .div-15 {
+        margin-top: 40px;
+        font-size: 40px;
+    }
+}
+.column-2 {
+    display: flex;
+    flex-direction: column;
+    line-height: normal;
+    width: 75%;
+    margin-left: 20px;
+}
+@media (max-width: 991px) {
+    .column-2 {
+        width: 100%;
+    }
+}
+.div-16 {
+    background-color: #fff7f1;
+    display: flex;
+    margin-top: 4px;
+    flex-grow: 1;
+    gap: 20px;
+    font-weight: 400;
+    line-height: 100%;
+    width: 100%;
+    padding: 38px 51px 0 0;
+}
+@media (max-width: 991px) {
+    .div-16 {
+        max-width: 100%;
+        flex-wrap: wrap;
+    }
+}
+.div-17 {
+    display: flex;
+    flex-direction: column;
+    font-size: 48px;
+    color: #000;
+    white-space: nowrap;
+    flex-grow: 1;
+    flex-basis: 0;
+    width: fit-content;
+}
+@media (max-width: 991px) {
+    .div-17 {
+        max-width: 100%;
+        font-size: 40px;
+        white-space: initial;
+    }
+}
+.div-18 {
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    align-self: center;
+}
+@media (max-width: 991px) {
+    .div-18 {
+        font-size: 40px;
+    }
+}
+.div-19 {
+    background-color: #ffe176;
+    margin-top: 30px;
+    height: 785px;
+}
+@media (max-width: 991px) {
+    .div-19 {
+        max-width: 100%;
+    }
+}
+.div-20 {
+    disply: flex;
+    flex-direction: column;
+    fill: #1d1a1a;
+    overflow: hidden;
+    align-self: end;
+    position: relative;
+    display: flex;
+    aspect-ratio: 1;
+    margin-top: 686px;
+    width: 100px;
+    font-size: 20px;
+    color: #fff;
+    padding: 30px 31px;
+}
+@media (max-width: 991px) {
+    .div-20 {
+        margin-top: 40px;
+        padding: 0 20px;
+    }
+}
+.img {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+.img-2 {
+    aspect-ratio: 2.86;
+    object-fit: fill;
+    object-position: center;
+    width: 100%;
+    stroke-width: 2px;
+    stroke: #fff;
+    border-color: rgba(255, 255, 255, 1);
+    border-style: solid;
+    border-width: 2px;
+    align-self: center;
+}
+.div-21 {
+    position: relative;
+    font-feature-settings: "clig" off, "liga" off;
+    font-family: EB Garamond, sans-serif;
+    margin-top: 12px;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
