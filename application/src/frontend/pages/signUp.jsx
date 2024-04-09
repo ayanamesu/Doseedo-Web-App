@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import axios from 'axios';
 
 const SignUpPage = () => {
     const [fname, setFname] = useState("");
@@ -6,28 +7,35 @@ const SignUpPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confPassword, setConfPassword] = useState("");
-    
+
     function handleRegisterForm(event) {
         event.preventDefault();
         if (password !== confPassword) {
             console.log("passwords do not match!");
             return;
         }
+        
         let userData = {
-            fname: fname,
-            lname: lname,
+            first_name: fname,
+            last_name: lname,
             email: email,
             password: password
         }
-        fetch("http://localhost:8000/api/signup", {
-            method: "post",
-            headers: {
-                "Content-Type": "application/json" 
-            },
-            body: JSON.stringify(userData)
-        }).then(response => response.json()).then(data => {
-            console.log(data);
-        });
+
+        axios.post('http://localhost:8000/api/signup', userData)
+        .then(res => {
+            console.log(res.status);
+            if (res.status === 201) {
+                console.log("The account successfully made!");
+                // TODO: Frontend reroute to login page
+                
+            } else if (res.status === 200){
+                console.log("They already have an account");
+            } else {
+                console.log("Something weird happened...");
+            }
+        })
+        .catch(err => console.log(err));
         console.log("Button has been clicked!");
     }
 
