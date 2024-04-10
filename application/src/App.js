@@ -6,8 +6,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import SignUpPage from "./frontend/pages/signUp";
 import Dbtest2 from "./frontend/pages/dbtest2";
 import Dbtest from "./frontend/pages/dbtest";
+import SettingsPage from "./frontend/pages/settings";
 import Sidebar from "./frontend/Components/Sidebar";
-import settingsPage from "./frontend/pages/settings";
 
 const queryClient = new QueryClient({});
 
