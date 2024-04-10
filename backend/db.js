@@ -10,7 +10,7 @@ const pool = mysql.createPool({
         /* Make sure to comment this out when we move this to the server! */
         host: "localhost",
         user: "root",
-        database: "csc648db", // insert your db info here
+        database: "csc648newdb", // insert your db info here
         password: "Wing12345678L", //mysql password here
         port: "3306",
 });
