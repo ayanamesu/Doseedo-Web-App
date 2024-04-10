@@ -36,6 +36,7 @@ app.use(session({
 */
 
 // Login page
+// Issue: Cookies are created in Postman but not the browser :(/
 app.post('/api/login', async (req, res) => {
   let { email, password } = req.body;
   console.log("req.session.id: " + req.session.id);
