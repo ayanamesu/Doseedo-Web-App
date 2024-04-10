@@ -1,5 +1,8 @@
 import React from "react";
-import "./App.css";
+import { Navigate } from 'react-router-dom';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import "../App.css";
 const settingsPage = () => {
     const handleContactsClick = () => {
         // Handle contacts click
