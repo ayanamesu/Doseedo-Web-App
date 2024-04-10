@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
+
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     
+    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
 
     function handleLoginForm(event) {
         event.preventDefault();
