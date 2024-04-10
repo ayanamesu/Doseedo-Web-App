@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
+import { useCookies } from 'react-cookie';
 import axios from 'axios';
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
 
     function handleLoginForm(event) {
         event.preventDefault();
@@ -15,14 +18,26 @@ const LoginPage = () => {
         axios.post('http://localhost:8000/api/login', userData)
         .then(res => {
             console.log(res.status); 
-            //res = backend res.status(200).json(req.session); from the post
+            //res = backend res.status(200).json(req.session.id); from the post
             if (res.status === 200) {
                 console.log("User crendentials are good and a session is created in the db");
+
+                // This sets a cookie in the browser
+                /*
+                 * To see this:
+                 * 1) Make sure you have some log in data (if not make a account via the sign up)
+                 * 2) Go to the login page
+                 * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
+                 * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
+                */
+                setCookie("session_id", res.data, { sameSite: 'none'});
 
                 // TODO: Frontend - do whatever you gotta do with this information
 
             } else {
                 console.log("Something weird happened...");
+
+                // TODO: Frontend - do whatever for error handling
             }
         })
         .catch(err => console.log(err));

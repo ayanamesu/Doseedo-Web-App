@@ -6,7 +6,6 @@ const bodyParser = require('body-parser'); // parsing middleware - parses incomi
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-
 const db = require('./db');
 const bcrypt = require('bcrypt');
 
@@ -28,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(session({
   secret: 'doseedo',
   resave: false,
-  cookie: { expires: 60 * 60 *  24 * 360 }, //Cookie expiration - 60ms 60s 24h 360d
+  cookie: { maxAge: 60 * 60 *  24 * 360 }, //Cookie expiration - 60ms 60s 24h 360d
   saveUninitialized: false // generates log in system everytime you make a new session id, so make sure to set to false
 }));
 
@@ -40,25 +39,26 @@ app.use(session({
 // Issue: Cookies are created in Postman but not the browser :(/
 app.post('/api/login', async (req, res) => {
   let { email, password } = req.body;
-  let session_id = req.sessionID;
+  console.log("req.session.id: " + req.session.id);
 
   try {
     if (email && password) {
-      const user_id = await checkCredentials(email, password); //returns the user id
+      const user_id = await checkCredentials(email, password); // returns the user id
 
       // Credentials are good
       if (user_id !== false) {
-        const device = req.headers['user-agent']; //get's the login device
+        const device = req.headers['user-agent']; // gets the login device
         req.session.user_id = user_id; // sets the session user_id to whatever it got back from the database
-
+        
         res.cookie('user_id', user_id, { sameSite: 'none', secure: true, httpOnly: true}); // helps store the user_id in the cookie
-        const session_creation = await createSession(session_id, user_id, device); // stores session in our db
+
+        const session_creation = await createSession(req.session.id, user_id, device); // stores session in our db
 
         // if session creation was successful
         if (session_creation) {
-          //req.session will return the session information to the frontend
-          console.log(req.session)
-          res.status(200).json(req.session);
+          // req.session.id will return the session id to the frontend to create a cookie
+          // We can add to this if we like
+          res.status(200).json(req.session.id); 
         } else {
           res.status(500);
         }
@@ -72,22 +72,6 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
-
-// This was some test code, but idk how to do frontend things
-// // Making sure the user is logged in
-// app.get("/api/login", (req, res) => {
-//   console.log("API LOGIN")
-
-//   if (req.data.user_id) {
-//     console.log("WE IN THIS BITCH")
-//     console.log(req.data.user_id);
-//     console.log(req.session);
-
-//     res.send({ loggedIn: true, user: req.session.user_id });
-//   } else {
-//     res.send({ loggedIn: false });
-//   }
-// });
 
 // Sign Up Page
 app.post('/api/signup', async (req, res) => {
@@ -133,22 +117,6 @@ app.listen(port, () => {
 
 
 /* FUNCTIONS */
-
-// This was a test thing: 
-// Checks for cookie information
-// function validateCookie(req, res, next) {
-//   const { cookies } = req;
-//   if ('session_id' in cookies) {
-//     console.log('Session ID exists!');
-//     if (cookies.session_id === '123456') {
-//       next()
-//     } else {
-//       res.status(403).send({ msg: 'Not authenticated'});
-//     }
-//   } else {
-//     res.status(403).send({ msg: 'Not authenticated'});
-//   };
-// }
 
 // Checks for user login information
 async function checkCredentials(email, password) {
