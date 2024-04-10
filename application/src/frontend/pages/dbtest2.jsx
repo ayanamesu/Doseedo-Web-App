@@ -67,7 +67,7 @@ const Dbtest2 = () => {
                             </div>
                             <input type="text" placeholder="First name" id="firstname-input" name="firstName" onChange={e => setFname(e.target.value)}/>
                             <input type="text" placeholder="Last name" id="lastname-input" name="lastName" onChange={e => setLname(e.target.value)}/>
-                            <input type="text" placeholder="Email" id="email-input" name="email" onChange={e => setEmail(e.target.value)}/>
+                            <input type="email" placeholder="Email" id="email-input" name="email" onChange={e => setEmail(e.target.value)}/>
                             <input type="password" placeholder="Password" id="password-input" name="password" onChange={e => setPassword(e.target.value)}/>
                             {/*keeping this feild without a name since im assuming we would check if the passwords
                             match on the front-end*/}
