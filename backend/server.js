@@ -48,8 +48,6 @@ app.post('/api/login', async (req, res) => {
       if (user_id !== false) {
         const device = req.headers['user-agent']; // gets the login device
         req.session.user_id = user_id; // sets the session user_id to whatever it got back from the database
-        
-        res.cookie('user_id', user_id, { sameSite: 'none', secure: true, httpOnly: true}); // helps store the user_id in the cookie
 
         const session_creation = await createSession(req.session.id, user_id, device); // stores session in our db
 

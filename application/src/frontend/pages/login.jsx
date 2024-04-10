@@ -6,7 +6,7 @@ const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+    const [cookies, setCookie] = useCookies(['session_id']);
 
     function handleLoginForm(event) {
         event.preventDefault();
@@ -30,7 +30,7 @@ const LoginPage = () => {
                  * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
                  * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
                 */
-                setCookie("session_id", res.data, { sameSite: 'none'});
+                setCookie("session_id", res.data, { sameSite: 'lax'});
 
                 // TODO: Frontend - do whatever you gotta do with this information
 
