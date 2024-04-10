@@ -36,7 +36,6 @@ app.use(session({
 */
 
 // Login page
-// Issue: Cookies are created in Postman but not the browser :(/
 app.post('/api/login', async (req, res) => {
   let { email, password } = req.body;
   console.log("req.session.id: " + req.session.id);
@@ -93,7 +92,7 @@ app.post('/api/signup', async (req, res) => {
       console.log(hash_pwd);
 
       const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
-                       VALUES (?, ?, ?, ?)`;
+                        VALUES (?, ?, ?, ?)`;
       const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
       
       if (results && results.affectedRows == 1) {
@@ -267,4 +266,3 @@ function insert_test(db, req) {
   ]);
 }
  ... To here */
-
