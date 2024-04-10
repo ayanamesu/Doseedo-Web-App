@@ -1,27 +1,31 @@
 const express = require("express");
-var mysql = require("mysql2/promise");
-const cors = require("cors");
-
+const db = require('./db');
 const bodyParser = require('body-parser'); // parsing middleware - parses incoming request bodies
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 
-const db = require('./db');
+
 const bcrypt = require('bcrypt');
+
+const port = process.env.PORT || 8000;
+var mysql = require("mysql2/promise");
+const cors = require("cors");
 
 const app = express();
 app.use(express.json());
+app.use(bodyParser.json());
 
 // Configure CORS to allow requests from a specific origin
 const corsOptions = {
   origin: 'http://localhost:3006', // Whitelist the specific origin
-  methods: ["GET", "POST"],
-  credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true })); 
+/* Where our get/post routes will go 
+    Will need to change to /api/... when implementing to our server
+*/
 
 // Sessions
 app.use(session({
@@ -31,9 +35,11 @@ app.use(session({
   saveUninitialized: false // generates log in system everytime you make a new session id, so make sure to set to false
 }));
 
-/* ROUTES
-    Will need to change to /api/... when implementing to our server
-*/
+
+//Sample Get/Post Requests request
+app.get('/api', (req, res) => {
+  res.send('This is the server!');
+});
 
 // Login page
 // Issue: Cookies are created in Postman but not the browser :(/
@@ -49,6 +55,8 @@ app.post('/api/login', async (req, res) => {
       if (user_id !== false) {
         const device = req.headers['user-agent']; // gets the login device
         req.session.user_id = user_id; // sets the session user_id to whatever it got back from the database
+        
+        res.cookie('user_id', user_id, { sameSite: 'none', secure: true, httpOnly: true}); // helps store the user_id in the cookie
 
         const session_creation = await createSession(req.session.id, user_id, device); // stores session in our db
 
@@ -91,7 +99,7 @@ app.post('/api/signup', async (req, res) => {
       console.log(hash_pwd);
 
       const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
-                        VALUES (?, ?, ?, ?)`;
+                       VALUES (?, ?, ?, ?)`;
       const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
       
       if (results && results.affectedRows == 1) {
@@ -106,15 +114,68 @@ app.post('/api/signup', async (req, res) => {
   }
 });
 
-/* Where our app will listen from */
-const port = process.env.PORT || 8000;
+//dbtest page for select * from user
+app.get("/api/dbtest", async (req, res) => {
+  try {
+    const data = await select_user();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
 
+app.post("/api/dbtest2", async (req, res) => {
+  let { first_name, last_name, email, password } = req.body;
+  console.log(req.body);
+  try {
+    // Check if the user already has an account with that email
+    const account = await hasAccount(email);
+      // Has an account --> show that they already have an account and take them back to the home page for login
+    // If the user already has an account, redirect to the login page
+    if (account) {
+      console.log("User already has an account!");
+      res.json({"data": "True"});
+      return;
+    } else {
+      console.log("Creating new account...");
+      const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
+                       VALUES (?, ?, ?, ?)`;
+      const [results, feilds] =  await db.query(insertQuery, [first_name, last_name, email, password]);
+      if (results && results.affectedRows == 1) {
+        console.log("ACCOUNT SUCCESSFULLY CREATED");
+        res.json({"data": "False"});
+      } else {
+        console.log("Error has occured :(");
+        res.status(500).json({ "error": "Account creation failed" });
+      } 
+    }
+      // No account --> create the account 
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
+
+
+//searchtest to get data from mysql
+app.get("/api/searchtest", async (req, res) => {
+  console.log("/searchtest --> selectMedicine")
+  try {
+    const data = await select_medicine();
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: "An error occurred" });
+  }
+});
+
+
+/* Where our app will listen from */
 app.listen(port, () => {
   console.log(`Server is listening at http://${port}`);
 });
 
 
-/* FUNCTIONS */
+/* Where our functions are */
 
 // Checks for user login information
 async function checkCredentials(email, password) {
@@ -175,49 +236,9 @@ async function hasAccount(email) {
   }
 }
 
-
-/* Probs Delete from here... 
-//dbtest page for select * from user
-app.get("/dbtest", async (req, res) => {
-  // res.json({message: 'Hello from backend!'});
-  //  console.log(`testing db`);
-  // const test = JSON.stringify(selecttest(db));
-  // res.json(test);
-  // console.log(test);
-
-  try {
-    const data = await select_user();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
-
-app.post("/dbtest2", async (req, res) => {
-  console.log(req.body);
-  try {
-    const db = await connectToDB();
-    insert_test(db, req);
-    return res.send("fuck yes");
-  
-  } catch (error) {
-    return res.status(500).json({ error: "An error occurred" });
-  }
-});
-
-//searchtest to get data from mysql
-app.get("/searchtest", async (req, res) => {
-  console.log("/searchtest --> selectMedicine")
-  try {
-    const data = await select_medicine();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
-
 //post is safer
 //get see url database names and etc in url
+
 // Selects all columns from the user table
 async function select_user() {
   console.log("selecttest()");
@@ -246,22 +267,5 @@ async function select_medicine() {
   }
 }
 
-// Inserts a new user to the db
-function insert_test(db, req) {
-  console.log("Testing insert into db");
-  const reqBody = {
-    first_name: req.body.firstName,
-    last_name: req.body.lastName,
-    email: req.body.email,
-    password: req.body.password,
-  }; 
-  const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
-                       VALUES (?, ?, ?, ?)`;
-  db.query(insertQuery, [
-    reqBody.first_name,
-    reqBody.last_name,
-    reqBody.email,
-    reqBody.password,
-  ]);
-}
- ... To here */
+// -----------------------------------------------------------------------------------------------------------------------
+
