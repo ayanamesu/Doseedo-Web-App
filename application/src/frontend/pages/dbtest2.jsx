@@ -1,5 +1,6 @@
 import React, { useState} from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Dbtest2 = () => {
   const [fname, setFname] = useState("");
@@ -7,12 +8,23 @@ const Dbtest2 = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
+  let navigate = useNavigate();
+  //shows notification
+  const [showNotification, setShowNotification] = useState(false);
+  //sets the notification message based on if the account was created or not
+  const [notificationMessage, setNotificationMessage] = useState('');
+  const [notificationType, setNotificationType] = useState('');
+
 
   
   function handleRegisterForm(event) {
     event.preventDefault();
     if (password !== confPassword) {
         console.log("passwords do not match!");
+        setNotificationType('error');
+        setShowNotification(true);
+        setNotificationMessage("Passwords do not match😕");
+        setTimeout(() => setShowNotification(false), 4000);
         return;
     }
     let userData = {
@@ -26,9 +38,24 @@ const Dbtest2 = () => {
         .then(res => {
             console.log(res.data.data);
             if (res.data.data === "False") {
+                setNotificationType('success');
                 console.log("They account successfully made!")
+                setNotificationMessage("Account Creation was successful😀");
+                setShowNotification(true);
+                //this is only here so that it delays the redirect enough for the user to see the notification
+                //insted of using a library like redux that can display the notification on the next page
+                setTimeout(() => {
+                    setShowNotification(false);
+                    navigate('/about');
+                }, 200);
             } else {
                 console.log("They already have an account")
+                setNotificationType('error');
+                setShowNotification(true);
+                //this was to to test if the notification was showing up
+                console.log(showNotification);
+                setNotificationMessage("An Account is already associated with this email😕");
+                setTimeout(() => setShowNotification(false), 5000);
             }
         })
         .catch(err => console.log(err));
@@ -50,6 +77,7 @@ const Dbtest2 = () => {
 
     return (
         <div className="main-content">
+            {showNotification && <div className={`notification ${notificationType}`}>{notificationMessage}</div>}
             <div className="homepage-container">
                 <div className="home-content-left">
                     <h1 id="homepage-logo">Doseedo</h1>
