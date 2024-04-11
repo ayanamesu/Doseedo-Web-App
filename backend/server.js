@@ -168,6 +168,25 @@ app.get("/api/searchtest", async (req, res) => {
   }
 });
 
+// Sessions - return  [ session_id, user_id]
+// Postman Test - SUCCESS
+app.get("/api/session", async (req, res) => {
+  console.log("Seeing if user has an active session...");
+  // Assuming the frontend is sending a res of the session_id from cookie
+  try {
+    const query = "SELECT user_id, logout_time FROM session WHERE id = ?";
+    const [results, fields] = await db.query(query, [req.body.session_id]);
+
+    if (results && results.length == 1 && !results[0].logout_time) {
+      res.status(200).json({user_id: results[0].user_id, session_id: req.body.session_id});
+    } else {
+      res.status(401).json({ msg: "No session for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
 
 /* Where our app will listen from */
 app.listen(port, () => {
@@ -254,18 +273,17 @@ async function select_user() {
 
 // Selects all columns from the prescription table
 async function select_medicine() {
-  const db = await connectToDB();
   console.log("selectmedicine()");
   try {
     const query = "SELECT * FROM prescription;";
     const [result, fields] = await db.execute(query);
-    db.end();
     return result;
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
+
 
 // -----------------------------------------------------------------------------------------------------------------------
 
