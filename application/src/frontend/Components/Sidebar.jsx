@@ -23,6 +23,10 @@ function Sidebar() {
             ? <FontAwesomeIcon icon={faTimes} className="menu-icon" onClick={handleClick} />
             : <FontAwesomeIcon icon={faBars} className="menu-icon" onClick={handleClick} />
         }
+
+        {
+          // comment  change the name of the action to /search 
+        }
         <form className="search-bar" action="/dbtest" method="GET">
           <input type="text" placeholder="Search..." name="search" />
           <button type="submit">search</button>

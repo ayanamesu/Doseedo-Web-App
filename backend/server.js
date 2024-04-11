@@ -159,7 +159,7 @@ app.post("/api/dbtest2", async (req, res) => {
 
 
 //searchtest to get data from mysql
-app.get("/api/searchtest", async (req, res) => {
+app.get("/api/searchmedicine", async (req, res) => {
   console.log("/searchtest --> selectMedicine")
   try {
     const data = await select_medicine();
@@ -269,7 +269,27 @@ async function select_medicine() {
 }
 
 // -----------------------------------------------------------------------------------------------------------------------
+// Add medicine to the prescription table (Tested with postman and works with mysql database)
+app.post("/api/addmedicine", async (req, res) => {
+  let { user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
+  console.log(req.body);
+  try {
 
+    console.log("Adding medicine...");
+    const insertQuery = `INSERT INTO prescription (user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, 
+                          doctor_first_name, doctor_last_name, doctor_phone) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
+    if (results && results.affectedRows == 1) {
+      res.status(201).json({msg: "Medicine successfully added"});
+    } else {
+      res.status(500).json({ "error": "Medicine addition failed" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
 
 
 
