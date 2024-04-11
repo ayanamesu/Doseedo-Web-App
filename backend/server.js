@@ -188,6 +188,43 @@ app.get("/api/session", async (req, res) => {
   }
 });
 
+// Profile - return user information [ everything but password]
+app.get('/api/profile', async (req, res) => {
+  // Assuming the frontend is sending a res of the user_id
+  try {
+    const query = "SELECT first_name, last_name, email, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length == 1) {
+      res.status(200).json({data: results[0]});
+    } else {
+      res.status(401).json({ msg: ""});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+// TO DO: Profile Edit - When a user edits their basic information
+app.post('/api/profile/edit', async (req, res) => {
+  // Assuming the frontend is sending a res of the user_id
+
+  /*
+  * 1) Check for which information is being changed and store those values in an array - modified_columns
+  * 2) Map each column name to the format ${column} = ? - column_map
+  * 3) Write out the query
+  * 4) Put the values together in an array - values
+  * 5) db.query(query, values)
+  */
+  try {
+    
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
 /* Where our app will listen from */
 app.listen(port, () => {
   console.log(`Server is listening at http://${port}`);
