@@ -63,7 +63,7 @@ const Dbtest = () => {
           );
         })}
         {medicine?.map((item, index) => {
-          // return the JSX for each item here
+          // return the JSX for each item here 
           // this lists the mysql data from the Prescriptions table
           return (
             <div key={index}>
