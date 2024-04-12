@@ -189,6 +189,7 @@ app.get("/api/session", async (req, res) => {
 });
 
 // Profile - return user information [ everything but password]
+// Postman Test - SUCCESS
 app.get('/api/profile', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
   try {
@@ -206,19 +207,30 @@ app.get('/api/profile', async (req, res) => {
   }
 });
 
-// TO DO: Profile Edit - When a user edits their basic information
+// Profile Edit - When a user edits their basic information
+// Postman Test - SUCCESS
 app.post('/api/profile/edit', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
-
-  /*
-  * 1) Check for which information is being changed and store those values in an array - modified_columns
-  * 2) Map each column name to the format ${column} = ? - column_map
-  * 3) Write out the query
-  * 4) Put the values together in an array - values
-  * 5) db.query(query, values)
-  */
   try {
-    
+    const modified_columns = [];
+    const values = [];
+
+    Object.entries(req.body.values).forEach(([key, value]) => {
+      if (value !== null) {
+        modified_columns.push(key);
+        values.push(value);
+      }
+    });
+
+    const column_map = modified_columns.map((column, index) => `${column} = "${values[index]}"`).join(", ");
+    const query = `UPDATE user SET ${column_map} WHERE id = ?`;
+
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+    if (results && results.affectedRows === 1) {
+      res.status(200).json({ msg: "Update successful!"});
+    } else {
+      res.status(500).json({ msg: "Something went wrong when updating information"});
+    }
   } catch (error) {
     console.error(error);
     throw error;
@@ -227,9 +239,22 @@ app.post('/api/profile/edit', async (req, res) => {
 
 // Account Link - Show ever patient linked to user ID (caregiver)
 // Postman Test - SUCCESS
+// TODO: change this name later
 app.get('/api/accountLink', async (req, res) => {
-  console.log("Showing linked accounts!");
-  // Assuming the frontend is sending a res of the logged in user id 
+  // Assuming the frontend is sending a res of the logged in user id
+   try {
+    const query = "INSERT INTO accountlink (caregiver_id, patient_id) VALUES (?, ?)";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length == 1) {
+      res.status(200).json(results);
+    } else {
+      res.status(204).json({ msg: "No patients for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  } 
   try {
     const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
     const [results, fields] = await db.query(query, [req.body.user_id]);
@@ -245,9 +270,34 @@ app.get('/api/accountLink', async (req, res) => {
   }
 });
 
-// TODO: Account Link - Actually links the accounts
-app.get('/api/link', async (req, res) => {
-
+// Account Link - Actually links the accounts
+// Postman Test - SUCCESS
+app.post('/api/linkAccounts', async (req, res) => {
+// Assuming the frontend sends the logged in user id AND an email
+  try {
+    if (req.body.account_type === "caregiver") {
+      const insertQuery = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
+      const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
+      if (results && results.affectedRows == 1) {
+        res.status(201).json({ msg: "Link successful!"});
+      } else {
+        res.status(500).json({ msg: "Something went wrong when linking accounts"});
+      }
+    } else if (req.body.account_type === "patient") {
+      const insertQuery = "INSERT INTO account_link (patient_id, caregiver_id) SELECT ?, id FROM user WHERE email = ?;";
+      const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
+      if (results && results.affectedRows == 1) {
+        res.status(201).json({ msg: "Link successful!"});
+      } else {
+        res.status(500).json({ msg: "Something went wrong when linking accounts"});
+      }
+    } else {
+      res.status(500).json({ msg: "incorrect account_type given"});
+    }
+  } catch(err) {
+    console.error(error);
+    throw error;
+  }
 });
 
 /* Where our app will listen from */
