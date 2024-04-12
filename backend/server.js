@@ -78,7 +78,8 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
-
+//--------------------------------------------------------------------------------------------------------------------------------
+// WE DONT NEED THIS ANYMORE
 // Sign Up Page
 app.post('/api/signup', async (req, res) => {
   let { first_name, last_name, email, password } = req.body;
@@ -113,7 +114,7 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
-
+//--------------------------------------------------------------------------------------------------------------------------------
 //dbtest page for select * from user
 app.get("/api/dbtest", async (req, res) => {
   try {
@@ -123,8 +124,9 @@ app.get("/api/dbtest", async (req, res) => {
     res.status(500).json({ error: "An error occurred" });
   }
 });
-
-app.post("/api/dbtest2", async (req, res) => {
+//--------------------------------------------------------------------------------------------------------------------------------
+//HomePage Register 
+app.post("/api/Register", async (req, res) => {
   let { first_name, last_name, email, password } = req.body;
   console.log(req.body);
   try {
@@ -157,7 +159,7 @@ app.post("/api/dbtest2", async (req, res) => {
   }
 });
 
-
+//--------------------------------------------------------------------------------------------------------------------------------
 //searchmedicine to get data from mysql
 app.get("/api/searchmedicine", async (req, res) => {
   console.log("/searchtest --> selectMedicine")
@@ -177,7 +179,7 @@ app.listen(port, () => {
   console.log(`Server is listening at http://${port}`);
 });
 
-
+//--------------------------------------------------------------------------------------------------------------------------------
 /* Where our functions are */
 
 // Checks for user login information
@@ -203,7 +205,7 @@ async function checkCredentials(email, password) {
     throw error;
   }
 }
-
+//--------------------------------------------------------------------------------------------------------------------------------
 // Craetes a new session when a user logs in
 async function createSession(session_id, user_id, device) {
   console.log("Creating new session...");
@@ -221,7 +223,7 @@ async function createSession(session_id, user_id, device) {
     throw error;
   }
 }
-
+//--------------------------------------------------------------------------------------------------------------------------------
 // Checks if the user has an account
 async function hasAccount(email) {
   console.log("Checking if they have an account...");
@@ -239,9 +241,7 @@ async function hasAccount(email) {
   }
 }
 
-//post is safer
-//get see url database names and etc in url
-
+//--------------------------------------------------------------------------------------------------------------------------------
 // Selects all columns from the user table
 async function select_user() {
   console.log("selectuser()");
@@ -254,7 +254,7 @@ async function select_user() {
     throw error;
   }
 }
-
+//--------------------------------------------------------------------------------------------------------------------------------
 // Selects all columns from the prescription table
 async function select_medicine() {
   console.log("selectmedicine()");
