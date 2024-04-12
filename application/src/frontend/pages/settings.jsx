@@ -1,63 +1,109 @@
 import React from "react";
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+ 
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import "../App.css";
-const settingsPage = () => {
+const  SettingsPage = () => {
+    const navigate = useNavigate();
+ 
+const [RedirectToHome, setRedirectToHome] = React.useState(false);
+/*
+  React.useEffect(() => {
+    axios.get('http://localhost:8000/api/session')//session id and user id
+    .then((apiRes) => {
+        const sessionData = apiRes.data; // Assuming the session data is in apiRes.data
+    
+        if (checkSession(sessionData)) { //true then do nothing
+            // Session is active, do nothing
+        } else {
+            return <Navigate to="/" replace={true} />;//false redirerct to welcome page (login page)
+        }
+      console.log(apiRes);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+    const checkSession = (sessionData) => {//check the session id that browser have is on server (if user log off already session id should be removed)
+        const cookies = document.cookie.split(';').map(cookie => cookie.trim()); // Split cookies into an array
+        for (const cookie of cookies) {
+            const [name, value] = cookie.split('=');
+            if (name.trim() === 'sessionid' && value.trim() === sessionData.sessionid) {//check if apiRes.sessionid==cookie.session sessionId
+                return true; // Session is active
+            }
+        }
+        return false; // Session is not active
+    }
+
+}, []);
+*/
+const handleHomeClick = () => {
+    console.log("clicked");
+    navigate("/", { replace: true });
+};
     const handleContactsClick = () => {
-        // Handle contacts click
+           // return <Navigate to="/Contacts" replace={true} />;
     };
 
     const handleNotificationsClick = () => {
-        // Handle notifications click
+         // return <Navigate to="/Notifications" replace={true} />;
     };
-
     const handleAboutUsClick = () => {
-        // Handle about us click
+        navigate("/about", { replace: true });
+ 
     };
 
+   
     const handleSignOutClick = () => {
-        // Handle sign out click
+        /*
+        // Handle sign out
+        const sessionData = { sessionid: document.cookie.sessionid };
+        axios.post('http://localhost:8000/api/logout',sessionData)//userData contains session id 
+        .then((response) => {
+            console.log(response.data); // Assuming the response contains user data
+            // Update the state or perform any other necessary actions after sign out
+            setRedirectToHome(true); // Set state to redirect
+        })
+        .catch((error) => {
+            console.error(error);
+            // Handle errors if needed
+        });
+        */
     };
 
+//
     const handleGeneralClick = () => {
-        // Handle general click
+         // return <Navigate to="/General" replace={true} />;
     };
 
     const handleAccountSettingsClick = () => {
-        // Handle account settings click
+       // return <Navigate to="/AccountSettings" replace={true} />;
     };
 
     const handleAccessibilityClick = () => {
-        // Handle accessibility click
+      // return <Navigate to="/Accessibility" replace={true} />;
     };
 
     const handleLanguageClick = () => {
-        // Handle language click
+       // return <Navigate to="/Language" replace={true} />;
     };
 
     const handleBackClick = () => {
-        // Handle back click
+        window.history.go(-1);
     };
-
+    if (RedirectToHome) {
+        return    navigate("/", { replace: true });
+      }
     return (
         <>
             <div className="div">
-                <div className="div-2">
-                    <div className="div-3">Doseedo</div>
+            <div className="div-2">
+                    <div className="div-3"><button className="div-5" onClick={handleHomeClick}>Doseedo</button></div>
                     <div className="div-4">
-                        <button className="div-5" onClick={handleContactsClick}>
-                            Contacts
-                        </button>
-                        <button className="div-6" onClick={handleNotificationsClick}>
-                            Notifications
-                        </button>
-                        <button className="div-7" onClick={handleAboutUsClick}>
-                            About Us
-                        </button>
-                        <button className="div-8" onClick={handleSignOutClick}>
-                            Sign Out
-                        </button>
+                        <button className="div-5" onClick={handleContactsClick}>Contacts</button>
+                        <button className="div-6" onClick={handleNotificationsClick}>Notifications</button>
+                        <button className="div-7" onClick={handleAboutUsClick}>About Us</button>
+                        <button className="div-8" onClick={ handleSignOutClick}>Sign Out</button>
                     </div>
                 </div>
                 <div className="div-9">
@@ -99,4 +145,4 @@ const settingsPage = () => {
         </>
     );
 }
-export default settingsPage;
+export default SettingsPage;

@@ -15,19 +15,27 @@ function Sidebar() {
     showSidebar();
     setIconClicked(!iconClicked);
   };
+
+  const renderSearchbar=()=>{
+if(window.location.pathname === "/"){
+  return (
+    <div className="navbar">
+    {
+      iconClicked
+        ? <FontAwesomeIcon icon={faTimes} className="menu-icon" onClick={handleClick} />
+        : <FontAwesomeIcon icon={faBars} className="menu-icon" onClick={handleClick} />
+    }
+    <form className="search-bar" action="/dbtest" method="GET">
+      <input type="text" placeholder="Search..." name="search" />
+      <button type="submit">search</button>
+    </form>
+  </div>)
+
+}
+    
+  }
   return (
     <div>
-      <div className="navbar">
-        {
-          iconClicked
-            ? <FontAwesomeIcon icon={faTimes} className="menu-icon" onClick={handleClick} />
-            : <FontAwesomeIcon icon={faBars} className="menu-icon" onClick={handleClick} />
-        }
-        <form className="search-bar" action="/dbtest" method="GET">
-          <input type="text" placeholder="Search..." name="search" />
-          <button type="submit">search</button>
-        </form>
-      </div>
       <nav className={sidebar ? "sidebar active" : "sidebar"}>
         <ul className="sidebarList">
         {SidebarData.map((item, index) => (
