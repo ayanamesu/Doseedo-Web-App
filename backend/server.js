@@ -64,7 +64,7 @@ app.post('/api/login', async (req, res) => {
         if (session_creation) {
           // req.session.id will return the session id to the frontend to create a cookie
           // We can add to this if we like
-          res.status(200).json(req.session.id); 
+          res.status(200).json({session_id: req.session.id, user_id: user_id}); 
         } else {
           res.status(500);
         }
@@ -223,6 +223,31 @@ app.post('/api/profile/edit', async (req, res) => {
     console.error(error);
     throw error;
   }
+});
+
+// Account Link - Show ever patient linked to user ID (caregiver)
+// Postman Test - SUCCESS
+app.get('/api/accountLink', async (req, res) => {
+  console.log("Showing linked accounts!");
+  // Assuming the frontend is sending a res of the logged in user id 
+  try {
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length == 1) {
+      res.status(200).json(results);
+    } else {
+      res.status(204).json({ msg: "No patients for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+// TODO: Account Link - Actually links the accounts
+app.get('/api/link', async (req, res) => {
+
 });
 
 /* Where our app will listen from */
