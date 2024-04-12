@@ -8,7 +8,7 @@ import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 function Sidebar() {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
-
+  
   const [iconClicked, setIconClicked] = useState(false);
 
   const handleClick = () => {
@@ -17,6 +17,7 @@ function Sidebar() {
   };
 
   const renderSearchbar=()=>{
+   
 if(window.location.pathname === "/"){
   return (
     <div className="navbar">
@@ -35,7 +36,9 @@ if(window.location.pathname === "/"){
     
   }
   return (
+    
     <div>
+      {renderSearchbar()}
       <nav className={sidebar ? "sidebar active" : "sidebar"}>
         <ul className="sidebarList">
         {SidebarData.map((item, index) => (
