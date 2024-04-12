@@ -23,14 +23,14 @@ function Sidebar() {
             ? <FontAwesomeIcon icon={faTimes} className="menu-icon" onClick={handleClick} />
             : <FontAwesomeIcon icon={faBars} className="menu-icon" onClick={handleClick} />
         }
-
-        {
-          // comment  change the name of the action to /search 
-        }
+        <h1 id="homepage-logo">Doseedo</h1>
         <form className="search-bar" action="/dbtest" method="GET">
           <input type="text" placeholder="Search..." name="search" />
           <button type="submit">search</button>
         </form>
+        <Link to="/Contacts" id="Contacts">Contacts</Link>
+        <Link to="/Notifications" id="Notifications">Notifications</Link>
+        <Link to="/about" id="AboutUsPage">About Us</Link>
       </div>
       <nav className={sidebar ? "sidebar active" : "sidebar"}>
         <ul className="sidebarList">

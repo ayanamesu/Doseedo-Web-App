@@ -93,6 +93,7 @@
     color: maroon;
     height: 30px;
     margin-right: 10px;
+    padding-left: 10px;
 }
 
 .row #title {
@@ -424,7 +425,7 @@
     }
 }
 .div-12 {
-    font-featuresettings: "clig" off, "liga" off;
+    font-feature-settings: "clig" off, "liga" off;
     font-family: EB Garamond, sans-serif;
     margin-top: 43px;
     background: none;
@@ -559,7 +560,7 @@
     }
 }
 .div-20 {
-    disply: flex;
+    display: flex;
     flex-direction: column;
     fill: #1d1a1a;
     overflow: hidden;

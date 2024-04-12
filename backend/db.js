@@ -11,8 +11,8 @@ const pool = mysql.createPool({
         // WING DB
         host: "localhost",
         user: "root",
-        database: "csc648newdb", // insert your db info here
-        password: "Wing12345678L", //mysql password here
+        database: "doseedodb", // insert your db info here
+        password: "pass", //mysql password here
         port: "3306",
 
         // ALEIA DB

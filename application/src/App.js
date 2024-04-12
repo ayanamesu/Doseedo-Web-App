@@ -22,7 +22,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <div>
-            <Sidebar />
+          <Sidebar />
 
             {/*All routes must go here in App.js*/}
             <Routes>
