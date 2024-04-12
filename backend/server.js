@@ -164,7 +164,7 @@ app.post("/api/Register", async (req, res) => {
 app.get("/api/searchmedicine", async (req, res) => {
   console.log("/searchtest --> selectMedicine")
   try {
-    const data = await select_medicine();
+    const data = await search_medicine();
     //this console.log is to see the data in the terminal
     console.log(data);
     res.json(data);
@@ -256,8 +256,8 @@ async function select_user() {
 }
 //--------------------------------------------------------------------------------------------------------------------------------
 // Selects all columns from the prescription table
-async function select_medicine() {
-  console.log("selectmedicine()");
+async function search_medicine() {
+  console.log("searchmedicine()");
   try {
     const query = "SELECT * FROM prescription;";
     const [result, fields] = await db.execute(query);
@@ -291,6 +291,42 @@ app.post("/api/addmedicine", async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
+// -----------------------------------------------------------------------------------------------------------------------
+// delete medicine in the prescription table (Tested with postman and works with mysql database)
+app.post("/api/deletemedicine", async (req, res) => {
+  const { id } = req.body;
+  try {
+    console.log("Deleting medicine...");
+    const deleteQuery = "DELETE FROM prescription WHERE id = ?";
+    const [results, fields] = await db.query(deleteQuery, [id]);
+    if (results && results.affectedRows == 1) {
+      res.status(200).json({msg: "Medicine successfully deleted"});
+    } else {
+      res.status(404).json({ "error": "Medicine not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
 
-
+//--------------------------------------------------------------------------------------------------------------------------------
+// View medicine in the prescription table (Tested with postman and works with mysql database)
+app.get("/api/viewmedicine", async (req, res) => {
+  let { user_id } = req.body;
+  console.log(req.body);
+  try {
+    console.log("Viewing medicine...");
+    const selectQuery = `SELECT * FROM prescription WHERE user_id = ?`;
+    const [results, fields] =  await db.query(selectQuery, [user_id]);
+    if (results && results.length > 0) {
+      res.status(200).json(results);
+    } else {
+      res.status(404).json({ "error": "No medicine found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
 
