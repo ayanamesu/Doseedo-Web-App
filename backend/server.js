@@ -158,11 +158,13 @@ app.post("/api/dbtest2", async (req, res) => {
 });
 
 
-//searchtest to get data from mysql
+//searchmedicine to get data from mysql
 app.get("/api/searchmedicine", async (req, res) => {
   console.log("/searchtest --> selectMedicine")
   try {
     const data = await select_medicine();
+    //this console.log is to see the data in the terminal
+    console.log(data);
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
@@ -242,7 +244,7 @@ async function hasAccount(email) {
 
 // Selects all columns from the user table
 async function select_user() {
-  console.log("selecttest()");
+  console.log("selectuser()");
   try {
     const query = "SELECT * FROM User;";
     const [result, fields] = await db.query(query);
@@ -255,12 +257,11 @@ async function select_user() {
 
 // Selects all columns from the prescription table
 async function select_medicine() {
-  const db = await connectToDB();
   console.log("selectmedicine()");
   try {
     const query = "SELECT * FROM prescription;";
     const [result, fields] = await db.execute(query);
-    db.end();
+    // console.log(result);
     return result;
   } catch (error) {
     console.error(error);
@@ -290,6 +291,3 @@ app.post("/api/addmedicine", async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
-
-
-

@@ -42,6 +42,8 @@ const Dbtest2 = () => {
             setCookie("session_id", res.data, { sameSite: 'lax'});
 
             // TODO: Frontend - do whatever you gotta do with this information
+            // change this to the dashboard page
+            navigate('/about');
 
         } else {
             console.log("Something weird happened...");
@@ -73,8 +75,8 @@ const Dbtest2 = () => {
    
     axios.post('http://localhost:8000/api/dbtest2', userData)
         .then(res => {
-            console.log(res.data.data);
-            if (res.data.data === "False") {
+            console.log(res.status);
+            if (res.status === 201) {
                 setNotificationType('success');
                 console.log("They account successfully made!")
                 setNotificationMessage("Account Creation was successful😀");
@@ -83,15 +85,21 @@ const Dbtest2 = () => {
                 //insted of using a library like redux that can display the notification on the next page
                 setTimeout(() => {
                     setShowNotification(false);
-                    navigate('/about');
+                    navigate('/dbtest2');
                 }, 200);
-            } else {
+            } else if( res.status === 200){
                 console.log("They already have an account")
                 setNotificationType('error');
                 setShowNotification(true);
                 //this was to to test if the notification was showing up
                 console.log(showNotification);
                 setNotificationMessage("An Account is already associated with this email😕");
+                setTimeout(() => setShowNotification(false), 5000);
+            } else {
+                console.log("Something weird happened...");
+                setNotificationType('error');
+                setShowNotification(true);
+                setNotificationMessage("An error occured😕");
                 setTimeout(() => setShowNotification(false), 5000);
             }
         })
