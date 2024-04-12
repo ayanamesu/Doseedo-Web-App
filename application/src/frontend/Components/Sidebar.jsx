@@ -8,26 +8,37 @@ import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 function Sidebar() {
   const [sidebar, setSidebar] = useState(false);
   const showSidebar = () => setSidebar(!sidebar);
-
+  
   const [iconClicked, setIconClicked] = useState(false);
 
   const handleClick = () => {
     showSidebar();
     setIconClicked(!iconClicked);
   };
+
+  const renderSearchbar=()=>{
+   
+if(window.location.pathname === "/"){
   return (
+    <div className="navbar">
+    {
+      iconClicked
+        ? <FontAwesomeIcon icon={faTimes} className="menu-icon" onClick={handleClick} />
+        : <FontAwesomeIcon icon={faBars} className="menu-icon" onClick={handleClick} />
+    }
+    <form className="search-bar" action="/dbtest" method="GET">
+      <input type="text" placeholder="Search..." name="search" />
+      <button type="submit">search</button>
+    </form>
+  </div>)
+
+}
+    
+  }
+  return (
+    
     <div>
-      <div className="navbar">
-        {
-          iconClicked
-            ? <FontAwesomeIcon icon={faTimes} className="menu-icon" onClick={handleClick} />
-            : <FontAwesomeIcon icon={faBars} className="menu-icon" onClick={handleClick} />
-        }
-        <form className="search-bar" action="/dbtest" method="GET">
-          <input type="text" placeholder="Search..." name="search" />
-          <button type="submit">search</button>
-        </form>
-      </div>
+      {renderSearchbar()}
       <nav className={sidebar ? "sidebar active" : "sidebar"}>
         <ul className="sidebarList">
         {SidebarData.map((item, index) => (

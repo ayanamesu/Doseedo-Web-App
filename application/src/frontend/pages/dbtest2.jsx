@@ -1,6 +1,7 @@
 import React, { useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 const Dbtest2 = () => {
   const [fname, setFname] = useState("");
@@ -14,8 +15,44 @@ const Dbtest2 = () => {
   //sets the notification message based on if the account was created or not
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
+  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
 
+  function handleLoginForm(event) {
+    event.preventDefault();
+    let userData = {
+        email: email,
+        password: password
+    }
 
+    axios.post('http://localhost:8000/api/login', userData)
+    .then(res => {
+        console.log(res.status); 
+        //res = backend res.status(200).json(req.session.id); from the post
+        if (res.status === 200) {
+            console.log("User crendentials are good and a session is created in the db");
+
+            // This sets a cookie in the browser
+            /*
+             * To see this:
+             * 1) Make sure you have some log in data (if not make a account via the sign up)
+             * 2) Go to the login page
+             * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
+             * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
+            */
+            setCookie("session_id", res.data, { sameSite: 'lax'});
+
+            // TODO: Frontend - do whatever you gotta do with this information
+
+        } else {
+            console.log("Something weird happened...");
+
+            // TODO: Frontend - do whatever for error handling
+        }
+    })
+    .catch(err => console.log(err));
+
+    console.log("Button has been clicked!");
+}
   
   function handleRegisterForm(event) {
     event.preventDefault();
@@ -106,15 +143,15 @@ const Dbtest2 = () => {
                             */}
                         </form>
                     ) : (
-                        <form className="homepage-form" action="/login" method="POST">
+                        <form className="homepage-form" action="/login" method="POST" onSubmit={handleLoginForm}>
                             <h2>Login</h2>
                             <div className="btn-field">
                                 <button type="button" onClick={(event) => {handleFormSwitch(); handleButtonClick(event);}}>Register</button>
                                 <button type="button" >Login</button>
                             </div>
                             <div className="login-input">
-                                <input type="text" placeholder="Email" id="email-input" name="email"/>
-                                <input type="password" placeholder="Password" id="password-input" name="password"/>
+                                <input type="text" placeholder="Email" id="email-input" name="email" onChange={e => setEmail(e.target.value)}/>
+                                <input type="password" placeholder="Password" id="password-input" name="password" onChange={e => setPassword(e.target.value)}/>
                                 <button type="submit" id="submit">submit</button>
                             </div>
                         </form>

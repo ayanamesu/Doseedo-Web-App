@@ -134,22 +134,23 @@ app.post("/api/dbtest2", async (req, res) => {
     // If the user already has an account, redirect to the login page
     if (account) {
       console.log("User already has an account!");
-      res.json({"data": "True"});
+      res.status(200).json({msg: "User already has an account!"});
       return;
     } else {
       console.log("Creating new account...");
+      // hash the password before storing it on the database
+      const hash_pwd = await bcrypt.hash(password, 10);
+      console.log(hash_pwd);
       const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
                        VALUES (?, ?, ?, ?)`;
-      const [results, feilds] =  await db.query(insertQuery, [first_name, last_name, email, password]);
+      const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
+
       if (results && results.affectedRows == 1) {
-        console.log("ACCOUNT SUCCESSFULLY CREATED");
-        res.json({"data": "False"});
+        res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
       } else {
-        console.log("Error has occured :(");
         res.status(500).json({ "error": "Account creation failed" });
       } 
     }
-      // No account --> create the account 
   } catch (error) {
     console.error(error);
     res.status(500).json({ "error": "Internal server error" });
@@ -412,4 +413,7 @@ async function select_medicine() {
 
 
 // -----------------------------------------------------------------------------------------------------------------------
+
+
+
 

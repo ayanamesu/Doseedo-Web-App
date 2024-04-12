@@ -20,6 +20,11 @@ const medications = [
 ];
 
 function RxListPage() {
+      /*
+ sessionID
+   //
+ //function check if sessionID is correct
+*/
     return (
         <>
             <div className="app-container">
