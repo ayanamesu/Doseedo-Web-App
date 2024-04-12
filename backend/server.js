@@ -64,7 +64,7 @@ app.post('/api/login', async (req, res) => {
         if (session_creation) {
           // req.session.id will return the session id to the frontend to create a cookie
           // We can add to this if we like
-          res.status(200).json(req.session.id); 
+          res.status(200).json({session_id: req.session.id, user_id: user_id}); 
         } else {
           res.status(500);
         }
@@ -173,6 +173,87 @@ app.get("/api/searchmedicine", async (req, res) => {
   }
 });
 
+// Sessions - return  [ session_id, user_id]
+// Postman Test - SUCCESS
+app.get("/api/session", async (req, res) => {
+  console.log("Seeing if user has an active session...");
+  // Assuming the frontend is sending a res of the session_id from cookie
+  try {
+    const query = "SELECT user_id, logout_time FROM session WHERE id = ?";
+    const [results, fields] = await db.query(query, [req.body.session_id]);
+
+    if (results && results.length == 1 && !results[0].logout_time) {
+      res.status(200).json({user_id: results[0].user_id, session_id: req.body.session_id});
+    } else {
+      res.status(401).json({ msg: "No session for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+// Profile - return user information [ everything but password]
+app.get('/api/profile', async (req, res) => {
+  // Assuming the frontend is sending a res of the user_id
+  try {
+    const query = "SELECT first_name, last_name, email, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length == 1) {
+      res.status(200).json({data: results[0]});
+    } else {
+      res.status(401).json({ msg: ""});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+// TO DO: Profile Edit - When a user edits their basic information
+app.post('/api/profile/edit', async (req, res) => {
+  // Assuming the frontend is sending a res of the user_id
+
+  /*
+  * 1) Check for which information is being changed and store those values in an array - modified_columns
+  * 2) Map each column name to the format ${column} = ? - column_map
+  * 3) Write out the query
+  * 4) Put the values together in an array - values
+  * 5) db.query(query, values)
+  */
+  try {
+    
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+// Account Link - Show ever patient linked to user ID (caregiver)
+// Postman Test - SUCCESS
+app.get('/api/accountLink', async (req, res) => {
+  console.log("Showing linked accounts!");
+  // Assuming the frontend is sending a res of the logged in user id 
+  try {
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length == 1) {
+      res.status(200).json(results);
+    } else {
+      res.status(204).json({ msg: "No patients for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
+// TODO: Account Link - Actually links the accounts
+app.get('/api/link', async (req, res) => {
+
+});
 
 /* Where our app will listen from */
 app.listen(port, () => {
@@ -269,6 +350,29 @@ async function search_medicine() {
   }
 }
 
+
+// -----------------------------------------------------------------------------------------------------------------------
+// Add medicine to the prescription table (Tested with postman and works with mysql database)
+app.post("/api/addmedicine", async (req, res) => {
+  let { user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
+  console.log(req.body);
+  try {
+
+    console.log("Adding medicine...");
+    const insertQuery = `INSERT INTO prescription (user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, 
+                          doctor_first_name, doctor_last_name, doctor_phone) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
+    if (results && results.affectedRows == 1) {
+      res.status(201).json({msg: "Medicine successfully added"});
+    } else {
+      res.status(500).json({ "error": "Medicine addition failed" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
 // -----------------------------------------------------------------------------------------------------------------------
 // Add medicine to the prescription table (Tested with postman and works with mysql database)
 app.post("/api/addmedicine", async (req, res) => {
