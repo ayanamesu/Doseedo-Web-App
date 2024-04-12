@@ -270,31 +270,45 @@ app.get('/api/accountLink', async (req, res) => {
   }
 });
 
-// Account Link - Actually links the accounts
-// Postman Test - SUCCESS
+// Account Link - Links the accounts
+// Postman Test - PARTIAL SUCCESS
+// TODO: Make sure to add the other way arround for account (ex/ caregiver gets put in but not the patient)
 app.post('/api/linkAccounts', async (req, res) => {
 // Assuming the frontend sends the logged in user id AND an email
   try {
     if (req.body.account_type === "caregiver") {
-      const insertQuery = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
-      const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
+      var q1 = false;
+      const insertQuery1 = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
+      const [results, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
       if (results && results.affectedRows == 1) {
+        q1 = true;
+      }
+      const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
+      const [results2, fields2] = await db.query(insertQuery2, [req.body.user_id]);
+      if (results2 && results2.affectedRows == 1 && q1) {
         res.status(201).json({ msg: "Link successful!"});
       } else {
         res.status(500).json({ msg: "Something went wrong when linking accounts"});
       }
     } else if (req.body.account_type === "patient") {
+      var q1 = false;
       const insertQuery = "INSERT INTO account_link (patient_id, caregiver_id) SELECT ?, id FROM user WHERE email = ?;";
       const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
       if (results && results.affectedRows == 1) {
+        q1 = true;
+      }
+      const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
+      const [results2, fields2] = await db.query(insertQuery2, [req.body.user_id]);
+      if (results2 && results2.affectedRows == 1 && q1) {
         res.status(201).json({ msg: "Link successful!"});
       } else {
         res.status(500).json({ msg: "Something went wrong when linking accounts"});
       }
+
     } else {
-      res.status(500).json({ msg: "incorrect account_type given"});
+      res.status(500).json({ msg: "Incorrect account_type given"});
     }
-  } catch(err) {
+  } catch(error) {
     console.error(error);
     throw error;
   }
