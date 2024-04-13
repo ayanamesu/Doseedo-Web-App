@@ -336,7 +336,7 @@ app.post("/api/logout", async (req, res) => {
   const { session_id } = req.body;
   try {
     console.log("Logging out...");
-    const updateQuery = "UPDATE session SET logout_time = NOW() WHERE session_id = ?";
+    const updateQuery = "UPDATE session SET logout_time = NOW() WHERE id = ?";
     const [results, fields] = await db.query(updateQuery, [session_id]);
     if (results && results.affectedRows == 1) {
       res.status(200).json({msg: "Logout successful"});
