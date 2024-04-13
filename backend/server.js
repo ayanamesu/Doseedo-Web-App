@@ -462,3 +462,21 @@ app.get("/api/viewmedicine", async (req, res) => {
   }
 });
 
+//--------------------------------------------------------------------------------------------------------------------------------
+// logout api
+app.post("/api/logout", async (req, res) => {
+  const { session_id } = req.body;
+  try {
+    console.log("Logging out...");
+    const updateQuery = "UPDATE session SET logout_time = NOW() WHERE id = ?";
+    const [results, fields] = await db.query(updateQuery, [session_id]);
+    if (results && results.affectedRows == 1) {
+      res.status(200).json({msg: "Logout successful"});
+    } else {
+      res.status(404).json({ "error": "Session not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
