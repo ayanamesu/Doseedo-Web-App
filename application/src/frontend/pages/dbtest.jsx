@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+
+//change the name of the file to search.jsx
 const Dbtest = () => {
   const [backendData, setBackendData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -14,6 +16,8 @@ const Dbtest = () => {
       
     };
     console.log("endpoint");
+
+  // this axios post is for testing search bar for particular values (such as users or medicine)
   axios.post('http://localhost:8000/api/dbtest', data)
   .then(response => { console.log(response.data);
   })
@@ -28,7 +32,9 @@ const Dbtest = () => {
     if (searchParam) {
       console.log(searchParam);
     }
-  
+
+
+  // this one is for searching users
     axios
       // .get("http://ec2-3-139-83-222.us-east-2.compute.amazonaws.com/api/dbtest")
       .get("http://localhost:8000/api/dbtest")
@@ -44,9 +50,11 @@ const Dbtest = () => {
         console.error("Error fetching data from the backend:", error);
       });
   
+
+  // this one is for searching medicine
     axios
       // .get("http://ec2-3-139-83-222.us-east-2.compute.amazonaws.com/api/searchtest") 
-      .get("http://localhost:8000/api/searchtest") //dummy url to get data from backend mysql
+      .get("http://localhost:8000/api/searchmedicine") //dummy url to get data from backend mysql
       .then((response) => {
         setMedicine(response.data.filter((item) =>
         item.med_name.toLowerCase().includes(searchParam.toLowerCase()), //returns whole item but only compares one column

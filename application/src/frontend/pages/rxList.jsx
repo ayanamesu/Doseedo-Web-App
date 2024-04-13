@@ -21,7 +21,7 @@ const medications = [
 
 function RxListPage() {
     return (
-        <>
+        <div className="main-content">
             <div className="app-container">
                 <header className="header">
                     <div className="logo">Doseedo</div>
@@ -78,7 +78,7 @@ function RxListPage() {
                     </div>
                 </main>
             </div>
-        </>
+        </div>
     );
 }
 export default RxListPage;
