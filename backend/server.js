@@ -247,19 +247,6 @@ app.post('/api/profile/edit', async (req, res) => {
 // TODO: change this name later
 app.get('/api/accountLink', async (req, res) => {
   // Assuming the frontend is sending a res of the logged in user id
-   try {
-    const query = "INSERT INTO accountlink (caregiver_id, patient_id) VALUES (?, ?)";
-    const [results, fields] = await db.query(query, [req.body.user_id]);
-
-    if (results && results.length == 1) {
-      res.status(200).json(results);
-    } else {
-      res.status(204).json({ msg: "No patients for this user"});
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  } 
   try {
     const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
     const [results, fields] = await db.query(query, [req.body.user_id]);

@@ -27,6 +27,8 @@ function RxListPage() {
     });
     useEffect(() => {
         // Fetch medications data from API and set it to the state
+
+        //What is this api is it to view medicine?
         axios.get('http://localhost:8000/api/Medication_list')
             .then(response => {
                 setMedications(response.data);//list
@@ -123,7 +125,7 @@ const handleAddMedicationClick = (medication) => {
     setShowAddMed(true);
 
     setShowMedsforTheDay(false);
-    axios.post('http://localhost:8000/api/AddMedication_list', medication)
+    axios.post('http://localhost:8000/api/addmedicine', medication)
         .then(response => {
             setMedications(response.data);
     
@@ -135,7 +137,7 @@ const handleAddMedicationClick = (medication) => {
 };
 
 const handleDeleteMedicationClick = (medicationId) => {
-    axios.post('http://localhost:8000/api/DeleteMedication_list', { id: medicationId })
+    axios.post('http://localhost:8000/api/deletemedicine', { id: medicationId })
         .then(response => {
             setMedications(response.data);
     
