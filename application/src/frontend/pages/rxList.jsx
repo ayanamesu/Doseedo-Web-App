@@ -29,7 +29,7 @@ function RxListPage() {
         // Fetch medications data from API and set it to the state
 
         //What is this api is it to view medicine?
-        axios.get('http://localhost:8000/api/Medication_list')
+        axios.get('http://localhost:8000/api/viewmedicine')
             .then(response => {
                 setMedications(response.data);//list
       
