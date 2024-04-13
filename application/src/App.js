@@ -8,6 +8,8 @@ import Dbtest2 from "./frontend/pages/dbtest2";
 import Dbtest from "./frontend/pages/dbtest";
 import SettingsPage from "./frontend/pages/settings";
 import Sidebar from "./frontend/Components/Sidebar";
+import Topbar from "./frontend/Components/topbar";
+import UseSessionCheck from './frontend/Components/UseSessionCheck';
 import RxListPage from "./frontend/pages/rxList";
 import CalendarPage from "./frontend/pages/calendar";
 import PatientProfilePage from "./frontend/pages/profile";
@@ -18,12 +20,13 @@ const queryClient = new QueryClient({});
 
 
 function App() {
+
   return (
       <QueryClientProvider client={queryClient}>
         <Router>
           <div>
-          <Sidebar />
-
+            <Sidebar />
+            <Topbar />
             {/*All routes must go here in App.js*/}
             <Routes>
               <Route path="/" element={<HomePage />} />

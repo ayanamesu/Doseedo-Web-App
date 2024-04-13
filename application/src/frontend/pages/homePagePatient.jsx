@@ -6,6 +6,14 @@ import { useEffect, useState } from 'react';
 import "../App.css";
 
 function PatientHomePage() {
+      /*
+ sessionID
+   
+ //function check if sessionID is correct
+*/
+
+
+
     return (
         <>
             <div className="div">
