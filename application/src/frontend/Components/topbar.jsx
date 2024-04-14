@@ -7,7 +7,7 @@ function Topbar() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     const [isSessionActive] = UseSessionCheck();
     const handleHomeClick = () => {
-        navigate("/home", { replace: true }); // Programmatically navigate to "/"
+        navigate("/dashboard", { replace: true }); // Programmatically navigate to "/"
     };
 
     const NavigateToContacts = () => {

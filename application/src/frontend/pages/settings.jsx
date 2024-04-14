@@ -8,14 +8,14 @@ import { useEffect } from 'react';
 const SettingsPage = () => {
     const navigate = useNavigate();
     const [isSessionActive] = UseSessionCheck();
-    const [linkEmail, setLinkEmail] = useState("");
-    const [userId, setUserId] = useState("");
+    const [email, setLinkEmail] = useState("");
+    const [user_id, setUserId] = useState("");
     const [userName, setUserName] = useState("");
     const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/api/isAccountLinked',{ params: { userId} })
+        axios.get('http://localhost:8000/api/accountLink',{ params: { user_id} })
             .then((apiRes) => {
                 const accountLinked = apiRes.data;
                 if (accountLinked) {
@@ -44,8 +44,9 @@ const SettingsPage = () => {
     };
 
     const handleAccountPairClick = () => {
-    
-        axios.get('http://localhost:8000/api/account_link', { params: { linkEmail, userId, accountType } })
+        console.log("User ID: " + user_id);
+        console.log("Email: " + email);
+        axios.get('http://localhost:8000/api/linkAccounts', { params: { user_id, email } })
             .then((apiRes) => {
                 const accountLink = apiRes.data;
                 setUserName=apiRes.data.userName;
@@ -58,6 +59,7 @@ const SettingsPage = () => {
             })
             .catch((error) => {
                 console.error(error);
+                alert(error);
             });
     };
 
@@ -67,9 +69,9 @@ const SettingsPage = () => {
                 <div className="account-linked">
                     
                 <p>Linked Account Infomation</p><br></br>
-                <p>User ID: {userId}</p>
+                <p>User ID: {user_id}</p>
                 <p>User Name: {userName}</p>
-                <p>Email: {linkEmail}</p>
+                <p>Email: {email}</p>
                 <p>Account Type: {accountType}</p>
                 
             </div>
@@ -79,11 +81,11 @@ const SettingsPage = () => {
                 <div>
                     <div>
                         <label>Email:</label>
-                        <input type="text" value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} />
+                        <input type="text" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
                     </div>
                     <div>
                         <label>User ID:</label>
-                        <input type="text" value={userId} onChange={(e) => setUserId(e.target.value)} />
+                        <input type="text" value={user_id} onChange={(e) => setUserId(e.target.value)} />
                     </div>
                     <div>
                         <label>Account Type:</label>
@@ -208,11 +210,11 @@ const SettingsPage = () => {
                     <button onClick={handleLanguageClick}>Language</button>
                 </div>
             </div>
-            <form className="account-link-form" action="" method="POST">
+            <form className="account-link-form" onSubmit={handleAccountPairClick}>
                 <h2>Account Link</h2>
                 <p>Link accounts</p>
-                <input type="text" placeholder="Email" id="email-input" name="email" value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} />
-                <div id="account-type-input">
+                <input type="text" placeholder="Email" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
+                {/* <div id="account-type-input">
                     <label>
                         <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
                         Caregiver
@@ -221,7 +223,8 @@ const SettingsPage = () => {
                         <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
                         Patient
                     </label>
-                </div>
+                </div> */}
+                <input type="text" placeholder="User ID" id="user-id-input" name="user_id" value={user_id} onChange={(e) => setUserId(e.target.value)} />
                 <button className="button" type="submit" id="accountLinkSubmit">submit</button>
             </form>
             <h2>Linked Accounts:</h2>
