@@ -2,12 +2,12 @@
 import React from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import UseSessionCheck from '../Components/UseSessionCheck';
+ 
 import "../App.css";
 
 function DashBoard() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
-    const [isSessionActive] = UseSessionCheck();
+ 
    
 const handleCalendarClick = () => {
     navigate("/calendar", { replace: true });  

@@ -11,13 +11,6 @@ const pool = mysql.createPool({
         // WING DB
         // host: "localhost",
         // user: "root",
-        // database: "doseedodb", // insert your db info here
-        // password: "pass", //mysql password here
-        // port: "3306",
-
-        // ALEIA DB
-        // host: "localhost",
-        // user: "root",
         // database: "csc648newdb", // insert your db info here
         // password: "Wing12345678L", //mysql password here
         // port: "3306",
@@ -28,6 +21,13 @@ const pool = mysql.createPool({
         database: "doseedodb", // insert your db info here
         password: "pass", //mysql password here
         port: "3306",
+        
+        //Yuto DB
+        // host: "localhost",
+        // user: "root",
+        // database: "doseedodb", // insert your db info here
+        // password: "password", //mysql password here
+        // port: "3306",
 });
 
 const promisePool = pool.promise();
