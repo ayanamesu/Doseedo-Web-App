@@ -20,6 +20,7 @@ const HomePage = () => {
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
   const sessionUserId = UseSessionCheck();
+
   useEffect(() => {
     if (sessionUserId[0] === "") {
         navigate('/');
