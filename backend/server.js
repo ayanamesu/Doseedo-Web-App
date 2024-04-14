@@ -246,7 +246,7 @@ app.post('/api/profile/edit', async (req, res) => {
 // Account Link - Show ever patient linked to user ID (caregiver)
 // Postman Test - SUCCESS
 // TODO: change this name later
-app.get('/api/accountLink', async (req, res) => {
+app.post('/api/accountLink', async (req, res) => {
   // Assuming the frontend is sending a res of the logged in user id
   try {
     const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";

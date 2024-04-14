@@ -9,13 +9,12 @@ const SettingsPage = () => {
     const navigate = useNavigate();
     const [email, setLinkEmail] = useState("");
     const [user_id, setUserId] = useState("");
-    const [userName, setUserName] = useState("");
     const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
 
     const sessionUserId = useSessionCheck();
 
-    // only run when page is loaded
+    // TODO: only run when page is loaded
     useEffect(() => {
         console.log("In the use effect");
         if (sessionUserId === "") {
@@ -27,19 +26,19 @@ const SettingsPage = () => {
         }
     }, [sessionUserId, navigate]);
 
-    // useEffect(() => {
-    //     axios.get('http://localhost:8000/api/isAccountLinked',{ params: { user_id: user_id } })
-    //         .then((apiRes) => {
-    //             console.log('PEEPEE');
-    //             const accountLinked = apiRes.data;
-    //             if (accountLinked) {
-    //                 setAccountLink(true);
-    //             }
-    //         })
-    //         .catch((error) => {
-    //             console.error(error);
-    //         });
-    // });
+    // from yakbranch
+    useEffect(() => {
+        axios.post('http://localhost:8000/api/accountLink',{ user_id: user_id })
+            .then((apiRes) => {
+                const accountLinked = apiRes.data;
+                if (accountLinked) {
+                    setAccountLink(true);
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    });
 
     const handleGeneralClick = () => {
         navigate("/settings/General", { replace: true }); 
@@ -57,24 +56,24 @@ const SettingsPage = () => {
         navigate("/settings/Language", { replace: true }); 
     };
 
+    // from yakbranch
     const handleAccountPairClick = () => {
         console.log("User ID: " + user_id);
         console.log("Email: " + email);
-        // axios.get('http://localhost:8000/api/linkAccounts', { params: { user_id, email } })
-        //     .then((apiRes) => {
-        //         const accountLink = apiRes.data;
-        //         setUserName=apiRes.data.userName;
-        //         if (accountLink) {
-        //             setAccountLink(true);
-        //             alert("Account linked successfully!");
-        //         } else {
-        //             alert("Invalid input");
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         console.error(error);
+        axios.post('http://localhost:8000/api/linkAccounts', { user_id: user_id, email: email, accountType: accountType })
+            .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
+                const accountLink = apiRes.status; 
+                if (accountLink === 200) {
+                    setAccountLink(true);
+                    alert("Account linked successfully!");
+                } else {
+                    alert("Invalid input");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
                 alert(error);
-        //     });
+            });
     };
 
     const renderAccountLink = () => {
