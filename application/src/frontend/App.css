@@ -4,6 +4,7 @@
     --sidebar-background-color:#DED0B6;
     --accent-colors: #DED0B6;
     --site-background-color: #FFF7F1;
+    background-color: var(--site-background-color);
   }
 .main-content {
     padding-top: 75px;
@@ -1156,3 +1157,67 @@
 
 // insert the css here
 */
+/*---------------------------    Dashboard Page    -------------------------------------- */
+.Dashboard-Body{
+  background-color: var(--site-background-color);
+}
+
+.Dashboard-Date {
+  display: flex;
+  font-style: italic;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+}
+
+.Dashboard-Container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Dashboard-Button-row {
+  display: flex;
+  justify-content: center;
+  gap: 100px;
+  margin-bottom: 20px;
+}
+@media (max-width: 800px) {
+  .Dashboard-Button-row {
+    flex-direction: column;
+  }
+}
+.Dashboard-Button-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.Dashboard-Button {
+  color: var(--navbar-background-color);
+  padding: 30px;
+  border-radius: 100%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 150px;
+  width: 150px;
+}
+.Dashboard-Button-text{
+  font-size: 20px;
+  font-weight: bold;
+  font-style: italic;
+  margin: 0px;
+}
+
+.Dashboard-Button:hover {
+  background-color: var(--navbar-background-color);
+  color: white;
+}
+

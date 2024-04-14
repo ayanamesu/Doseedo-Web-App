@@ -43,7 +43,7 @@ const HomePage = () => {
 
             // TODO: Frontend - do whatever you gotta do with this information
             // change this to the dashboard page
-            navigate('/about');
+            navigate('/dashboard');
 
         } else {
             console.log("Something weird happened...");
