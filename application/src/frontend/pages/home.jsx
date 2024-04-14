@@ -20,9 +20,11 @@ const HomePage = () => {
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
   const sessionUserId = UseSessionCheck();
+
   useEffect(() => {
-    if (sessionUserId === "") {
-        navigate('/');
+    console.log(sessionUserId);
+    if (sessionUserId[0] == "") {
+    
     } else {
         navigate('/dashboard');
         setUserId(sessionUserId);
@@ -52,7 +54,7 @@ const HomePage = () => {
              * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
              * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
             */
-            setCookie("session_id", res.data, { sameSite: 'lax'});
+            setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
             alert("Successfuly logged In!");
             // TODO: Frontend - do whatever you gotta do with this information
             // change this to the dashboard page
