@@ -176,8 +176,6 @@ app.get("/api/searchmedicine", async (req, res) => {
 // Sessions - return  [ session_id, user_id]
 // Postman Test - SUCCESS
 app.post("/api/session", async (req, res) => {
-  console.log("Seeing if user has an active session...");
-  console.log(req.body);
   // Assuming the frontend is sending a res of the session_id from cookie
   try {
     const query = "SELECT user_id, logout_time FROM session WHERE id = ?";
@@ -196,14 +194,15 @@ app.post("/api/session", async (req, res) => {
 
 // Profile - return user information [ everything but password]
 // Postman Test - SUCCESS
-app.get('/api/profile', async (req, res) => {
+app.post('/api/profile', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
+  console.log("api/profile");
   try {
     const query = "SELECT first_name, last_name, email, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length == 1) {
-      res.status(200).json({data: results[0]});
+      res.status(200).json(results[0]);
     } else {
       res.status(401).json({ msg: ""});
     }
@@ -267,8 +266,10 @@ app.post('/api/accountLink', async (req, res) => {
 // Postman Test - SUCCESS
 app.post('/api/linkAccounts', async (req, res) => {
   // Assuming the frontend sends the logged in user id AND an email
+  console.log("Linking accounts")
+  console.log(req.body); 
     try {
-      if (req.body.account_type === "caregiver") {
+      if (req.body.account_type === "Caregiver") {
         const insertQuery1 = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
         const [results, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
         if (results && results.affectedRows == 1) {
@@ -276,7 +277,7 @@ app.post('/api/linkAccounts', async (req, res) => {
         } else {
           res.status(500).json({ msg: "Something went wrong when linking accounts"});
         }
-      } else if (req.body.account_type === "patient") {
+      } else if (req.body.account_type === "Patient") {
         const insertQuery = "INSERT INTO account_link (patient_id, caregiver_id) SELECT ?, id FROM user WHERE email = ?;";
         const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
         if (results && results.affectedRows == 1) {

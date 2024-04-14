@@ -1067,10 +1067,77 @@
 */
 
 /*---------------------------    Patient Profile Page    --------------------------------- */
-/*
+.profile-title{
+  font-weight: bold;
+  font-style: italic;
+  display: grid;
+  justify-content: center;
+}
 
-// insert the css here
- */
+.profile-body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.profile-container {
+  display: flex;
+  justify-content: space-between;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  gap:80px;
+  background-color: white;
+}
+
+.profile-container .profile-pic {
+  background-color: lightyellow;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 100px;
+  height: 100px;
+  padding: 25px; 
+  border-radius: 50%;
+  border: 2px solid black;
+}
+
+.profile-container #profile-email {
+  font-size: 20px;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.profile-container #profile-name {
+  font-size: 15px;
+}
+
+.profile-buttons button {
+  width: 30px;
+  height: 30px; 
+  margin-right: 5px; 
+  margin-left: 5px;
+  border-radius: 100%;
+  border: 1px solid black;
+}
+
+.profile-content{
+  display: flex;
+  justify-content: center;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: white;
+}
+.detail-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px;
+}
+
 
 /*---------------------------    Patient Home Page    ------------------------------------ */
 /*

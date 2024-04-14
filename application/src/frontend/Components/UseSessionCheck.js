@@ -19,7 +19,6 @@ const useSessionCheck = () => {
         }
         axios.post('http://localhost:8000/api/session', data)
             .then((apiRes) => {
-                console.log("status:"+apiRes.status);
                 if (apiRes.status == 200) {
                     const user_id = apiRes.data.user_id;
                     setUserId(user_id);

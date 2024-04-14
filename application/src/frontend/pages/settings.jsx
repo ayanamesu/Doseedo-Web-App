@@ -8,24 +8,22 @@ import { useEffect } from 'react';
 const SettingsPage = () => {
     const navigate = useNavigate();
     const [email, setLinkEmail] = useState("");
-    const [user_id, setUserId] = useState("");
+    const [userId, setUserId] = useState("");
     const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
 
     const sessionUserId = useSessionCheck();
 
-    // TODO: only run when page is loaded
-    useEffect(() => {
-        if (sessionUserId === "") {
-            navigate('/');
-        } else {
-            setUserId(sessionUserId);
-        }
-    }, []);
-
     // from yakbranch
     useEffect(() => {
-        axios.post('http://localhost:8000/api/accountLink',{ user_id: user_id })
+        if (sessionUserId === "") {
+            alert("No session found! Please relog in")
+            navigate('/');
+        } else {
+            setUserId(sessionUserId[0]);
+        }
+
+        axios.post('http://localhost:8000/api/accountLink',{ user_id: userId })
             .then((apiRes) => {
                 const accountLinked = apiRes.data;
                 if (accountLinked) {
@@ -54,16 +52,20 @@ const SettingsPage = () => {
     };
 
     // from yakbranch
-    const handleAccountPairClick = () => {
-        console.log("User ID: " + user_id);
-        console.log("Email: " + email);
-        console.log("Account_type: " + accountType);
-        axios.post('http://localhost:8000/api/linkAccounts', { user_id: user_id, email: email, account_type: accountType })
+    function handleAccountPairClick(event) {
+        event.preventDefault();
+        let data = {
+            user_id: userId, 
+            email: email, 
+            account_type: accountType
+        }
+        axios.post('http://localhost:8000/api/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
-                if (accountLink === 200) {
+                if (accountLink === 201) {
                     setAccountLink(true);
                     alert("Account linked successfully!");
+                    navigate('/');
                 } else {
                     alert("Invalid input");
                 }
@@ -109,56 +111,81 @@ const SettingsPage = () => {
         window.history.go(-1);
     };
 
-    const dummyAccountLinkData = [
-        {
-            user_id: 1,
-            email: 'YakAttack@gmail.com',
-            name: 'Yak Attack',
-            account_type: 'patient'
-        },
-        {
-            user_id: 2,
-            email: 'Aleia420@gmail.com',
-            name: 'Viper Main',
-            account_type: 'patient'
-        },
-        {
-            user_id: 3,
-            email: 'Ayana@gmail.com',
-            name: 'Wing Lee',
-            account_type: 'patient'
-        },
-        {
-            user_id: 4,
-            email: 'OnikaBurgers@gmail.com',
-            name: 'Carlos Minaj',
-            account_type: 'patient'
-        },
-        {
-            user_id: 5,
-            email: 'YutoTypeBeat@gmail.com',
-            name: 'Yuto nator',
-            account_type: 'patient'
-        },
-        {
-            user_id: 6,
-            email: 'Paige@gmail.com',
-            name: 'Paige turn',
-            account_type: 'patient'
-        }
-    ];
+    // const dummyAccountLinkData = [
+    //     {
+    //         user_id: 1,
+    //         email: 'YakAttack@gmail.com',
+    //         name: 'Yak Attack',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 2,
+    //         email: 'Aleia420@gmail.com',
+    //         name: 'Viper Main',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 3,
+    //         email: 'Ayana@gmail.com',
+    //         name: 'Wing Lee',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 4,
+    //         email: 'OnikaBurgers@gmail.com',
+    //         name: 'Carlos Minaj',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 5,
+    //         email: 'YutoTypeBeat@gmail.com',
+    //         name: 'Yuto nator',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 6,
+    //         email: 'Paige@gmail.com',
+    //         name: 'Paige turn',
+    //         account_type: 'patient'
+    //     }
+    // ];
 
+    // This is now returning the correct data from the backend api
+    // TODO: FRONTEND DESIGN - Displaying some stuff~
     const displayAccountLinkData = () => {
-        return dummyAccountLinkData.map((accountLink, index) => {
-            return (
-                <div key={index} className="account">
-                    <h3>{accountLink.name}</h3>
-                    <p>{accountLink.account_type}</p>
-                    <p>{accountLink.email}</p>
-                    <button>Unlink</button>
-                </div>
-            );
+        //axios post needs to be updated instead of dummy data
+        let data = {
+            user_id: userId
+        }
+        axios.post('http://localhost:8000/api/accountLink', data)
+        .then((apiRes) => { 
+            console.log(apiRes.data) 
+            // You can do apiRes.data.<almost any column from the user table>
+            if (apiRes.status == 200) {
+                console.log("Showing the patients here")
+            } else if (apiRes.status == 204) {
+                console.log("There are no paients for this user")
+            } else {
+                console.log("Something went wrong with the backend...")
+            }
+
+        })
+        .catch((error) => {
+            console.error(error);
+            alert(error);
         });
+
+        // return dummyAccountLinkData.map((accountLink, index) => {
+            return (
+                // <div key={index} className="account">
+                //     <h3>{accountLink.name}</h3>
+                //     <p>{accountLink.account_type}</p>
+                //     <p>{accountLink.email}</p>
+                //     <button>Unlink</button>
+                // </div>
+                <div> peepee </div>
+            );
+        // });
     };
       
     return (
@@ -215,7 +242,7 @@ const SettingsPage = () => {
                     <button onClick={handleLanguageClick}>Language</button>
                 </div>
                 </div>
-            <form className="account-link-form" action="" method="POST">
+            <form className="account-link-form" onSubmit={handleAccountPairClick}>
                 <h2>Account Link</h2>
                 <p>Link accounts</p>
                 <input type="text" placeholder="Email" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
