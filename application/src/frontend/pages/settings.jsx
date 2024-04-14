@@ -8,24 +8,22 @@ import { useEffect } from 'react';
 const SettingsPage = () => {
     const navigate = useNavigate();
     const [email, setLinkEmail] = useState("");
-    const [user_id, setUserId] = useState("");
+    const [userId, setUserId] = useState("");
     const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
 
     const sessionUserId = useSessionCheck();
 
-    // TODO: only run when page is loaded
-    useEffect(() => {
-        if (sessionUserId === "") {
-            navigate('/');
-        } else {
-            setUserId(sessionUserId);
-        }
-    }, []);
-
     // from yakbranch
     useEffect(() => {
-        axios.post('http://localhost:8000/api/accountLink',{ user_id: user_id })
+        if (sessionUserId === "") {
+            alert("No session found! Please relog in")
+            navigate('/');
+        } else {
+            setUserId(sessionUserId[0]);
+        }
+
+        axios.post('http://localhost:8000/api/accountLink',{ user_id: userId })
             .then((apiRes) => {
                 const accountLinked = apiRes.data;
                 if (accountLinked) {
@@ -54,16 +52,20 @@ const SettingsPage = () => {
     };
 
     // from yakbranch
-    const handleAccountPairClick = () => {
-        console.log("User ID: " + user_id);
-        console.log("Email: " + email);
-        console.log("Account_type: " + accountType);
-        axios.post('http://localhost:8000/api/linkAccounts', { user_id: user_id, email: email, account_type: accountType })
+    function handleAccountPairClick(event) {
+        event.preventDefault();
+        let data = {
+            user_id: userId, 
+            email: email, 
+            account_type: accountType
+        }
+        axios.post('http://localhost:8000/api/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
-                if (accountLink === 200) {
+                if (accountLink === 201) {
                     setAccountLink(true);
                     alert("Account linked successfully!");
+                    navigate('/');
                 } else {
                     alert("Invalid input");
                 }
@@ -149,6 +151,7 @@ const SettingsPage = () => {
     ];
 
     const displayAccountLinkData = () => {
+        //axios post needs to be updated instead of dummy data
         return dummyAccountLinkData.map((accountLink, index) => {
             return (
                 <div key={index} className="account">
@@ -215,7 +218,7 @@ const SettingsPage = () => {
                     <button onClick={handleLanguageClick}>Language</button>
                 </div>
                 </div>
-            <form className="account-link-form" action="" method="POST">
+            <form className="account-link-form" onSubmit={handleAccountPairClick}>
                 <h2>Account Link</h2>
                 <p>Link accounts</p>
                 <input type="text" placeholder="Email" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />

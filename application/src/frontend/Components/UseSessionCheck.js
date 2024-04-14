@@ -15,7 +15,6 @@ const useSessionCheck = () => {
     useEffect(() => {
         axios.post('http://localhost:8000/api/session', data)
             .then((apiRes) => {
-                console.log(apiRes.status);
                 if (apiRes.status == 200) {
                     const user_id = apiRes.data.user_id;
                     setUserId(user_id);
@@ -26,7 +25,7 @@ const useSessionCheck = () => {
             .catch((error) => {
                 console.error(error);
             });
-    }, [navigate]);
+    }, []);
 
     return [userId]; // Return user_id if active session or null if active session
 }
