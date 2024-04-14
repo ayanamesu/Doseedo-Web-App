@@ -1,10 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import useSessionCheck from '../Components/UseSessionCheck';
+// import useSessionCheck from '../Components/UseSessionCheck';
 import axios from 'axios';
 import "../App.css";
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
+
+// Previously had via github commit e462e7b (the pervious change to this)
+// import UseSessionCheck from '../Components/UseSessionCheck';
 
 const SettingsPage = () => {
     const navigate = useNavigate();
@@ -13,10 +16,27 @@ const SettingsPage = () => {
     const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
 
+    // Previously had via github commit e462e7b (the pervious change to this)
+    // const [isSessionActive] = UseSessionCheck();
+
     // const sessionUserId = useSessionCheck();
     
     // from yakbranch
     useEffect(() => {
+        
+        // Previously had via github commit e462e7b (the pervious change to this)
+        // axios.get('http://localhost:8000/api/isAccountLinked',{ params: { userId} })
+        //     .then((apiRes) => {
+        //         const accountLinked = apiRes.data;
+        //         if (accountLinked) {
+        //             setAccountLink(true);
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error(error);
+        //     });
+
+
         // if (sessionUserId === "") {
         //     alert("No session found! Please relog in")
         //     navigate('/');
@@ -61,6 +81,23 @@ const SettingsPage = () => {
 
     // from yakbranch
     function handleAccountPairClick(event) {
+
+        // Previously had via github commit e462e7b (the pervious change to this)
+        // axios.get('http://localhost:8000/api/account_link', { params: { linkEmail, userId, accountType } })
+        //     .then((apiRes) => {
+        //         const accountLink = apiRes.data;
+        //         setUserName=apiRes.data.userName;
+        //         if (accountLink) {
+        //             setAccountLink(true);
+        //             alert("Account linked successfully!");
+        //         } else {
+        //             alert("Invalid input");
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error(error);
+        //     });
+
         event.preventDefault();
         let data = {
             user_id: userId, 
@@ -73,7 +110,7 @@ const SettingsPage = () => {
                 if (accountLink === 201) {
                     setAccountLink(true);
                     alert("Account linked successfully!");
-                    navigate('/');
+                    // navigate('/');
                 } else {
                     alert("Invalid input");
                 }
@@ -172,7 +209,7 @@ const SettingsPage = () => {
             if (apiRes.status == 200) {
                 console.log("Showing the patients here")
             } else if (apiRes.status == 204) {
-                console.log("There are no paients for this user")
+                console.log("There are no linked accounts for this user")
             } else {
                 console.log("Something went wrong with the backend...")
             }

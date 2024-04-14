@@ -8,6 +8,22 @@ import Cookies from 'js-cookie';
 
 
 function RxListPage() {
+    //Previously Had:
+    // const [medications, setMedications] = useState([]);
+    // const [selectedMedicationId, setSelectedMedicationId] = useState(0);
+    // const [showMedList, setShowMedList] = useState(true); // Define state variables
+    // const [showMedsforTheDay, setShowMedsforTheDay] = useState(false);
+    // const [showAddMed, setShowAddMed] = useState(false);
+    // const [newMedication, setNewMedication] = useState({
+    //     med_name: "",
+    //     dosage: "",
+    //     descrpiton: "",
+    //     start_date: "",
+    //     end_date: "",
+    //     doctor_first_name: "",
+    //     doctor_last_name: ""
+    // });
+
     const [user_id, setUserId] = useState("");
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
@@ -22,6 +38,7 @@ function RxListPage() {
     // const sessionUserId = useSessionCheck();
 
     useEffect(() => {
+        
         // if (sessionUserId === "") {
         //     alert("No session found! Please relog in")
         //     navigate('/');
@@ -37,16 +54,67 @@ function RxListPage() {
             navigate('/');
         }
 
+        // Previously had:
+        // axios.get('http://localhost:8000/api/viewmedicine')
+        // .then(response => {
+        //     setMedications(response.data);//list
+        // })
+        // .catch(error => {
+        //     console.error('Error fetching medications:', error);
+
+        // });    
+
         axios.get('http://localhost:8000/api/viewmedicine', { params: { user_id: user_id } })
             .then(response => {
                 setMedName(response.data);//list
-      
             })
             .catch(error => {
                 console.error('Error fetching medications:', error);
-      
             });
+
+             // Previously Had: 
+    //     const dummyData = [
+    //         {
+    //             id: 1,
+    //             med_name: "Medication 1",
+    //             dosage: "10mg",
+    //             descrpiton: "Description 1",
+    //             start_date: "2022-01-01",
+    //             end_date: "2022-01-30",
+    //             doctor_first_name: "John",
+    //             doctor_last_name: "Doe"
+    //         },
+    //         {
+    //             id: 2,
+    //             med_name: "Medication 2",
+    //             dosage: "20mg",
+    //             descrpiton: "Description 2",
+    //             start_date: "2022-02-01",
+    //             end_date: "2022-02-28",
+    //             doctor_first_name: "Jane",
+    //             doctor_last_name: "Smith"
+    //         },
+    //         {
+    //             id: 3,
+    //             med_name: "Medication 3",
+    //             dosage: "30mg",
+    //             descrpiton: "Description 3",
+    //             start_date: "2022-03-01",
+    //             end_date: "2022-03-31",
+    //             doctor_first_name: "Michael",
+    //             doctor_last_name: "Johnson"
+    //         }
+    //     ];
+
+    //     // Simulate loading delay
+    //     setTimeout(() => {
+    //         setMedications(dummyData);
+    //     }, 1000); // Delay for 1 second
+    // }, []);
+
+
         }, []);
+
         function handleAddMedication(event) {
             event.preventDefault();
             let userData = {
@@ -59,7 +127,7 @@ function RxListPage() {
                 doctor_first_name: doctorFirstName,
                 doctor_last_name: doctorLastName,
                 doctor_phone: doctorPhone
-        }
+            }
             
         axios.post('http://localhost:8000/api/addmedicine', userData)
             .then(response => {
@@ -81,6 +149,73 @@ function RxListPage() {
                 });
         };
         return (
+
+            //previously had via github commit 6ba29d9
+            // <div>
+            //     <h2>Add Medication</h2>
+            //     <form onSubmit={handleAddMedication}>
+            //         <div>
+            //             <label>Medication Name:</label>
+            //             <input
+            //                 type="text"
+            //                 value={newMedication.med_name}
+            //                 onChange={(e) => setNewMedication({ ...newMedication, med_name: e.target.value })}
+            //             />
+            //         </div>
+            //         <div>
+            //             <label>Dosage:</label>
+            //             <input
+            //                 type="text"
+            //                 value={newMedication.dosage}
+            //                 onChange={(e) => setNewMedication({ ...newMedication, dosage: e.target.value })}
+            //             />
+            //         </div>
+            //         <div>
+            //             <label>Description:</label>
+            //             <input
+            //                 type="text"
+            //                 value={newMedication.descrpiton}
+            //                 onChange={(e) => setNewMedication({ ...newMedication, descrpiton: e.target.value })}
+            //             />
+            //         </div>
+            //         <div>
+            //             <label>Start Date:</label>
+            //             <input
+            //                 type="text"
+            //                 value={newMedication.start_date}
+            //                 onChange={(e) => setNewMedication({ ...newMedication, start_date: e.target.value })}
+            //             />
+            //         </div>
+            //         <div>
+            //             <label>End Date:</label>
+            //             <input
+            //                 type="text"
+            //                 value={newMedication.end_date}
+            //                 onChange={(e) => setNewMedication({ ...newMedication, end_date: e.target.value })}
+            //             />
+            //         </div>
+            //         <div>
+            //             <label>Doctor First Name:</label>
+            //             <input
+            //                 type="text"
+            //                 value={newMedication.doctor_first_name}
+            //                 onChange={(e) => setNewMedication({ ...newMedication, doctor_first_name: e.target.value })}
+            //             />
+            //         </div>
+            //         <div>
+            //             <label>Doctor Last Name:</label>
+            //             <input
+            //                 type="text"
+            //                 value={newMedication.doctor_last_name}
+            //                 onChange={(e) => setNewMedication({ ...newMedication, doctor_last_name: e.target.value })}
+            //             />
+            //         </div>
+            //         {/* SetAddMed(false) */}
+            //         <button type="button" onClick={() => setShowMedList(true)}>Cancel</button>
+            //         <button type="submit">Add Medication</button>
+            //     </form>
+            // </div>
+
             <div className="app-container">
                 <main className="main-content">
                     <form className ="rx-list" onSubmit={handleAddMedication}>
@@ -95,11 +230,7 @@ function RxListPage() {
                         <input type="text" placeholder="Doctor's Last Name" id="doctorLastName-input" name="doctorLastName" onChange={e => setDoctorLastName(e.target.value)}/>
                         <input type="text" placeholder="Doctor's Phone" id="doctorPhone-input" name="doctorPhone" onChange={e => setDoctorPhone(e.target.value)}/>
                         <button type="submit" id="submit">submit</button>
-                    
-                    
-                    </form>
-                                
-                           
+                    </form>    
                 </main>
             </div>
         );

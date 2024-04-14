@@ -83,13 +83,37 @@ function PatientProfilePage() {
     //     return <div>Loading...</div>; // Render a loading indicator while fetching data
     // }
 
-
+    // Previously had via github commit 12e1b6a
+    // const UserCard = ({ userFName, userLName, email }) => (
+    //     <>
+    //         <p id="profile-email">{email}</p>
+    //         <p id="profile-name">{userFName} {userLName}</p>
+    //     </>
+    // );
+    
     const UserCard = () => (
         <>
             <p id="profile-email">{email}</p>
             <p id="profile-name">{userFName} {userLName}</p>
         </>
     );
+
+    // Previously had via github commit 42e7810
+    // const UserInfo = ({ id, userFName, userLName, email, address1, address2, city, zip_code, phone }) => (
+    //     <div className="medication-item">
+    //            <div className="userName">
+    //             {userFName} {userLName}
+    //         </div>
+    //         <div className="userId">userID: {id}</div>
+    //         <div className="email">email: {email}</div>
+    //         <div className="address1">address1: {address1}</div>
+    //         <div className="address2">address2: {address2}</div>
+    //         <div className="city">city: {city}</div>
+    //         <div className="zip_code">zip_code: {zip_code}</div>
+    //         <div className="phone">phone: {phone}</div>
+    //     </div>
+    // );
+
     const UserInfo = () => (
         <div>
           <div className="detail-line">

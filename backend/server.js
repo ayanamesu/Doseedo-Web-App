@@ -247,13 +247,16 @@ app.post('/api/profile/edit', async (req, res) => {
 // TODO: change this name later
 app.post('/api/accountLink', async (req, res) => {
   // Assuming the frontend is sending a res of the logged in user id
+  console.log("Hello")
   try {
-    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.caregiver_id = user.id WHERE account_link.patient_id = ?;";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length == 1) {
+      console.log(results);
       res.status(200).json(results);
     } else {
+      console.log("WHOOPSIES")
       res.status(204).json({ msg: "No patients for this user"});
     }
   } catch (error) {
@@ -432,25 +435,49 @@ async function search_medicine() {
 
 // -----------------------------------------------------------------------------------------------------------------------
 // Add medicine to the prescription table (Tested with postman and works with mysql database)
+// Accounts for nullable entries (description, end date)
 app.post("/api/addmedicine", async (req, res) => {
-  let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
-  console.log(req.body);
+  // let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   try {
+    const columns = [];
+    const placeholders = [];
+    const values = [];
 
-    console.log("Adding medicine...");
-    const insertQuery = `INSERT INTO prescription (user_id, med_name, description, dose_amt, start_date, end_date, 
-                          doctor_first_name, doctor_last_name, doctor_phone) 
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
-    if (results && results.affectedRows == 1) {
-      res.status(201).json({msg: "Medicine successfully added"});
+    for (const [key, value] of Object.entries(req.body)) {
+      if (value !== '') {
+        columns.push(key);
+        placeholders.push('?');
+        values.push(value);
+      }
+    }
+
+    const query = `INSERT INTO prescription (${columns.join(', ')}) VALUES (${placeholders.join(', ')})`;
+    const [results, fields] = await db.query(query, values);
+
+    if (results && results.affectedRows === 1) {
+      res.status(200).json({ msg: "Update successful!"});
     } else {
-      res.status(500).json({ "error": "Medicine addition failed" });
+      res.status(500).json({ msg: "Something went wrong when updating information"});
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    throw error;
   }
+    // Previously had Wing
+  //   console.log("Adding medicine...");
+  //   const insertQuery = `INSERT INTO prescription (user_id, med_name, description, dose_amt, start_date, end_date, 
+  //                         doctor_first_name, doctor_last_name, doctor_phone) 
+  //                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  //   const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
+  //   if (results && results.affectedRows == 1) {
+  //     res.status(201).json({msg: "Medicine successfully added"});
+  //   } else {
+  //     res.status(500).json({ "error": "Medicine addition failed" });
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).json({ "error": "Internal server error" });
+  // }
 });
 // -----------------------------------------------------------------------------------------------------------------------
 // delete medicine in the prescription table (Tested with postman and works with mysql database)
