@@ -27,7 +27,9 @@ function RxListPage() {
     });
     useEffect(() => {
         // Fetch medications data from API and set it to the state
-        axios.get('http://localhost:8000/api/Medication_list')
+
+        //What is this api is it to view medicine?
+        axios.get('http://localhost:8000/api/viewmedicine')
             .then(response => {
                 setMedications(response.data);//list
       
@@ -123,7 +125,7 @@ const handleAddMedicationClick = (medication) => {
     setShowAddMed(true);
 
     setShowMedsforTheDay(false);
-    axios.post('http://localhost:8000/api/AddMedication_list', medication)
+    axios.post('http://localhost:8000/api/addmedicine', medication)
         .then(response => {
             setMedications(response.data);
     
@@ -135,7 +137,7 @@ const handleAddMedicationClick = (medication) => {
 };
 
 const handleDeleteMedicationClick = (medicationId) => {
-    axios.post('http://localhost:8000/api/DeleteMedication_list', { id: medicationId })
+    axios.post('http://localhost:8000/api/deletemedicine', { id: medicationId })
         .then(response => {
             setMedications(response.data);
     
@@ -201,7 +203,7 @@ const switchPage = (showMedList, medications) => {
              
                 </div>
                 <div className="medication-actions">
-                            <button className="cancel-button" onClick={handleCancelClick}>Cancel</button>
+                            <button className="cancel-button" onClick={handleCancelClick}>back</button>
                             <button className="next-button" onClick={handleNextClick}>Next</button>
                         </div>
                 <div className="medication-notes" />
@@ -248,7 +250,7 @@ const switchPage = (showMedList, medications) => {
                         </div>
                     </div>
                     <div className="medication-actions">
-                        <button className="cancel-button" onClick={handleCancelClick}>Cancel</button>
+                        <button className="cancel-button" onClick={handleCancelClick}>back</button>
                         <button className="next-button" onClick={handleNextClick}>Next</button>
                     </div>
                     <div className="medication-notes" />
@@ -348,6 +350,8 @@ const switchPage = (showMedList, medications) => {
                             onChange={(e) => setNewMedication({ ...newMedication, doctor_last_name: e.target.value })}
                         />
                     </div>
+                    {/* SetAddMed(false) */}
+                    <button type="button" onClick={() => setShowMedList(true)}>Cancel</button>
                     <button type="submit">Add Medication</button>
                 </form>
             </div>

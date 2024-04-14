@@ -39,7 +39,7 @@ const HomePage = () => {
              * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
              * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
             */
-            setCookie("session_id", res.data, { sameSite: 'lax'});
+            setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
 
             // TODO: Frontend - do whatever you gotta do with this information
             // change this to the dashboard page

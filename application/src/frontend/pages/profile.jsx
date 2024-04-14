@@ -6,20 +6,68 @@ import { useEffect, useState } from 'react';
 import "../App.css";
 
 function PatientProfilePage() {
-    /*
- sessionID
-  
-*/
+    const [user, setUser] = useState([]);
+
+      
+    useEffect(() => {
+        // Fetch user profile data
+        const sessionId = localStorage.getItem('session_id');
+        axios.get('http://localhost:8000/api/profile', { params: { sessionid: sessionId } })
+            .then((apiRes) => {
+                const profile = apiRes.data;
+                setUser(profile);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+            const dummyData = [
+                {
+                    id: 1,
+                    userFName: "John",
+                    userLName: "Doe",
+                    email: "sfsu@gmail.com",
+                    address1: "San Francisco State University Dr",
+                    address2: "unit 100",
+                    state: "CA",
+                    city: "San Francisco",
+                    zip_code: "94122",
+                    phone: "6669998888"
+                }
+            ]
+            setTimeout(() => {
+                console.log(dummyData[0]);
+                setUser(dummyData[0]);
+            }, 1000); 
+    }, []);
+                 
+       
+    const UserInfo = ({ id, userFName, userLName, email, address1, address2, city, zip_code, phone }) => (
+        <div className="medication-item">
+               <div className="userName">
+                {userFName} {userLName}
+            </div>
+            <div className="userId">userID: {id}</div>
+            <div className="email">email: {email}</div>
+            <div className="address1">address1: {address1}</div>
+            <div className="address2">address2: {address2}</div>
+            <div className="city">city: {city}</div>
+            <div className="zip_code">zip_code: {zip_code}</div>
+            <div className="phone">phone: {phone}</div>
+        </div>
+    );
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
+
     };
 
     const handleShareProfile = () => {
         console.log("Share Profile clicked");
+
     };
 
     const handleAddConnections = () => {
         console.log("Add Connections clicked");
+
     };
 
     const handleBack = () => {
@@ -29,15 +77,7 @@ function PatientProfilePage() {
     return (
         <>
             <div className="div">
-                <div className="div-2">
-                    <div className="div-3">Doseedo</div>
-                    <div className="div-4">
-                        <button className="div-5">Contacts</button>
-                        <button className="div-6">Notifications</button>
-                        <button className="div-7">About Us</button>
-                        <button className="div-8">Sign Out</button>
-                    </div>
-                </div>
+             
                 <div className="div-9">
                     <div className="div-10">
                         <div className="column">
@@ -60,8 +100,7 @@ function PatientProfilePage() {
                                         <div className="div-17">
                                             <div className="div-18">Profile Page</div>
                                             <div className="div-19">
-                                                <button className="div-20">First Name</button>
-                                                <button className="div-21">Last Name</button>
+                                            {user && <UserInfo {...user} />}
                                             </div>
                                             <div className="div-22"/>
                                         </div>
