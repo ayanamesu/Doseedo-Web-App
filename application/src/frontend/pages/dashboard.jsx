@@ -5,7 +5,7 @@ import axios from 'axios';
 import UseSessionCheck from '../Components/UseSessionCheck';
 import "../App.css";
 
-function PatientHomePage() {
+function DashBoard() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     const [isSessionActive] = UseSessionCheck();
    
@@ -15,14 +15,12 @@ const handleCalendarClick = () => {
 const handleRXListClick = () => {
     navigate("/rxlist", { replace: true });  
 };
-const handleHealthScreeningClick = () => {
-    navigate("/HealthScreening", { replace: true });  
-};
+
 const handleSettingsClick = () => {
     navigate("/Settings", { replace: true });  
 };
 const handleProfileClick = () => {
-    navigate("/HealthScreening", { replace: true });  
+    navigate("/Profile", { replace: true });  
 };
 const handle911Click = () => {
     navigate("/911", { replace: true });  
@@ -44,12 +42,6 @@ const handle911Click = () => {
                                     Calendar{" "}
                                 </button>
                                  
-                            </div>
-                            <div className="column-2">
-                              
-                                <button className="div-14" onClick={handleHealthScreeningClick}>
-                                Health <br /> Screening{" "}
-                                    </button>
                             </div>
                             <div className="column-3">
                                 
@@ -88,4 +80,4 @@ const handle911Click = () => {
         </>
     );
 }
-export default PatientHomePage;
+export default DashBoard;

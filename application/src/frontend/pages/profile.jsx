@@ -11,13 +11,7 @@ function PatientProfilePage() {
       
     useEffect(() => {
         // Fetch user profile data
-        const cookieString =document.cookie.sessionid;// "session_id=QuBnwoEO44lI7pCikJr7sCtk3GdGdxbd";
-
-// Split the cookie string at '=' to separate the key-value pair
-const cookieParts = cookieString.split('=');
-
-// Get the session ID which is the value after '='
-const sessionId = cookieParts[1];
+        const sessionId = localStorage.getItem('session_id');
         axios.get('http://localhost:8000/api/profile', { params: { sessionid: sessionId } })
             .then((apiRes) => {
                 const profile = apiRes.data;
