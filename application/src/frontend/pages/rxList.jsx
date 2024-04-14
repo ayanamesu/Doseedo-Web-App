@@ -84,7 +84,6 @@ function RxListPage() {
             <div className="app-container">
                 <main className="main-content">
                     <form className ="rx-list" onSubmit={handleAddMedication}>
-                        <input type="text" placeholder="UserID" id="userID" name="userID" onChange={e => setUserId(e.target.value)}/>
                         <input type="text" placeholder="Medicine Name" id="medName-input" name="medName" onChange={e => setMedName(e.target.value)}/>
                         <input type="text" placeholder="Description" id="description-input" name="description" onChange={e => setDescription(e.target.value)}/>
                         
