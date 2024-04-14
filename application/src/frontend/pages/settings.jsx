@@ -111,57 +111,81 @@ const SettingsPage = () => {
         window.history.go(-1);
     };
 
-    const dummyAccountLinkData = [
-        {
-            user_id: 1,
-            email: 'YakAttack@gmail.com',
-            name: 'Yak Attack',
-            account_type: 'patient'
-        },
-        {
-            user_id: 2,
-            email: 'Aleia420@gmail.com',
-            name: 'Viper Main',
-            account_type: 'patient'
-        },
-        {
-            user_id: 3,
-            email: 'Ayana@gmail.com',
-            name: 'Wing Lee',
-            account_type: 'patient'
-        },
-        {
-            user_id: 4,
-            email: 'OnikaBurgers@gmail.com',
-            name: 'Carlos Minaj',
-            account_type: 'patient'
-        },
-        {
-            user_id: 5,
-            email: 'YutoTypeBeat@gmail.com',
-            name: 'Yuto nator',
-            account_type: 'patient'
-        },
-        {
-            user_id: 6,
-            email: 'Paige@gmail.com',
-            name: 'Paige turn',
-            account_type: 'patient'
-        }
-    ];
+    // const dummyAccountLinkData = [
+    //     {
+    //         user_id: 1,
+    //         email: 'YakAttack@gmail.com',
+    //         name: 'Yak Attack',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 2,
+    //         email: 'Aleia420@gmail.com',
+    //         name: 'Viper Main',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 3,
+    //         email: 'Ayana@gmail.com',
+    //         name: 'Wing Lee',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 4,
+    //         email: 'OnikaBurgers@gmail.com',
+    //         name: 'Carlos Minaj',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 5,
+    //         email: 'YutoTypeBeat@gmail.com',
+    //         name: 'Yuto nator',
+    //         account_type: 'patient'
+    //     },
+    //     {
+    //         user_id: 6,
+    //         email: 'Paige@gmail.com',
+    //         name: 'Paige turn',
+    //         account_type: 'patient'
+    //     }
+    // ];
 
+    // This is now returning the correct data from the backend api
+    // TODO: FRONTEND DESIGN - Displaying some stuff~
     const displayAccountLinkData = () => {
         //axios post needs to be updated instead of dummy data
-        return dummyAccountLinkData.map((accountLink, index) => {
-            return (
-                <div key={index} className="account">
-                    <h3>{accountLink.name}</h3>
-                    <p>{accountLink.account_type}</p>
-                    <p>{accountLink.email}</p>
-                    <button>Unlink</button>
-                </div>
-            );
+        let data = {
+            user_id: userId
+        }
+        axios.post('http://localhost:8000/api/accountLink', data)
+        .then((apiRes) => { 
+            console.log(apiRes.data) 
+            // You can do apiRes.data.<almost any column from the user table>
+            if (apiRes.status == 200) {
+                console.log("Showing the patients here")
+            } else if (apiRes.status == 204) {
+                console.log("There are no paients for this user")
+            } else {
+                console.log("Something went wrong with the backend...")
+            }
+
+        })
+        .catch((error) => {
+            console.error(error);
+            alert(error);
         });
+
+        // return dummyAccountLinkData.map((accountLink, index) => {
+            return (
+                // <div key={index} className="account">
+                //     <h3>{accountLink.name}</h3>
+                //     <p>{accountLink.account_type}</p>
+                //     <p>{accountLink.email}</p>
+                //     <button>Unlink</button>
+                // </div>
+                <div> peepee </div>
+            );
+        // });
     };
       
     return (
