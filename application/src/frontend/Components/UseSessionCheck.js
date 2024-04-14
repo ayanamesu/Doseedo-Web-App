@@ -26,7 +26,7 @@ const useSessionCheck = () => {
             .catch((error) => {
                 console.error(error);
             });
-    }, [navigate]);
+    }, []);
 
     return [userId]; // Return user_id if active session or null if active session
 }

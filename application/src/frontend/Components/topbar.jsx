@@ -35,8 +35,8 @@ function Topbar() {
         .then((response) => {
             console.log("response Status"+response.status);
             if (response.status == 200) {
-                //delete cookie session_id
-                alert("LOG OUT");
+                document.cookie = "session_id=; expires=Thu, 01 Jan 1942 00:00:00 UTC; path=/;";
+                alert("User logged out");
                 navigate('/');
             }
         })
