@@ -19,16 +19,16 @@ const HomePage = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
-  const sessionUserId = UseSessionCheck();
+//   const sessionUserId = UseSessionCheck();
 
-  useEffect(() => {
-    if (sessionUserId[0] === "") {
-        navigate('/');
-    } else {
-        navigate('/dashboard');
-        setUserId(sessionUserId);
-    }
-}, []);
+//   useEffect(() => {
+//     if (sessionUserId === "") {
+//         navigate('/');
+//     } else {
+//         navigate('/dashboard');
+//         setUserId(sessionUserId[0]);
+//     }
+// }, []);
 
   function handleLoginForm(event) {
 
@@ -54,6 +54,7 @@ const HomePage = () => {
              * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
             */
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
+            setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
             alert("Successfuly logged In!");
             // TODO: Frontend - do whatever you gotta do with this information
             // change this to the dashboard page

@@ -4,6 +4,7 @@ import useSessionCheck from '../Components/UseSessionCheck';
 import axios from 'axios';
 import "../App.css";
 import { useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 const SettingsPage = () => {
     const navigate = useNavigate();
@@ -12,15 +13,22 @@ const SettingsPage = () => {
     const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
 
-    const sessionUserId = useSessionCheck();
-
+    // const sessionUserId = useSessionCheck();
+    
     // from yakbranch
     useEffect(() => {
-        if (sessionUserId === "") {
-            alert("No session found! Please relog in")
-            navigate('/');
+        // if (sessionUserId === "") {
+        //     alert("No session found! Please relog in")
+        //     navigate('/');
+        // } else {
+        //     setUserId(sessionUserId[0]);
+        // }
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!")
         } else {
-            setUserId(sessionUserId[0]);
+            alert("You need to relog in!")
+            navigate('/');
         }
 
         axios.post('http://localhost:8000/api/accountLink',{ user_id: userId })
@@ -33,7 +41,7 @@ const SettingsPage = () => {
             .catch((error) => {
                 console.error(error);
             });
-    });
+    }, [userId]);
 
     const handleGeneralClick = () => {
         navigate("/settings/General", { replace: true }); 

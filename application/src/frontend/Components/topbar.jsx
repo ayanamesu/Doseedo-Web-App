@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import UseSessionCheck from './UseSessionCheck';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 function Topbar() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
-    const [isSessionActive] = UseSessionCheck();
-    const session_id = document.cookie.split("=")[1];
+    // const [isSessionActive] = UseSessionCheck();
+    const session_id = Cookies.get('session_id');
     let data = {
         session_id : session_id
     }
@@ -31,11 +32,13 @@ function Topbar() {
              
         // Handle sign out
        
-        axios.post('http://localhost:8000/api/logout',data)//userData contains session id 
+        axios.post('http://localhost:8000/api/logout', data)//userData contains session id 
         .then((response) => {
             console.log("response Status"+response.status);
             if (response.status == 200) {
-                document.cookie = "session_id=; expires=Thu, 01 Jan 1942 00:00:00 UTC; path=/;";
+                // document.cookie = "session_id=; expires=Thu, 01 Jan 1942 00:00:00 UTC; path=/;";
+                Cookies.remove("session_id");
+                Cookies.remove("user_id");
                 alert("Sucessfuly logged out!");
                 navigate('/');
             }
