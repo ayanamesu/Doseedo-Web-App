@@ -16,15 +16,12 @@ const SettingsPage = () => {
 
     // TODO: only run when page is loaded
     useEffect(() => {
-        console.log("In the use effect");
         if (sessionUserId === "") {
-            console.log("NO USER ID FOUND");
             navigate('/');
         } else {
-            console.log("Found the user_id!");
             setUserId(sessionUserId);
         }
-    }, [sessionUserId, navigate]);
+    }, []);
 
     // from yakbranch
     useEffect(() => {
@@ -60,7 +57,8 @@ const SettingsPage = () => {
     const handleAccountPairClick = () => {
         console.log("User ID: " + user_id);
         console.log("Email: " + email);
-        axios.post('http://localhost:8000/api/linkAccounts', { user_id: user_id, email: email, accountType: accountType })
+        console.log("Account_type: " + accountType);
+        axios.post('http://localhost:8000/api/linkAccounts', { user_id: user_id, email: email, account_type: accountType })
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
                 if (accountLink === 200) {
@@ -82,7 +80,6 @@ const SettingsPage = () => {
                 <div className="account-linked">
                     
                 <p>Linked Account Infomation</p><br></br>
-                <p>User Name: {userName}</p>
                 <p>Email: {email}</p>
                 <p>Account Type: {accountType}</p>
                 
@@ -218,21 +215,20 @@ const SettingsPage = () => {
                     <button onClick={handleLanguageClick}>Language</button>
                 </div>
             </div>
-            <form className="account-link-form" onSubmit={handleAccountPairClick}>
+            <form className="account-link-form" action="" method="POST">
                 <h2>Account Link</h2>
                 <p>Link accounts</p>
                 <input type="text" placeholder="Email" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
-                {/* <div id="account-type-input">
+                <div id="account-type-input">
                     <label>
-                        <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
+                        <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
                         Caregiver
                     </label>
                     <label>
-                        <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
+                        <input type="radio" name="accountType" value="Patient" checked={accountType === 'patient'} onChange={(e) => setAccountType(e.target.value)} required />
                         Patient
                     </label>
-                </div> */}
-                <input type="text" placeholder="User ID" id="user-id-input" name="user_id" value={user_id} onChange={(e) => setUserId(e.target.value)} />
+                </div>
                 <button className="button" type="submit" id="accountLinkSubmit">submit</button>
             </form>
             <h2>Linked Accounts:</h2>
