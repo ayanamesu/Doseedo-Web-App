@@ -19,7 +19,7 @@ const pool = mysql.createPool({
         host: "localhost",
         user: "root",
         database: "doseedodb", // insert your db info here
-        password: "1234", //mysql password here
+        password: "pass", //mysql password here
         port: "3306",
         
         //Yuto DB
