@@ -2,10 +2,15 @@ import React from "react";
 import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import UseSessionCheck from './UseSessionCheck';
- 
+import axios from 'axios';
+
 function Topbar() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     const [isSessionActive] = UseSessionCheck();
+    const session_id = document.cookie.split("=")[1];
+    let data = {
+        session_id : session_id
+    }
     const handleHomeClick = () => {
         navigate("/dashboard", { replace: true }); // Programmatically navigate to "/"
     };
@@ -23,22 +28,28 @@ function Topbar() {
     };
 
     const NavigateToSignOut = () => {
-             /*
+             
         // Handle sign out
-        const sessionData = { sessionid: document.cookie.sessionid };
-        axios.post('http://localhost:8000/api/logout',sessionData)//userData contains session id 
+       
+        axios.post('http://localhost:8000/api/logout',data)//userData contains session id 
         .then((response) => {
-            console.log(response.data); // Assuming the response contains user data
-            // Update the state or perform any other necessary actions after sign out
-            setRedirectToHome(true); // Set state to redirect
+            console.log("response Status"+response.status);
+            if (response.status == 200) {
+                document.cookie = "session_id=; expires=Thu, 01 Jan 1942 00:00:00 UTC; path=/;";
+                alert("Sucessfuly logged out!");
+                navigate('/');
+            }
         })
         .catch((error) => {
             console.error(error);
-            // Handle errors if needed
         });
-        */
-    };
+        
+    }; 
+
+ 
     
+    
+
     if(window.location.pathname !== "/"){
         return (
             <div className="div-2">
