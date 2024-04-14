@@ -3,17 +3,25 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const UseSessionCheck = () => {
-    const [isSessionActive, setIsSessionActive] = useState(false);
+const useSessionCheck = () => {
+    const [userId, setUserId] = useState("");
+
     const navigate = useNavigate();
 
+    const sess_id = document.cookie.split("=")[1];
+    let data = {
+        session_id : sess_id
+    }
+
     useEffect(() => {
-        axios.get('http://localhost:8000/api/session')
+        axios.post('http://localhost:8000/api/session', data)
             .then((apiRes) => {
-                const sessionData = apiRes.data;
-                setIsSessionActive(checkSession(sessionData));
-                if (!isSessionActive) {
-                    navigate("/", { replace: true });
+                console.log(apiRes.status);
+                if (apiRes.status == 200) {
+                    const user_id = apiRes.data.user_id;
+                    setUserId(user_id);
+                } else {
+                    navigate('/');
                 }
             })
             .catch((error) => {
@@ -21,18 +29,7 @@ const UseSessionCheck = () => {
             });
     }, [navigate]);
 
-    const checkSession = (sessionData) => {
-        const cookies = document.cookie.split(';').map(cookie => cookie.trim());
-        for (const cookie of cookies) {
-            const [name, value] = cookie.split('=');
-            if (name.trim() === 'sessionid' && value.trim() === sessionData.sessionid) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    return [isSessionActive]; // Return session status
+    return [userId]; // Return user_id if active session or null if active session
 }
 
-export default UseSessionCheck;
+export default useSessionCheck;

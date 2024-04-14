@@ -21,7 +21,7 @@ const LoginPage = () => {
             //res = backend res.status(200).json(req.session.id); from the post
             if (res.status === 200) {
                 console.log("User crendentials are good and a session is created in the db");
-
+                console.log(res.data.session_id);
                 // This sets a cookie in the browser
                 /*
                  * To see this:
@@ -30,7 +30,7 @@ const LoginPage = () => {
                  * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
                  * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
                 */
-                setCookie("session_id", res.data, { sameSite: 'lax'});
+                setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
 
                 // TODO: Frontend - do whatever you gotta do with this information
 

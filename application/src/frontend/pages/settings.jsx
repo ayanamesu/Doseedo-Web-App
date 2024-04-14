@@ -1,31 +1,45 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import UseSessionCheck from '../Components/UseSessionCheck';
+import useSessionCheck from '../Components/UseSessionCheck';
 import axios from 'axios';
 import "../App.css";
 import { useEffect } from 'react';
 
 const SettingsPage = () => {
     const navigate = useNavigate();
-    const [isSessionActive] = UseSessionCheck();
     const [linkEmail, setLinkEmail] = useState("");
     const [userId, setUserId] = useState("");
     const [userName, setUserName] = useState("");
     const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
 
+    const sessionUserId = useSessionCheck();
+
+    // only run when page is loaded
     useEffect(() => {
-        axios.get('http://localhost:8000/api/isAccountLinked',{ params: { userId} })
-            .then((apiRes) => {
-                const accountLinked = apiRes.data;
-                if (accountLinked) {
-                    setAccountLink(true);
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    });
+        console.log("In the use effect");
+        if (sessionUserId === "") {
+            console.log("NO USER ID FOUND");
+            navigate('/');
+        } else {
+            console.log("Found the user_id!");
+            setUserId(sessionUserId);
+        }
+    }, [sessionUserId, navigate]);
+
+    // useEffect(() => {
+    //     axios.get('http://localhost:8000/api/isAccountLinked',{ params: { user_id: user_id } })
+    //         .then((apiRes) => {
+    //             console.log('PEEPEE');
+    //             const accountLinked = apiRes.data;
+    //             if (accountLinked) {
+    //                 setAccountLink(true);
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.error(error);
+    //         });
+    // });
 
     const handleGeneralClick = () => {
         navigate("/settings/General", { replace: true }); 
@@ -45,20 +59,20 @@ const SettingsPage = () => {
 
     const handleAccountPairClick = () => {
     
-        axios.get('http://localhost:8000/api/account_link', { params: { linkEmail, userId, accountType } })
-            .then((apiRes) => {
-                const accountLink = apiRes.data;
-                setUserName=apiRes.data.userName;
-                if (accountLink) {
-                    setAccountLink(true);
-                    alert("Account linked successfully!");
-                } else {
-                    alert("Invalid input");
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        // axios.get('http://localhost:8000/api/account_link', { params: { linkEmail, userId, accountType } })
+        //     .then((apiRes) => {
+        //         const accountLink = apiRes.data;
+        //         setUserName=apiRes.data.userName;
+        //         if (accountLink) {
+        //             setAccountLink(true);
+        //             alert("Account linked successfully!");
+        //         } else {
+        //             alert("Invalid input");
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error(error);
+        //     });
     };
 
     const renderAccountLink = () => {
@@ -67,7 +81,6 @@ const SettingsPage = () => {
                 <div className="account-linked">
                     
                 <p>Linked Account Infomation</p><br></br>
-                <p>User ID: {userId}</p>
                 <p>User Name: {userName}</p>
                 <p>Email: {linkEmail}</p>
                 <p>Account Type: {accountType}</p>
@@ -80,10 +93,6 @@ const SettingsPage = () => {
                     <div>
                         <label>Email:</label>
                         <input type="text" value={linkEmail} onChange={(e) => setLinkEmail(e.target.value)} />
-                    </div>
-                    <div>
-                        <label>User ID:</label>
-                        <input type="text" value={userId} onChange={(e) => setUserId(e.target.value)} />
                     </div>
                     <div>
                         <label>Account Type:</label>
