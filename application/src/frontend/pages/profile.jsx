@@ -1,7 +1,8 @@
 // still debugging skeleton code
 import React from "react";
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import useSessionCheck from '../Components/UseSessionCheck';
 import { useEffect, useState } from 'react';
 import { faPenToSquare, faShare, faUserPlus, faUserLarge} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,15 +10,36 @@ import "../App.css";
 
 
 function PatientProfilePage() {
+    const navigate = useNavigate();
     const [user, setUser] = useState([]);
-
-      
+    const [user_id, setUserId] = useState("");
+    const [userFName, setUserFName] = useState(null);
+    const [userLName, setUserLName] = useState(null);
+    const [email, setEmail] = useState(null);
+    const [address1, setAddress1] = useState(null);
+    const [address2, setAddress2] = useState(null);
+    const [state, setState] = useState(null);
+    const [city, setCity] = useState(null);
+    const [zip_code, setZipCode] = useState(null);
+    const [phone, setPhone] = useState(null);
+    const [editProfile, setEditProfile] = useState([false]);
+    const sessionUserId = useSessionCheck();
+ 
     useEffect(() => {
-        // Fetch user profile data
-        const sessionId = localStorage.getItem('session_id');
-        axios.get('http://localhost:8000/api/profile', { params: { sessionid: sessionId } })
+        // Fetch user profile data     if (sessionUserId === "") {
+            if (sessionUserId === "") {
+                   navigate('/');
+        } else {
+            console.log(sessionUserId[0]);
+            setUserId(sessionUserId[0]);
+        }
+     let data={
+        user_data:sessionUserId[0]
+     }
+        axios.post('http://localhost:8000/api/profile',  data)
             .then((apiRes) => {
                 const profile = apiRes.data;
+                console.log(apiRes.data);
                 setUser(profile);
             })
             .catch((error) => {
@@ -37,10 +59,10 @@ function PatientProfilePage() {
                     phone: "6669998888"
                 }
             ]
-            setTimeout(() => {
-                console.log(dummyData[0]);
-                setUser(dummyData[0]);
-            }, 1000); 
+           // console.log(dummyData[0]);
+         //   setUser(dummyData[0]);
+              
+           
     }, []);
                  
     const UserCard = ({ userFName, userLName, email }) => (
@@ -49,7 +71,7 @@ function PatientProfilePage() {
             <p id="profile-name">{userFName} {userLName}</p>
         </>
     );
-    const UserInfo = ({ id, address1, address2, city, zip_code, phone }) => (
+    const UserInfo = ({ address1, address2, city, zip_code, phone }) => (
         <div>
           <div className="detail-line">
             <strong>Address1: </strong>{address1}
@@ -70,7 +92,20 @@ function PatientProfilePage() {
       );
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-
+        axios.post('http://localhost:8000/api/linkAccounts', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+            .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
+       
+                if (apiRes.status === 200) {
+                    setEditProfile(true);
+                    alert("Profile edited successfully!");
+                } else {
+                    alert("Invalid input");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                alert(error);
+            });
     };
 
     const handleShareProfile = () => {
@@ -85,6 +120,7 @@ function PatientProfilePage() {
 
     const handleBack = () => {
         console.log("Back clicked");
+        window.history.go(-1);
     };
 
     return (
