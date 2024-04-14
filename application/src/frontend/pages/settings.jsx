@@ -214,18 +214,18 @@ const SettingsPage = () => {
                     <button onClick={handleAccessibilityClick}>Accessibility</button>
                     <button onClick={handleLanguageClick}>Language</button>
                 </div>
-            </div>
+                </div>
             <form className="account-link-form" action="" method="POST">
                 <h2>Account Link</h2>
                 <p>Link accounts</p>
                 <input type="text" placeholder="Email" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
                 <div id="account-type-input">
                     <label>
-                        <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
+                        <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
                         Caregiver
                     </label>
                     <label>
-                        <input type="radio" name="accountType" value="Patient" checked={accountType === 'patient'} onChange={(e) => setAccountType(e.target.value)} required />
+                        <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
                         Patient
                     </label>
                 </div>
