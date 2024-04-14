@@ -2,6 +2,8 @@ import React, { useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+import UseSessionCheck from '../Components/UseSessionCheck';
+import { useEffect } from 'react';
 
 const HomePage = () => {
   const [fname, setFname] = useState("");
@@ -10,14 +12,27 @@ const HomePage = () => {
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
   let navigate = useNavigate();
+  const [user_id, setUserId] = useState("");
   //shows notification
   const [showNotification, setShowNotification] = useState(false);
   //sets the notification message based on if the account was created or not
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+  const sessionUserId = UseSessionCheck();
+
+  useEffect(() => {
+    console.log(sessionUserId);
+    if (sessionUserId[0] == "") {
+    
+    } else {
+        navigate('/dashboard');
+        setUserId(sessionUserId);
+    }
+}, []);
 
   function handleLoginForm(event) {
+
     event.preventDefault();
     let userData = {
         email: email,
@@ -40,10 +55,10 @@ const HomePage = () => {
              * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
             */
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
-
+            alert("Successfuly logged In!");
             // TODO: Frontend - do whatever you gotta do with this information
             // change this to the dashboard page
-            navigate('/about');
+            navigate('/dashboard');
 
         } else {
             console.log("Something weird happened...");

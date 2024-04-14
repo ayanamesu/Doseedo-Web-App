@@ -194,14 +194,15 @@ app.post("/api/session", async (req, res) => {
 
 // Profile - return user information [ everything but password]
 // Postman Test - SUCCESS
-app.get('/api/profile', async (req, res) => {
+app.post('/api/profile', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
+  console.log("api/profile");
   try {
     const query = "SELECT first_name, last_name, email, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length == 1) {
-      res.status(200).json({data: results[0]});
+      res.status(200).json(results[0]);
     } else {
       res.status(401).json({ msg: ""});
     }
