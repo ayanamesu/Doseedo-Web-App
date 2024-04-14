@@ -31,7 +31,7 @@ const LoginPage = () => {
                  * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
                 */
                 setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
-
+               
                 // TODO: Frontend - do whatever you gotta do with this information
 
             } else {
