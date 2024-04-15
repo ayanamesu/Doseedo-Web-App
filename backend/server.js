@@ -483,6 +483,8 @@ app.post("/api/addmedicine", async (req, res) => {
 // delete medicine in the prescription table (Tested with postman and works with mysql database)
 app.post("/api/deletemedicine", async (req, res) => {
   const { id } = req.body;
+  console.log(req.body);
+  //console.log(id);
   try {
     console.log("Deleting medicine...");
     const deleteQuery = "DELETE FROM prescription WHERE id = ?";
@@ -500,9 +502,10 @@ app.post("/api/deletemedicine", async (req, res) => {
 
 //--------------------------------------------------------------------------------------------------------------------------------
 // View medicine in the prescription table (Tested with postman and works with mysql database)
-app.get("/api/viewmedicine", async (req, res) => {
-  let { user_id } = req.body;
+app.post("/api/viewmedicine", async (req, res) => {
   console.log(req.body);
+  const { user_id } = req.body;
+console.log("userid backend: " + user_id);
   try {
     console.log("Viewing medicine...");
     const selectQuery = `SELECT * FROM prescription WHERE user_id = ?`;
