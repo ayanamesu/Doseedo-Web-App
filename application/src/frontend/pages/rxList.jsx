@@ -261,13 +261,13 @@ function RxListPage() {
     };
     const renderMedList = () => {
         if (showMedList) {
-            return <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button>;
+            // return <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button>;
         } else if (showMedsforTheDay) {
             return <button className="section-title" onClick={handleMedListClick}>Medication list</button>;
         } else if (showAddMed) {
             return (
                 <div> 
-                    <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button>
+                    {/* <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button> */}
                     <button className="section-title" onClick={handleMedListClick}>Medication list</button>
                 </div>
             );
