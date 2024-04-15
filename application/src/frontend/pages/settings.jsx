@@ -175,8 +175,8 @@ const SettingsPage = () => {
             <form className="account-link-form" onSubmit={handleAccountPairClick}>
                 <h2>Account Link</h2>
                 <p>Link accounts</p>
-                <input type="text" placeholder="Email" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
                 <div id="account-type-input">
+                    <p> Are you a Caregiver or Patient?</p>
                     <label>
                         <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
                         Caregiver
@@ -186,12 +186,14 @@ const SettingsPage = () => {
                         Patient
                     </label>
                 </div>
+                <input type="text" placeholder="Email to connect to" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
                 <button className="button" type="submit" id="accountLinkSubmit">submit</button>
             </form>
             <h2>Linked Accounts:</h2>
              <div className="linkedAccountsContainer">
                 {AccountList.map((accountLink, index) => (
                     <div key={index} className="account">
+                        <p> {accountLink.first_name} {accountLink.last_name}</p>
                         <p>{accountLink.email}</p>
                         <button>Unlink</button>
                     </div>
