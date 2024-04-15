@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { faPenToSquare, faShare, faUserPlus, faUserLarge} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "../App.css";
+import Cookies from 'js-cookie';
 
 
 function PatientProfilePage() {
@@ -22,18 +23,27 @@ function PatientProfilePage() {
     const [city, setCity] = useState("");
     const [zip_code, setZipCode] = useState("");
     const [phone, setPhone] = useState("");
-    const sessionUserId = useSessionCheck(); 
+    // const sessionUserId = useSessionCheck(); 
+    const [isLoading, setLoading] = useState(true);
  
     useEffect(() => {
         // Fetch user profile data     if (sessionUserId === "") {
-            if (sessionUserId === "") {
-                   navigate('/'); 
+        // if (sessionUserId === "") {
+        //         navigate('/'); 
+        // } else { 
+        //     setUserId(sessionUserId[0]);
+        // } 
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!" + user_id)
         } else {
-            setUserId(sessionUserId[0]);
+            alert("You need to relog in!")
+            navigate('/');
         }
-     let data = {
-        user_id: sessionUserId[0]
-     }
+
+        let data = {
+            user_id: user_id
+        }
         axios.post('http://localhost:8000/api/profile', data)
             .then((apiRes) => {
                 console.log(apiRes.data);
@@ -44,6 +54,7 @@ function PatientProfilePage() {
                 setCity(apiRes.data.city);
                 setZipCode(apiRes.data.zip_code);
                 setPhone(apiRes.data.phone);
+                console.log("We should be ok here")
             }) 
             .catch((error) => {
                 console.error(error);
@@ -66,8 +77,13 @@ function PatientProfilePage() {
         //  //   setUser(dummyData[0]);
               
            
-    }, []);
-                 
+    }, [user_id]); // end of useEffect
+
+    // if (isLoading) {
+    //     return <div>Loading...</div>; // Render a loading indicator while fetching data
+    // }
+
+
     const UserCard = () => (
         <>
             <p id="profile-email">{email}</p>

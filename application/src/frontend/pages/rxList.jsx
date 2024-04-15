@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSessionCheck from '../Components/UseSessionCheck';
 import "../App.css";
-
+import Cookies from 'js-cookie';
 
 
 function RxListPage() {
-    const [userId, setUserId] = useState("");
+    const [user_id, setUserId] = useState("");
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
     const [doseAmt, setDoseAmt] = useState("");
@@ -19,16 +19,25 @@ function RxListPage() {
     const [doctorPhone, setDoctorPhone] = useState("");
     let navigate = useNavigate();
 
-    const sessionUserId = useSessionCheck();
+    // const sessionUserId = useSessionCheck();
 
     useEffect(() => {
-        if (sessionUserId === "") {
-            alert("No session found! Please relog in")
-            navigate('/');
+        // if (sessionUserId === "") {
+        //     alert("No session found! Please relog in")
+        //     navigate('/');
+        // } else {
+        //     setUserId(sessionUserId[0]);
+        // }
+
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!" + user_id)
         } else {
-            setUserId(sessionUserId[0]);
+            alert("You need to relog in!")
+            navigate('/');
         }
-        axios.get('http://localhost:8000/api/viewmedicine', { params: { user_id: userId } })
+
+        axios.get('http://localhost:8000/api/viewmedicine', { params: { user_id: user_id } })
             .then(response => {
                 setMedName(response.data);//list
       
@@ -41,7 +50,7 @@ function RxListPage() {
         function handleAddMedication(event) {
             event.preventDefault();
             let userData = {
-                user_id: userId,
+                user_id: user_id,
                 med_name: medName,
                 description: description,
                 dose_amt: doseAmt,
@@ -75,7 +84,6 @@ function RxListPage() {
             <div className="app-container">
                 <main className="main-content">
                     <form className ="rx-list" onSubmit={handleAddMedication}>
-                        <input type="text" placeholder="UserID" id="userID" name="userID" onChange={e => setUserId(e.target.value)}/>
                         <input type="text" placeholder="Medicine Name" id="medName-input" name="medName" onChange={e => setMedName(e.target.value)}/>
                         <input type="text" placeholder="Description" id="description-input" name="description" onChange={e => setDescription(e.target.value)}/>
                         
