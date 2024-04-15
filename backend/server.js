@@ -24,7 +24,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true })); 
 /* Where our get/post routes will go 
-    Will need to change to /api/... when implementing to our server
+    Will need to change to /... when implementing to our server
 */
 
 // Sessions
@@ -37,13 +37,13 @@ app.use(session({
 
 
 //Sample Get/Post Requests request
-app.get('/api', (req, res) => {
+app.get('/', (req, res) => {
   res.send('This is the server!');
 });
 
 // Login page
 // Issue: Cookies are created in Postman but not the browser :(/
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   let { email, password } = req.body;
   console.log("req.session.id: " + req.session.id);
 
@@ -81,7 +81,7 @@ app.post('/api/login', async (req, res) => {
 //--------------------------------------------------------------------------------------------------------------------------------
 // WE DONT NEED THIS ANYMORE
 // Sign Up Page
-app.post('/api/signup', async (req, res) => {
+app.post('/signup', async (req, res) => {
   let { first_name, last_name, email, password } = req.body;
   console.log("We in the right route\n" + req.body.data);
 
@@ -116,7 +116,7 @@ app.post('/api/signup', async (req, res) => {
 });
 //--------------------------------------------------------------------------------------------------------------------------------
 //dbtest page for select * from user
-app.get("/api/dbtest", async (req, res) => {
+app.get("/dbtest", async (req, res) => {
   try {
     const data = await select_user();
     res.json(data);
@@ -126,7 +126,7 @@ app.get("/api/dbtest", async (req, res) => {
 });
 //--------------------------------------------------------------------------------------------------------------------------------
 //HomePage Register 
-app.post("/api/Register", async (req, res) => {
+app.post("/Register", async (req, res) => {
   let { first_name, last_name, email, password } = req.body;
   console.log(req.body);
   try {
@@ -161,7 +161,7 @@ app.post("/api/Register", async (req, res) => {
 
 //--------------------------------------------------------------------------------------------------------------------------------
 //searchmedicine to get data from mysql
-app.get("/api/searchmedicine", async (req, res) => {
+app.get("/searchmedicine", async (req, res) => {
   console.log("/searchtest --> selectMedicine")
   try {
     const data = await search_medicine();
@@ -175,7 +175,7 @@ app.get("/api/searchmedicine", async (req, res) => {
 
 // Sessions - return  [ session_id, user_id]
 // Postman Test - SUCCESS
-app.post("/api/session", async (req, res) => {
+app.post("/session", async (req, res) => {
   // Assuming the frontend is sending a res of the session_id from cookie
   try {
     const query = "SELECT user_id, logout_time FROM session WHERE id = ?";
@@ -194,7 +194,7 @@ app.post("/api/session", async (req, res) => {
 
 // Profile - return user information [ everything but password]
 // Postman Test - SUCCESS
-app.post('/api/profile', async (req, res) => {
+app.post('/profile', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
   console.log("api/profile");
   try {
@@ -214,7 +214,7 @@ app.post('/api/profile', async (req, res) => {
 
 // Profile Edit - When a user edits their basic information
 // Postman Test - SUCCESS
-app.post('/api/profile/edit', async (req, res) => {
+app.post('/profile/edit', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
   try {
     const modified_columns = [];
@@ -244,7 +244,7 @@ app.post('/api/profile/edit', async (req, res) => {
 
 // Account Link - Show ever patient linked to user ID (caregiver)
 // Postman Test - SUCCESS
-app.post('/api/accountLink', async (req, res) => {
+app.post('/accountLink', async (req, res) => {
   // Assuming the frontend is sending a res of the logged in user id
   try {
     const query = "SELECT user.* FROM account_link JOIN user ON account_link.caregiver_id = user.id WHERE account_link.patient_id = ?;";
@@ -264,7 +264,7 @@ app.post('/api/accountLink', async (req, res) => {
 
 // Account Link - Links the accounts
 // Postman Test - SUCCESS
-app.post('/api/linkAccounts', async (req, res) => {
+app.post('/linkAccounts', async (req, res) => {
   // Assuming the frontend sends the logged in user id AND an email
   console.log("Linking accounts")
   console.log(req.body); 
@@ -294,7 +294,7 @@ app.post('/api/linkAccounts', async (req, res) => {
     }
   });
   
-  // app.post('/api/linkAccounts', async (req, res) => {
+  // app.post('/linkAccounts', async (req, res) => {
   //   // Assuming the frontend sends the logged in user id AND an email
   //     try {
   //       if (req.body.account_type === "caregiver") {
@@ -433,7 +433,7 @@ async function search_medicine() {
 // -----------------------------------------------------------------------------------------------------------------------
 // Add medicine to the prescription table (Tested with postman and works with mysql database)
 // Accounts for nullable entries (description, end date)
-app.post("/api/addmedicine", async (req, res) => {
+app.post("/addmedicine", async (req, res) => {
   // let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   try {
     const columns = [];
@@ -478,7 +478,7 @@ app.post("/api/addmedicine", async (req, res) => {
 });
 // -----------------------------------------------------------------------------------------------------------------------
 // delete medicine in the prescription table (Tested with postman and works with mysql database)
-app.post("/api/deletemedicine", async (req, res) => {
+app.post("/deletemedicine", async (req, res) => {
   const { id } = req.body;
   console.log(req.body);
   //console.log(id);
@@ -499,7 +499,7 @@ app.post("/api/deletemedicine", async (req, res) => {
 
 //--------------------------------------------------------------------------------------------------------------------------------
 // View medicine in the prescription table (Tested with postman and works with mysql database)
-app.post("/api/viewmedicine", async (req, res) => {
+app.post("/viewmedicine", async (req, res) => {
   console.log(req.body);
   const { user_id } = req.body;
 console.log("userid backend: " + user_id);
@@ -520,7 +520,7 @@ console.log("userid backend: " + user_id);
 
 //--------------------------------------------------------------------------------------------------------------------------------
 // logout api
-app.post("/api/logout", async (req, res) => {
+app.post("/logout", async (req, res) => {
   const { session_id } = req.body;
   try {
     console.log("Logging out...");
