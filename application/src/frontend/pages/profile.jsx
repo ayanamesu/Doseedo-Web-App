@@ -111,7 +111,6 @@ function PatientProfilePage() {
                     {user && <UserInfo {...user} />}
                 </div> 
             </div>
-            <button className="backButton" onClick={handleBack}>Back</button>
         </div>
     );
 }

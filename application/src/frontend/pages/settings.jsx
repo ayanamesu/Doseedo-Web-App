@@ -180,7 +180,6 @@ const SettingsPage = () => {
             <div className="linkedAccountsContainer">
                 {displayAccountLinkData() }
             </div>
-            <button className="backButton" onClick={handleBackClick}>Back</button>
         </div>
     );
 };

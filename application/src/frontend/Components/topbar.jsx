@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import UseSessionCheck from './UseSessionCheck';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRightFromBracket, faCircleInfo, faBell, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 
 function Topbar() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
@@ -46,21 +48,15 @@ function Topbar() {
         
     }; 
 
- 
-    
-    
-
     if(window.location.pathname !== "/"){
         return (
-            <div className="div-2">
-                <div className="div-3">
-                    <button className="div-5" onClick={handleHomeClick}>Doseedo</button>
-                </div>
-                <div className="div-4">
-                    <button className="div-5" onClick={NavigateToContacts}>Contacts</button>
-                    <button className="div-6" onClick={NavigateToNotifications}>Notifications</button>
-                    <button className="div-7" onClick={NavigateToAbout}>About Us</button>
-                    <button className="div-8" onClick={NavigateToSignOut}>Sign Out</button>
+            <div className="topbar">
+                <h1 className="site-logo" onClick={handleHomeClick}>Doseedo</h1>
+                <div className="topbar-buttons">
+                    <button className="topbar-button" onClick={NavigateToContacts}><FontAwesomeIcon icon={faAddressBook}/> Contacts</button>
+                    <button className="topbar-button" onClick={NavigateToNotifications}><FontAwesomeIcon icon={faBell}/> Notifications</button>
+                    <button className="topbar-button" onClick={NavigateToAbout}><FontAwesomeIcon icon={faCircleInfo} /> About Us</button>
+                    <button className="topbar-button" onClick={NavigateToSignOut}><FontAwesomeIcon icon={faRightFromBracket} /> Sign Out</button>
                 </div>
             </div>
         );
