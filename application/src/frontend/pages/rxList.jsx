@@ -38,7 +38,7 @@ function RxListPage() {
         }
      console.log(data);
         //front-end api to view all medicines 
-        axios.post('http://localhost:8000/api/viewmedicine', data )
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
             .then((res) => {
               console.log(res.data);
               console.log(res.status);
@@ -81,7 +81,7 @@ function RxListPage() {
             doctor_phone: doctorPhone
         }
         
-        axios.post('http://localhost:8000/api/addmedicine', userData)
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
                 setShowAddMed(false);
@@ -106,7 +106,7 @@ function RxListPage() {
         const handleDeleteMedicationClick = () => {
           // console.log("from api pass: " + medications[selectedMedicationId].id);
             let toDelete = medications[selectedMedicationId].id;
-          axios.post('http://localhost:8000/api/deletemedicine', { id: toDelete })
+          axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/deletemedicine', { id: toDelete })
             .then(response => {
                 setMedications(response.data);
                 console.log("Medication deleted successfully:", response.data);

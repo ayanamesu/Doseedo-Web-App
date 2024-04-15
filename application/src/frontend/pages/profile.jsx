@@ -44,7 +44,7 @@ function PatientProfilePage() {
         let data = {
             user_id: user_id
         }
-        axios.post('http://localhost:8000/api/profile', data)
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/profile', data)
             .then((apiRes) => {
                 console.log(apiRes.data);
                 setUserFName(apiRes.data.first_name);
@@ -136,7 +136,7 @@ function PatientProfilePage() {
 
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-        axios.post('http://localhost:8000/api/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
        
                 if (apiRes.status === 200) {

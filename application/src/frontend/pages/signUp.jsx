@@ -22,7 +22,7 @@ const SignUpPage = () => {
             password: password
         }
 
-        axios.post('http://localhost:8000/api/signup', userData)
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/signup', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {

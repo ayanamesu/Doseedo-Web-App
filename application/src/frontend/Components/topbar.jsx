@@ -34,7 +34,7 @@ function Topbar() {
              
         // Handle sign out
        
-        axios.post('http://localhost:8000/api/logout', data)//userData contains session id 
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/logout', data)//userData contains session id 
         .then((response) => {
             console.log("response Status"+response.status);
             if (response.status == 200) {
