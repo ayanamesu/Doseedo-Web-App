@@ -115,7 +115,7 @@ const SettingsPage = () => {
             })
             .catch((error) => {
                 console.error(error);
-                alert(error);
+                // alert(error);
             });
     };
 
@@ -177,7 +177,7 @@ const SettingsPage = () => {
         })
         .catch((error) => {
             console.error(error);
-            alert(error);
+            // alert(error);
         });
 
         return AccountList.map((accountLink, index) => (

@@ -16,10 +16,11 @@ const BackButton = () => {
     }, [location]);
 
     const handleBackClick = () => {
-        historyStack.pop();
-        if (historyStack.length > 0) {
-            navigate(historyStack[historyStack.length - 1], { replace: true });
-        }
+        // historyStack.pop();
+        // if (historyStack.length > 0) {
+        //     navigate(historyStack[historyStack.length - 1], { replace: true });
+        // }
+        window.history.go(-1);
     };
 
     if(location.pathname !== "/"){

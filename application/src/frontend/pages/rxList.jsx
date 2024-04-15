@@ -109,6 +109,8 @@ function RxListPage() {
           axios.post('http://localhost:8000/api/deletemedicine', { id: toDelete })
             .then(response => {
                 setMedications(response.data);
+                console.log("Medication deleted successfully:", response.data);
+                navigate('/rxlist');
             })
             .catch(error => {
                 console.error('Error deleting medication:', error);

@@ -2,9 +2,8 @@ import React, { useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import UseSessionCheck from '../Components/UseSessionCheck';
+import Cookies from 'js-cookie';
 import { useEffect } from 'react';
-
 const HomePage = () => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
@@ -19,6 +18,15 @@ const HomePage = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+
+  useEffect(() => {
+    if (Cookies.get('user_id') && Cookies.get('session_id')) {
+        setUserId(Cookies.get('user_id'));
+        console.log("User id has been set!" + user_id)
+       navigate('/dashboard');
+    } 
+
+}, [user_id]);
 //   const sessionUserId = UseSessionCheck();
 
 //   useEffect(() => {
@@ -29,7 +37,7 @@ const HomePage = () => {
 //         setUserId(sessionUserId[0]);
 //     }
 // }, []);
-
+    
   function handleLoginForm(event) {
 
     event.preventDefault();
