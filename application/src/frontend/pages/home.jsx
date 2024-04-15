@@ -2,7 +2,8 @@ import React, { useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-
+import Cookies from 'js-cookie';
+import { useEffect } from 'react';
 const HomePage = () => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
@@ -10,6 +11,7 @@ const HomePage = () => {
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
   let navigate = useNavigate();
+  const [user_id, setUserId] = useState("");
   //shows notification
   const [showNotification, setShowNotification] = useState(false);
   //sets the notification message based on if the account was created or not
@@ -17,7 +19,27 @@ const HomePage = () => {
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
 
+  useEffect(() => {
+    if (Cookies.get('user_id') && Cookies.get('session_id')) {
+        setUserId(Cookies.get('user_id'));
+        console.log("User id has been set!" + user_id)
+       navigate('/dashboard');
+    } 
+
+}, [user_id]);
+//   const sessionUserId = UseSessionCheck();
+
+//   useEffect(() => {
+//     if (sessionUserId === "") {
+//         navigate('/');
+//     } else {
+//         navigate('/dashboard');
+//         setUserId(sessionUserId[0]);
+//     }
+// }, []);
+    
   function handleLoginForm(event) {
+
     event.preventDefault();
     let userData = {
         email: email,
@@ -39,11 +61,12 @@ const HomePage = () => {
              * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
              * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
             */
-            setCookie("session_id", res.data, { sameSite: 'lax'});
-
+            setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
+            setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
+            alert("Successfuly logged In!");
             // TODO: Frontend - do whatever you gotta do with this information
             // change this to the dashboard page
-            navigate('/about');
+            navigate('/dashboard');
 
         } else {
             console.log("Something weird happened...");
