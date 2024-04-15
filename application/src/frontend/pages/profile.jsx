@@ -144,58 +144,6 @@ function PatientProfilePage() {
     };
 
     return (
-        // <>
-        //     <div className="div">
-             
-        //         <div className="div-9">
-        //             <div className="div-10">
-        //                 <div className="column">
-        //                     <div className="div-11">
-        //                         <button className="div-12" onClick={handleEditProfile}>
-        //                             Edit Profile
-        //                         </button>
-        //                         <button className="div-13" onClick={handleShareProfile}>
-        //                             Share Profile
-        //                         </button>
-        //                         <button className="div-14" onClick={handleAddConnections}>
-        //                             Add Conections
-        //                         </button>
-        //                     </div>
-        //                 </div>
-        //                 <div className="column-2">
-        //                     <div className="div-15">
-        //                         <div className="div-16">
-        //                             <div className="column-3">
-        //                                 <div className="div-17">
-        //                                     <div className="div-18">Profile Page</div>
-        //                                     <div className="div-19">
-        //                                     {user && <UserInfo {...user} />}
-        //                                     </div>
-        //                                     <div className="div-22"/>
-        //                                 </div>
-        //                             </div>
-        //                             <div className="column-4">
-        //                                 <div className="div-23">
-        //                                     <div className="div-24">
-                                               
-                                              
-        //                                         Profile Icon
-        //                                         <br/>
-        //                                         Picture
-        //                                     </div>
-        //                                     <button className="div-26" onClick={handleBack}>
-                                             
-        //                                         <div className="div-27">Back</div>
-        //                                     </button>
-        //                                 </div>
-        //                             </div>
-        //                         </div>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </>
         <div>
             <h1 className="profile-title">Profile Page</h1>
             <div className="profile-body">
@@ -219,7 +167,6 @@ function PatientProfilePage() {
                     {user && <UserInfo {...user} />}
                 </div> 
             </div>
-            <button className="backButton" onClick={handleBack}>Back</button>
         </div>
     );
 }

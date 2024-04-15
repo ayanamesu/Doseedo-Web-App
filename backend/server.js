@@ -248,7 +248,7 @@ app.post('/api/profile/edit', async (req, res) => {
 app.post('/api/accountLink', async (req, res) => {
   // Assuming the frontend is sending a res of the logged in user id
   try {
-    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.caregiver_id = user.id WHERE account_link.patient_id = ?;";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length == 1) {

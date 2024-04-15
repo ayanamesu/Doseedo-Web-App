@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleMedical, faGear, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faCalendar } from '@fortawesome/free-regular-svg-icons';
 import BackButton from "../Components/BackButton";
-
+ 
 import "../App.css";
 
 function DashBoard() {
@@ -20,23 +20,23 @@ function DashBoard() {
         navigate("/rxlist", { replace: true });
     };
 
-    const handleSettingsClick = () => {
-        navigate("/Settings", { replace: true });
-    };
-    const handleProfileClick = () => {
-        navigate("/Profile", { replace: true });
-    };
-    const handle911Click = () => {
-        navigate("/911", { replace: true });
-    };
-    const getCurrentDate = () => {
-        let today = new Date();
-        let month = today.toLocaleString('default', { month: 'long' });
-        let day = today.getDate();
-        let year = today.getFullYear();
+const handleSettingsClick = () => {
+    navigate("/Settings", { replace: true });  
+};
+const handleProfileClick = () => {
+    navigate("/Profile", { replace: true });  
+};
+const handle911Click = () => {
+    navigate("/911", { replace: true });  
+};
+const getCurrentDate = () => {
+    let today = new Date();
+    let month = today.toLocaleString('default', { month: 'long' });
+    let day = today.getDate();
+    let year = today.getFullYear();
 
-        return `${month} ${day}, ${year}`;
-    }
+    return `${month} ${day}, ${year}`;
+}
 
 
 

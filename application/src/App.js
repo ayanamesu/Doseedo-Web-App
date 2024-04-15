@@ -12,7 +12,8 @@ import UseSessionCheck from './frontend/Components/UseSessionCheck';
 import RxListPage from "./frontend/pages/rxList";
 import CalendarPage from "./frontend/pages/calendar";
 import PatientProfilePage from "./frontend/pages/profile";
-import PatientHomePage from "./frontend/pages/homePagePatient";
+import DashBoard from "./frontend/pages/dashboard";
+import BackButton from "./frontend/Components/BackButton";
 
 
 const queryClient = new QueryClient({});
@@ -26,6 +27,7 @@ function App() {
           <div>
             <Sidebar />
             <Topbar />
+            <BackButton />
             {/*All routes must go here in App.js*/}
             <Routes>
               <Route path="/" element={<HomePage />} />
