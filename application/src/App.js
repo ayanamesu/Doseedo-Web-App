@@ -41,7 +41,7 @@ function App() {
               <Route path="/rxList" element={<RxListPage/>} />
               <Route path="/calendar" element={<CalendarPage/>} />
               <Route path="/profile" element={<PatientProfilePage/>} />
-              
+              <Route path="/dashboard" element={<DashBoard/>} />
 
             </Routes>
           </div>
