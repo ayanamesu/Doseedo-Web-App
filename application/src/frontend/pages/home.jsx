@@ -46,7 +46,7 @@ const HomePage = () => {
         password: password
     }
 
-    axios.post('http://localhost:8000/api/login', userData)
+    axios.post('http://http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/login', userData)
     .then(res => {
         console.log(res.status); 
         //res = backend res.status(200).json(req.session.id); from the post
@@ -96,7 +96,7 @@ const HomePage = () => {
         password: password
     }
    
-    axios.post('http://localhost:8000/api/Register', userData)
+    axios.post('http://http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/Register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {
