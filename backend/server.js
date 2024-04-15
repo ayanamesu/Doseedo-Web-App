@@ -244,19 +244,16 @@ app.post('/api/profile/edit', async (req, res) => {
 
 // Account Link - Show ever patient linked to user ID (caregiver)
 // Postman Test - SUCCESS
-// TODO: change this name later
 app.post('/api/accountLink', async (req, res) => {
   // Assuming the frontend is sending a res of the logged in user id
-  console.log("Hello")
   try {
     const query = "SELECT user.* FROM account_link JOIN user ON account_link.caregiver_id = user.id WHERE account_link.patient_id = ?;";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
-    if (results && results.length == 1) {
+    if (results && results.length >= 1) {
       console.log(results);
       res.status(200).json(results);
     } else {
-      console.log("WHOOPSIES")
       res.status(204).json({ msg: "No patients for this user"});
     }
   } catch (error) {

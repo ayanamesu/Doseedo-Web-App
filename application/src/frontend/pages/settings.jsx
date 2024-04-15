@@ -18,11 +18,7 @@ const SettingsPage = () => {
     const [AccountList, setAccountList] = useState([]);
 
     // const sessionUserId = useSessionCheck();
-    
-    // from yakbranch
-    useEffect(() => {
-        
-        // Previously had via github commit e462e7b (the pervious change to this)
+    // Previously had via github commit e462e7b (the pervious change to this) all in 
         // axios.get('http://localhost:8000/api/isAccountLinked',{ params: { userId} })
         //     .then((apiRes) => {
         //         const accountLinked = apiRes.data;
@@ -41,24 +37,34 @@ const SettingsPage = () => {
         // } else {
         //     setUserId(sessionUserId[0]);
         // }
+    // from yakbranch
+    useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
-            console.log("User id has been set!")
+            console.log("User id has been set!" + userId);
         } else {
             alert("You need to relog in!")
             navigate('/');
         }
 
-        axios.post('http://localhost:8000/api/accountLink',{ user_id: userId })
-            .then((apiRes) => {
-                const accountLinked = apiRes.data;
-                if (accountLinked) {
-                    setAccountLink(true);
+        const fetchAccountList = async () => {
+            try {
+                const data = {
+                    user_id: userId
+                };
+                const apiRes = await axios.post('http://localhost:8000/api/accountLink', data);
+                if (apiRes.status === 200) {
+                    setAccountList(apiRes.data);
+                } else if (apiRes.status === 204) {
+                    console.log("There are no patients for this user");
+                } else {
+                    console.log("Something went wrong with the backend...");
                 }
-            })
-            .catch((error) => {
+            } catch (error) {
                 console.error(error);
-            });
+            }
+        };
+            fetchAccountList();
     }, [userId]);
 
     const handleGeneralClick = () => {
@@ -154,42 +160,6 @@ const SettingsPage = () => {
         window.history.go(-1);
     };
 
-    // This is now returning the correct data from the backend api
-    // TODO: FRONTEND DESIGN - Displaying some stuff~
-    const displayAccountLinkData = () => {
-        //axios post needs to be updated instead of dummy data
-        let data = {
-            user_id: userId
-        }
-        axios.post('http://localhost:8000/api/accountLink', data)
-        .then((apiRes) => { 
-            console.log(apiRes.data);
-            // You can do apiRes.data.<almost any column from the user table>
-            if (apiRes.status === 200) {
-                console.log("Showing the patients here")
-                setAccountList(apiRes.data);
-            } else if (apiRes.status === 204) {
-                console.log("There are no paients for this user")
-            } else {
-                console.log("Something went wrong with the backend...")
-            }
-
-        })
-        .catch((error) => {
-            console.error(error);
-            // alert(error);
-        });
-
-        return AccountList.map((accountLink, index) => (
-            <div key={index} className="account">
-                {/* <h3>{accountLink.name}</h3> */}
-                {/* <p>{accountLink.account_type}</p> */}
-                <p>{accountLink.email}</p>
-                <button>Unlink</button>
-            </div>
-        ));
-    };
-
     return (
 
         <div>
@@ -219,8 +189,13 @@ const SettingsPage = () => {
                 <button className="button" type="submit" id="accountLinkSubmit">submit</button>
             </form>
             <h2>Linked Accounts:</h2>
-            <div className="linkedAccountsContainer">
-                {displayAccountLinkData() }
+             <div className="linkedAccountsContainer">
+                {AccountList.map((accountLink, index) => (
+                    <div key={index} className="account">
+                        <p>{accountLink.email}</p>
+                        <button>Unlink</button>
+                    </div>
+                ))}
             </div>
         </div>
     );
