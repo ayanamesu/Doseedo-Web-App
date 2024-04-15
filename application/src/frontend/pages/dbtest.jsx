@@ -1,34 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+
+//change the name of the file to search.jsx
 const Dbtest = () => {
   const [backendData, setBackendData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [medicine, setMedicine] = useState([]);
+  
   // testing insert for future date
-  const data = {
-      fname: 'John',
-      lname: 'Doe',
-      email: 'john.doe@example.com',
-      password: 'password'
-      
-    };
-    console.log("endpoint");
-  axios.post('http://localhost:8000/api/dbtest', data)
-  .then(response => { console.log(response.data);
-  })
-  .catch(error => {
-      console.error(error);
-  });
+
   useEffect(() => {
     const currentUrl = window.location.href;
     const urlObj = new URL(currentUrl);
     const searchParam = urlObj.searchParams.get("search");
   
-    if (searchParam) {
-      console.log(searchParam);
-    }
-  
+  // this one is for searching users
     axios
       // .get("http://ec2-3-139-83-222.us-east-2.compute.amazonaws.com/api/dbtest")
       .get("http://localhost:8000/api/dbtest")
@@ -44,17 +31,19 @@ const Dbtest = () => {
         console.error("Error fetching data from the backend:", error);
       });
   
+
+  // this one is for searching medicine
     axios
-      // .get("http://ec2-3-139-83-222.us-east-2.compute.amazonaws.com/api/searchtest") 
-      .get("http://localhost:8000/api/searchtest") //dummy url to get data from backend mysql
+      .get("http://localhost:8000/api/searchmedicine")
       .then((response) => {
         setMedicine(response.data.filter((item) =>
         item.med_name.toLowerCase().includes(searchParam.toLowerCase()), //returns whole item but only compares one column
-      ),);
-      })
-      .catch((error) => {
-        console.error("Error fetching data from the backend:", error);
-      });
+        ),
+      );
+    })
+    .catch((error) => {
+      console.error("Error fetching data from the backend:", error);
+    });
   }, []);
 
   return (
@@ -74,14 +63,16 @@ const Dbtest = () => {
           );
         })}
         {medicine?.map((item, index) => {
-          // return the JSX for each item here
+          // return the JSX for each item here 
           // this lists the mysql data from the Prescriptions table
           return (
             <div key={index}>
               <div className="result-container">
                 <h2 className="result-title">Medicine</h2>
                 <div className="name"><strong>Type:</strong> {item.med_name}</div>
+                <p className="user-id"><strong>User-id:</strong> {item.user_id}</p>
                 <p className="medicine-description"><strong>Description:</strong> {item.description}</p>
+                
               </div>
             </div>
           );
