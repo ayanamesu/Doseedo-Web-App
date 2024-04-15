@@ -347,7 +347,7 @@ app.listen(port, () => {
 async function checkCredentials(email, password) {
   console.log("Checking credentials...");
   try {
-    const query = "SELECT id, password FROM User WHERE email=?;";
+    const query = "SELECT id, password FROM user WHERE email=?;";
     const [results, fields] = await db.query(query, [email]);
     if (results && results.length == 1) {
       let dbPassword = results[0].password;
@@ -407,7 +407,7 @@ async function hasAccount(email) {
 async function select_user() {
   console.log("selectuser()");
   try {
-    const query = "SELECT * FROM User;";
+    const query = "SELECT * FROM user;";
     const [result, fields] = await db.query(query);
     return result;
   } catch (error) {
