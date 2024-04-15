@@ -23,11 +23,11 @@ const pool = mysql.createPool({
         // port: "3306",
 
         // ALEIA DB
-       host: "localhost",
-       user: "root",
-       database: "doseedodb", // insert your db info here
-       password: "1234", //mysql password here
-       port: "3306",
+//        host: "localhost",
+//        user: "root",
+//        database: "doseedodb", // insert your db info here
+//        password: "1234", //mysql password here
+//        port: "3306",
         //Yuto DB
              // ALEIA DB
         //      host: "localhost",
