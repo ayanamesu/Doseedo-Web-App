@@ -12,7 +12,7 @@ import UseSessionCheck from './frontend/Components/UseSessionCheck';
 import RxListPage from "./frontend/pages/rxList";
 import CalendarPage from "./frontend/pages/calendar";
 import PatientProfilePage from "./frontend/pages/profile";
-import DashBoard from "./frontend/pages/dashboard";
+import PatientHomePage from "./frontend/pages/homePagePatient";
 
 
 const queryClient = new QueryClient({});
@@ -39,7 +39,7 @@ function App() {
               <Route path="/rxList" element={<RxListPage/>} />
               <Route path="/calendar" element={<CalendarPage/>} />
               <Route path="/profile" element={<PatientProfilePage/>} />
-              <Route path="/dashboard" element={<DashBoard/>} />
+              <Route path="/home" element={<PatientHomePage/>} />
 
             </Routes>
           </div>

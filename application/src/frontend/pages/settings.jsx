@@ -185,17 +185,16 @@ const SettingsPage = () => {
 
         // return dummyAccountLinkData.map((accountLink, index) => {
             return (
-                // <div key={index} className="account">
-                //     <h3>{accountLink.name}</h3>
-                //     <p>{accountLink.account_type}</p>
-                //     <p>{accountLink.email}</p>
-                //     <button>Unlink</button>
-                // </div>
-                <div> peepee </div>
+                <div key={index} className="account">
+                    <h3>{accountLink.name}</h3>
+                    <p>{accountLink.account_type}</p>
+                    <p>{accountLink.email}</p>
+                    <button>Unlink</button>
+                </div>
             );
-        // });
+        });
     };
-      
+
     return (
         // <>
         //     <div className="div">
