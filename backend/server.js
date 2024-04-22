@@ -167,6 +167,7 @@ app.get("/searchmedicine", async (req, res) => {
     const user_id = req.body.user_id;
     const data = await search_medicine(user_id);
     //this console.log is to see the data in the terminal
+    //paige debug milestone4
     console.log(data);
     res.json(data);
   } catch (error) {
