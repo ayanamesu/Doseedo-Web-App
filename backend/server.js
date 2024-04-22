@@ -164,7 +164,8 @@ app.post("/api/Register", async (req, res) => {
 app.get("/api/searchmedicine", async (req, res) => {
   console.log("/searchtest --> selectMedicine")
   try {
-    const data = await search_medicine();
+    const user_id = req.body.user_id;
+    const data = await search_medicine(user_id);
     //this console.log is to see the data in the terminal
     console.log(data);
     res.json(data);
