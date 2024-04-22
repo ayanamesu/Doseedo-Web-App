@@ -32,7 +32,7 @@ const SettingsPage = () => {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/accountLink', data);
+                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -88,7 +88,7 @@ const SettingsPage = () => {
             email: email, 
             account_type: accountType
         }
-        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/linkAccounts', data)
+        axios.post('http://localhost:8000/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
                 if (accountLink === 201) {
