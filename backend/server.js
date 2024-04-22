@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 
 // Configure CORS to allow requests from a specific origin
 const corsOptions = {
-  origin: 'http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com', // Whitelist the specific origin
+  origin: 'http://localhost:3006', // Whitelist the specific origin
   optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
