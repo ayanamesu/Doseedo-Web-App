@@ -17,7 +17,6 @@ const SettingsPage = () => {
     const [isAccountLinked, setAccountLink] = useState(false);
     const [AccountList, setAccountList] = useState([]);
 
-    // from yakbranch
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
@@ -32,7 +31,7 @@ const SettingsPage = () => {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/accountLink', data);
+                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -63,7 +62,6 @@ const SettingsPage = () => {
         navigate("/settings/Language", { replace: true }); 
     };
 
-    // from yakbranch
     function handleAccountPairClick(event) {
 
         // Previously had via github commit e462e7b (the pervious change to this)
@@ -88,18 +86,24 @@ const SettingsPage = () => {
             email: email, 
             account_type: accountType
         }
-        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/linkAccounts', data)
+        axios.post('http://localhost:8000/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
                 if (accountLink === 201) {
                     setAccountLink(true);
                     alert("Account linked successfully!");
                     // navigate('/');
-                } else {
+                } 
+                else if(accountLink === 409){
+                    setAccountLink(true);
+                    alert("Account already linked");
+                }
+                else {
                     alert("Invalid input");
                 }
             })
             .catch((error) => {
+
                 console.error(error);
                 // alert(error);
             });

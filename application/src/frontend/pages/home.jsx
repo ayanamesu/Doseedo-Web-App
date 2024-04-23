@@ -96,7 +96,7 @@ const HomePage = () => {
         password: password
     }
    
-    axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/Register', userData)
+    axios.post('http://localhost:8000/Register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {

@@ -15,7 +15,7 @@ const LoginPage = () => {
             password: password
         }
 
-        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/login', userData)
+        axios.post('http://localhost:8000/login', userData)
         .then(res => {
             console.log(res.status); 
             //res = backend res.status(200).json(req.session.id); from the post

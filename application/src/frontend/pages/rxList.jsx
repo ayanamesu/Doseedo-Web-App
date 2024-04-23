@@ -29,24 +29,27 @@ function RxListPage() {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
            // console.log("User id has been set!" + user_id)
+            let data = {
+            user_id: user_id
+            }
+           if (user_id) {
+            axios.post('http://localhost:8000/viewmedicine', data )
+           .then((res) => {
+             console.log("res.data" + res.data);
+              
+             console.log("res.status" + res.status);
+               setMedications(res.data);//list
+           })
+           .catch((error) => {
+               console.error('Error fetching medications:', error);
+           });
+        }
         } else {
             alert("You need to relog in!")
             navigate('/');
         }
-        let data = {
-            user_id: user_id
-        }
-     console.log(data);
         //front-end api to view all medicines 
-        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
-            .then((res) => {
-              console.log(res.data);
-              console.log(res.status);
-                setMedications(res.data);//list
-            })
-            .catch((error) => {
-                console.error('Error fetching medications:', error);
-            });
+        
     }, [user_id]);
 
     const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
@@ -81,11 +84,21 @@ function RxListPage() {
             doctor_phone: doctorPhone
         }
         
-        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/addmedicine', userData)
+        axios.post('http://localhost:8000/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page
+                let data = {
+                    user_id: user_id
+                    }
+                axios.post('http://localhost:8000/viewmedicine', data )
+                .then((res) => {
+                  console.log("res.data" + res.data);
+                   
+                  console.log("res.status" + res.status);
+                    setMedications(res.data);//list
+                })
             })
             .catch(error => {
                 console.error('Error adding medication:', error);         
@@ -106,7 +119,8 @@ function RxListPage() {
         const handleDeleteMedicationClick = () => {
           // console.log("from api pass: " + medications[selectedMedicationId].id);
             let toDelete = medications[selectedMedicationId].id;
-          axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/deletemedicine', { id: toDelete })
+            console.log("toDelete: " + toDelete);
+          axios.post('http://localhost:8000/deletemedicine', { id: toDelete })
             .then(response => {
                 setMedications(response.data);
                 console.log("Medication deleted successfully:", response.data);
@@ -128,6 +142,7 @@ function RxListPage() {
             setShowMedsforTheDay(false);
         }
     const handleNextClick = () => {
+        //if medlist has nothing else render
         console.log(selectedMedicationId);
         if (medications.length > selectedMedicationId + 1) {//index0=1,1=2
             setSelectedMedicationId(prevCount => prevCount + 1);
@@ -277,7 +292,7 @@ function RxListPage() {
     };
 
     const renderAddDeleteButton = () => {
-        if (!showAddMed) {
+        if (!showAddMed) { // && medlist array not null 
             return (
                 <>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>

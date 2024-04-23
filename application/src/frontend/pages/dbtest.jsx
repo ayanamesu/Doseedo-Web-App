@@ -18,7 +18,7 @@ const Dbtest = () => {
   // this one is for searching users
     axios
       // .get("http://ec2-3-139-83-222.us-east-2.compute.amazonaws.com/api/dbtest")
-      .get("http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/dbtest")
+      .get("http://localhost:8000/dbtest")
       .then((response) => {
         setBackendData(response.data);
         setFilteredData(
@@ -34,7 +34,7 @@ const Dbtest = () => {
 
   // this one is for searching medicine
     axios
-      .get("http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/searchmedicine")
+      .get("http://localhost:8000/searchmedicine")
       .then((response) => {
         setMedicine(response.data.filter((item) =>
         item.med_name.toLowerCase().includes(searchParam.toLowerCase()), //returns whole item but only compares one column
