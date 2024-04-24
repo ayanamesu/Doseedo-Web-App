@@ -4,7 +4,6 @@ import HomePage from "./frontend/pages/home";
 import LoginPage from "./frontend/pages/login";
 import { QueryClient, QueryClientProvider } from "react-query";
 import SignUpPage from "./frontend/pages/signUp";
-import Dbtest from "./frontend/pages/dbtest";
 import SettingsPage from "./frontend/pages/settings";
 import Sidebar from "./frontend/Components/Sidebar";
 import Topbar from "./frontend/Components/topbar";
@@ -36,7 +35,6 @@ function App() {
 
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignUpPage />} />
-              <Route path="/dbtest" element={<Dbtest />} />
               <Route path="/settings" element={<SettingsPage/>} />
               <Route path="/rxList" element={<RxListPage/>} />
               <Route path="/calendar" element={<CalendarPage/>} />

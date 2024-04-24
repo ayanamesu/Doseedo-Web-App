@@ -114,16 +114,7 @@ app.post('/api/signup', async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
-//--------------------------------------------------------------------------------------------------------------------------------
-//dbtest page for select * from user
-app.get("/api/dbtest", async (req, res) => {
-  try {
-    const data = await select_user();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
+
 //--------------------------------------------------------------------------------------------------------------------------------
 //HomePage Register 
 app.post("/api/Register", async (req, res) => {
@@ -160,18 +151,6 @@ app.post("/api/Register", async (req, res) => {
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-//searchmedicine to get data from mysql
-app.get("/api/searchmedicine", async (req, res) => {
-  console.log("/searchtest --> selectMedicine")
-  try {
-    const data = await search_medicine();
-    //this console.log is to see the data in the terminal
-    console.log(data);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
 
 // Sessions - return  [ session_id, user_id]
 // Postman Test - SUCCESS
@@ -402,33 +381,8 @@ async function hasAccount(email) {
   }
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------
-// Selects all columns from the user table
-async function select_user() {
-  console.log("selectuser()");
-  try {
-    const query = "SELECT * FROM User;";
-    const [result, fields] = await db.query(query);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-//--------------------------------------------------------------------------------------------------------------------------------
-// Selects all columns from the prescription table
-async function search_medicine() {
-  console.log("searchmedicine()");
-  try {
-    const query = "SELECT * FROM prescription;";
-    const [result, fields] = await db.execute(query);
-    // console.log(result);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+
+
 
 // -----------------------------------------------------------------------------------------------------------------------
 // Add medicine to the prescription table (Tested with postman and works with mysql database)
@@ -537,3 +491,45 @@ app.post("/api/logout", async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// emergency contact api if we decide to implement into database
+
+// app.post("/api/emergencycontact", async (req, res) => {
+//   let { user_id, first_name, last_name, phone, email } = req.body;
+//   try {
+//     console.log("Adding emergency contact...");
+//     const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
+//                           VALUES (?, ?, ?, ?, ?)`;
+//     const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
+//     if (results && results.affectedRows == 1) {
+//       res.status(201).json({msg: "Emergency contact successfully added"});
+//     } else {
+//       res.status(500).json({ "error": "Emergency contact addition failed" });
+//     }
+//   } catch (error) {
+//      console.error(error);
+//      res.status(500).json({ "error": "Internal server error" });
+//   }
+// });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// View emergency contact api if we decide to implement into database
+
+// app.post("/api/viewemergencycontact", async (req, res) => {
+//   const { user_id } = req.body;
+//   try {
+//     console.log("Viewing emergency contact...");
+//     const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
+//     const [results, fields] =  await db.query(selectQuery, [user_id]);
+//     if (results && results.length > 0) {
+//       res.status(200).json(results);
+//     } else {
+//       res.status(404).json({ "error": "No emergency contact found" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ "error": "Internal server error" });
+//   }
+// });
+

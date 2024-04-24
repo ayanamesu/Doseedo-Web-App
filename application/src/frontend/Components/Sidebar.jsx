@@ -37,7 +37,7 @@ function Sidebar() {
               onClick={handleClick}
             />
           )}
-          <form className="search-bar" action="/dbtest" method="GET">
+          <form className="search-bar" action="/" method="GET">
             <input type="text" placeholder="Search..." name="search" />
             <button type="submit">search</button>
           </form>
