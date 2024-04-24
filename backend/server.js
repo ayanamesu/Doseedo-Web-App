@@ -175,8 +175,7 @@ app.get("/api/searchmedicine", async (req, res) => {
 
 // Sessions - return  [ session_id, user_id]
 // Postman Test - SUCCESS
-app.get("/api/session", async (req, res) => {
-  console.log("Seeing if user has an active session...");
+app.post("/api/session", async (req, res) => {
   // Assuming the frontend is sending a res of the session_id from cookie
   try {
     const query = "SELECT user_id, logout_time FROM session WHERE id = ?";
@@ -194,14 +193,16 @@ app.get("/api/session", async (req, res) => {
 });
 
 // Profile - return user information [ everything but password]
-app.get('/api/profile', async (req, res) => {
+// Postman Test - SUCCESS
+app.post('/api/profile', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
+  console.log("api/profile");
   try {
     const query = "SELECT first_name, last_name, email, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length == 1) {
-      res.status(200).json({data: results[0]});
+      res.status(200).json(results[0]);
     } else {
       res.status(401).json({ msg: ""});
     }
@@ -211,19 +212,30 @@ app.get('/api/profile', async (req, res) => {
   }
 });
 
-// TO DO: Profile Edit - When a user edits their basic information
+// Profile Edit - When a user edits their basic information
+// Postman Test - SUCCESS
 app.post('/api/profile/edit', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
-
-  /*
-  * 1) Check for which information is being changed and store those values in an array - modified_columns
-  * 2) Map each column name to the format ${column} = ? - column_map
-  * 3) Write out the query
-  * 4) Put the values together in an array - values
-  * 5) db.query(query, values)
-  */
   try {
-    
+    const modified_columns = [];
+    const values = [];
+
+    Object.entries(req.body.values).forEach(([key, value]) => {
+      if (value !== null) {
+        modified_columns.push(key);
+        values.push(value);
+      }
+    });
+
+    const column_map = modified_columns.map((column, index) => `${column} = "${values[index]}"`).join(", ");
+    const query = `UPDATE user SET ${column_map} WHERE id = ?`;
+
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+    if (results && results.affectedRows === 1) {
+      res.status(200).json({ msg: "Update successful!"});
+    } else {
+      res.status(500).json({ msg: "Something went wrong when updating information"});
+    }
   } catch (error) {
     console.error(error);
     throw error;
@@ -232,14 +244,14 @@ app.post('/api/profile/edit', async (req, res) => {
 
 // Account Link - Show ever patient linked to user ID (caregiver)
 // Postman Test - SUCCESS
-app.get('/api/accountLink', async (req, res) => {
-  console.log("Showing linked accounts!");
-  // Assuming the frontend is sending a res of the logged in user id 
+app.post('/api/accountLink', async (req, res) => {
+  // Assuming the frontend is sending a res of the logged in user id
   try {
-    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.caregiver_id = user.id WHERE account_link.patient_id = ?;";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
-    if (results && results.length == 1) {
+    if (results && results.length >= 1) {
+      console.log(results);
       res.status(200).json(results);
     } else {
       res.status(204).json({ msg: "No patients for this user"});
@@ -250,10 +262,78 @@ app.get('/api/accountLink', async (req, res) => {
   }
 });
 
-// TODO: Account Link - Actually links the accounts
-app.get('/api/link', async (req, res) => {
-
-});
+// Account Link - Links the accounts
+// Postman Test - SUCCESS
+app.post('/api/linkAccounts', async (req, res) => {
+  // Assuming the frontend sends the logged in user id AND an email
+  console.log("Linking accounts")
+  console.log(req.body); 
+    try {
+      if (req.body.account_type === "Caregiver") {
+        const insertQuery1 = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
+        const [results, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
+        if (results && results.affectedRows == 1) {
+          res.status(201).json({ msg: "Link successful!"});
+        } else {
+          res.status(500).json({ msg: "Something went wrong when linking accounts"});
+        }
+      } else if (req.body.account_type === "Patient") {
+        const insertQuery = "INSERT INTO account_link (patient_id, caregiver_id) SELECT ?, id FROM user WHERE email = ?;";
+        const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
+        if (results && results.affectedRows == 1) {
+          res.status(201).json({ msg: "Link successful!"});
+        } else {
+          res.status(500).json({ msg: "Something went wrong when linking accounts"});
+        }
+      } else {
+        res.status(500).json({ msg: "Incorrect account_type given"});
+      }
+    } catch(error) {
+      console.error(error);
+      throw error;
+    }
+  });
+  
+  // app.post('/api/linkAccounts', async (req, res) => {
+  //   // Assuming the frontend sends the logged in user id AND an email
+  //     try {
+  //       if (req.body.account_type === "caregiver") {
+  //         var q1 = false;
+  //         const insertQuery1 = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
+  //         const [results, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
+  //         if (results && results.affectedRows == 1) {
+  //           q1 = true;
+  //         }
+  //         const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
+  //         const [results2, fields2] = await db.query(insertQuery2, [req.body.user_id]);
+  //         if (results2 && results2.affectedRows == 1 && q1) {
+  //           res.status(201).json({ msg: "Link successful!"});
+  //         } else {
+  //           res.status(500).json({ msg: "Something went wrong when linking accounts"});
+  //         }
+  //       } else if (req.body.account_type === "patient") {
+  //         var q1 = false;
+  //         const insertQuery = "INSERT INTO account_link (patient_id, caregiver_id) SELECT ?, id FROM user WHERE email = ?;";
+  //         const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
+  //         if (results && results.affectedRows == 1) {
+  //           q1 = true;
+  //         }
+  //         const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
+  //         const [results2, fields2] = await db.query(insertQuery2, [req.body.user_id]);
+  //         if (results2 && results2.affectedRows == 1 && q1) {
+  //           res.status(201).json({ msg: "Link successful!"});
+  //         } else {
+  //           res.status(500).json({ msg: "Something went wrong when linking accounts"});
+  //         }
+    
+  //       } else {
+  //         res.status(500).json({ msg: "Incorrect account_type given"});
+  //       }
+  //     } catch(error) {
+  //       console.error(error);
+  //       throw error;
+  //     }
+  //   });
 
 /* Where our app will listen from */
 app.listen(port, () => {
@@ -352,30 +432,56 @@ async function search_medicine() {
 
 // -----------------------------------------------------------------------------------------------------------------------
 // Add medicine to the prescription table (Tested with postman and works with mysql database)
+// Accounts for nullable entries (description, end date)
 app.post("/api/addmedicine", async (req, res) => {
-  let { user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
-  console.log(req.body);
+  // let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   try {
+    const columns = [];
+    const placeholders = [];
+    const values = [];
 
-    console.log("Adding medicine...");
-    const insertQuery = `INSERT INTO prescription (user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, 
-                          doctor_first_name, doctor_last_name, doctor_phone) 
-                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-    const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, med_type, dose_amt, dose_unit, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
-    if (results && results.affectedRows == 1) {
-      res.status(201).json({msg: "Medicine successfully added"});
+    for (const [key, value] of Object.entries(req.body)) {
+      if (value !== '') {
+        columns.push(key);
+        placeholders.push('?');
+        values.push(value);
+      }
+    }
+
+    const query = `INSERT INTO prescription (${columns.join(', ')}) VALUES (${placeholders.join(', ')})`;
+    const [results, fields] = await db.query(query, values);
+
+    if (results && results.affectedRows === 1) {
+      res.status(200).json({ msg: "Update successful!"});
     } else {
-      res.status(500).json({ "error": "Medicine addition failed" });
+      res.status(500).json({ msg: "Something went wrong when updating information"});
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    throw error;
   }
+    // Previously had Wing
+  //   console.log("Adding medicine...");
+  //   const insertQuery = `INSERT INTO prescription (user_id, med_name, description, dose_amt, start_date, end_date, 
+  //                         doctor_first_name, doctor_last_name, doctor_phone) 
+  //                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  //   const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
+  //   if (results && results.affectedRows == 1) {
+  //     res.status(201).json({msg: "Medicine successfully added"});
+  //   } else {
+  //     res.status(500).json({ "error": "Medicine addition failed" });
+  //   }
+  // } catch (error) {
+  //   console.error(error);
+  //   res.status(500).json({ "error": "Internal server error" });
+  // }
 });
 // -----------------------------------------------------------------------------------------------------------------------
 // delete medicine in the prescription table (Tested with postman and works with mysql database)
 app.post("/api/deletemedicine", async (req, res) => {
   const { id } = req.body;
+  console.log(req.body);
+  //console.log(id);
   try {
     console.log("Deleting medicine...");
     const deleteQuery = "DELETE FROM prescription WHERE id = ?";
@@ -393,9 +499,10 @@ app.post("/api/deletemedicine", async (req, res) => {
 
 //--------------------------------------------------------------------------------------------------------------------------------
 // View medicine in the prescription table (Tested with postman and works with mysql database)
-app.get("/api/viewmedicine", async (req, res) => {
-  let { user_id } = req.body;
+app.post("/api/viewmedicine", async (req, res) => {
   console.log(req.body);
+  const { user_id } = req.body;
+console.log("userid backend: " + user_id);
   try {
     console.log("Viewing medicine...");
     const selectQuery = `SELECT * FROM prescription WHERE user_id = ?`;
@@ -417,6 +524,7 @@ app.post("/api/logout", async (req, res) => {
   const { session_id } = req.body;
   try {
     console.log("Logging out...");
+    console.log(session_id);
     const updateQuery = "UPDATE session SET logout_time = NOW() WHERE id = ?";
     const [results, fields] = await db.query(updateQuery, [session_id]);
     if (results && results.affectedRows == 1) {

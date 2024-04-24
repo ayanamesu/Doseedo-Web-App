@@ -15,7 +15,7 @@ import yuto from '../pics/yuto.jpg'
 
 const AboutUsPage = () => {
     return (
-        <div className="main-content">
+        <div>
             <header class = "AboutUs">
                 <h1 className="about-us-title">About Us</h1>
                 <p class="about-us-description">Welcome to our company's About Us page! <br></br> Here, you can learn more about who we are, what we do, and our
