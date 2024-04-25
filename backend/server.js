@@ -139,7 +139,7 @@ app.post("/api/Register", async (req, res) => {
       const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
                        VALUES (?, ?, ?, ?)`;
       const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
-
+      
       if (results && results.affectedRows == 1) {
         if(req.body.account_type === "Caregiver") {
           const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
