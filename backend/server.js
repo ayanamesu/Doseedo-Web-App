@@ -117,6 +117,8 @@ app.post('/api/signup', async (req, res) => {
 
 //--------------------------------------------------------------------------------------------------------------------------------
 //HomePage Register 
+
+// for Aleia to test later on
 app.post("/api/Register", async (req, res) => {
   let { first_name, last_name, email, password } = req.body;
   console.log(req.body);
@@ -141,7 +143,7 @@ app.post("/api/Register", async (req, res) => {
       if (results && results.affectedRows == 1) {
         if(req.body.account_type === "Caregiver") {
           const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
-          const [results1, fields] = await db.query(insertQuery2, [req.body.user_id, req.body.email]);
+          const [results1, fields] = await db.query(insertQuery2, [req.body.user_id]);
           if (results1 && results1.affectedRows == 1) {
             res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
           } else {
@@ -149,7 +151,7 @@ app.post("/api/Register", async (req, res) => {
           }
         } else if (req.body.account_type === "Patient") {
           const insertQuery1 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
-          const [results2, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
+          const [results2, fields] = await db.query(insertQuery1, [req.body.user_id]);
           if (results2 && results2.affectedRows == 1) {
             res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
           } else {
@@ -290,6 +292,8 @@ app.post('/api/linkAccounts', async (req, res) => {
     }
   });
   
+
+  //  ?????
   // app.post('/api/linkAccounts', async (req, res) => {
   //   // Assuming the frontend sends the logged in user id AND an email
   //     try {
@@ -431,21 +435,7 @@ app.post("/api/addmedicine", async (req, res) => {
     console.error(error);
     throw error;
   }
-    // Previously had Wing
-  //   console.log("Adding medicine...");
-  //   const insertQuery = `INSERT INTO prescription (user_id, med_name, description, dose_amt, start_date, end_date, 
-  //                         doctor_first_name, doctor_last_name, doctor_phone) 
-  //                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  //   const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
-  //   if (results && results.affectedRows == 1) {
-  //     res.status(201).json({msg: "Medicine successfully added"});
-  //   } else {
-  //     res.status(500).json({ "error": "Medicine addition failed" });
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).json({ "error": "Internal server error" });
-  // }
+  
 });
 // -----------------------------------------------------------------------------------------------------------------------
 // delete medicine in the prescription table (Tested with postman and works with mysql database)
@@ -549,4 +539,24 @@ app.post("/api/logout", async (req, res) => {
 //     res.status(500).json({ "error": "Internal server error" });
 //   }
 // });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+//showing all patients for a caregiver
+//Works with mysql database through postman
+app.post("/api/showpatients", async (req, res) => {
+ try {
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length >= 1) {
+      console.log(results);
+      res.status(200).json(results);
+    } else {
+      res.status(204).json({ msg: "No patients for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
 
