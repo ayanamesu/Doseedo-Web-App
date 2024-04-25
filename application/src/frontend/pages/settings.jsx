@@ -26,25 +26,6 @@ const SettingsPage = () => {
             alert("You need to relog in!")
             navigate('/');
         }
-
-        const fetchAccountList = async () => {
-            try {
-                const data = {
-                    user_id: userId
-                };
-                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
-                if (apiRes.status === 200) {
-                    setAccountList(apiRes.data);
-                } else if (apiRes.status === 204) {
-                    console.log("There are no patients for this user");
-                } else {
-                    console.log("Something went wrong with the backend...");
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
-            fetchAccountList();
     }, [userId]);
 
     const handleGeneralClick = () => {
@@ -65,23 +46,6 @@ const SettingsPage = () => {
 
     // from yakbranch
     function handleAccountPairClick(event) {
-
-        // Previously had via github commit e462e7b (the pervious change to this)
-        // axios.get('http://localhost:8000/api/account_link', { params: { linkEmail, userId, accountType } })
-        //     .then((apiRes) => {
-        //         const accountLink = apiRes.data;
-        //         setUserName=apiRes.data.userName;
-        //         if (accountLink) {
-        //             setAccountLink(true);
-        //             alert("Account linked successfully!");
-        //         } else {
-        //             alert("Invalid input");
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         console.error(error);
-        //     });
-
         event.preventDefault();
         let data = {
             user_id: userId, 
@@ -105,41 +69,6 @@ const SettingsPage = () => {
             });
     };
 
-    const renderAccountLink = () => {
-        if (isAccountLinked) {
-            return (
-                <div className="account-linked">
-                    
-                <p>Linked Account Infomation</p><br></br>
-                <p>Email: {email}</p>
-                <p>Account Type: {accountType}</p>
-                
-            </div>
-            );
-        } else {
-            return (
-                <div>
-                    <div>
-                        <label>Email:</label>
-                        <input type="text" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
-                    </div>
-                    <div>
-                        <label>Account Type:</label>
-                        <input type="text" value={accountType} onChange={(e) => setAccountType(e.target.value)} />
-                    </div>
-                    <button onClick={handleAccountPairClick}>
-                        Pair Account
-                    </button>
-                
-                </div>
-            );
-        }
-    };
-
-    const handleBackClick = () => {
-        window.history.go(-1);
-    };
-
     return (
 
         <div>
@@ -155,30 +84,9 @@ const SettingsPage = () => {
             <form className="account-link-form" onSubmit={handleAccountPairClick}>
                 <h2>Account Link</h2>
                 <p>Link accounts</p>
-                <div id="account-type-input">
-                    <p> Are you a Caregiver or Patient?</p>
-                    <label>
-                        <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
-                        Caregiver
-                    </label>
-                    <label>
-                        <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
-                        Patient
-                    </label>
-                </div>
                 <input type="text" placeholder="Email to connect to" id="email-input" name="email" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
                 <button className="button" type="submit" id="accountLinkSubmit">submit</button>
             </form>
-            <h2>Linked Accounts:</h2>
-             <div className="linkedAccountsContainer">
-                {AccountList.map((accountLink, index) => (
-                    <div key={index} className="account">
-                        <p> {accountLink.first_name} {accountLink.last_name}</p>
-                        <p>{accountLink.email}</p>
-                        <button>Unlink</button>
-                    </div>
-                ))}
-            </div>
         </div>
     );
 };

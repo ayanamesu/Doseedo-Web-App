@@ -580,6 +580,10 @@
     border-radius: 100%;
     border: 1px solid black;
 }
+.profile-buttons button:hover {
+    background-color: var(--navbar-background-color);
+    color: white;
+}
 
 .profile-content{
     display: flex;
