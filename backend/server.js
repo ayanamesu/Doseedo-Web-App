@@ -95,6 +95,8 @@ app.get("/api/dbtest", async (req, res) => {
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
+
+// for Aleia to test later on
 app.post("/api/register", async (req, res) => {
   let { first_name, last_name, email, password } = req.body;
 
@@ -118,8 +120,25 @@ app.post("/api/register", async (req, res) => {
       const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
                        VALUES (?, ?, ?, ?)`;
       const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
-
+      
       if (results && results.affectedRows == 1) {
+        if(req.body.account_type === "Caregiver") {
+          const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
+          const [results1, fields] = await db.query(insertQuery2, [req.body.user_id]);
+          if (results1 && results1.affectedRows == 1) {
+            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
+          } else {
+            res.status(500).json({ "error": "Account creation failed" });
+          }
+        } else if (req.body.account_type === "Patient") {
+          const insertQuery1 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
+          const [results2, fields] = await db.query(insertQuery1, [req.body.user_id]);
+          if (results2 && results2.affectedRows == 1) {
+            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
+          } else {
+            res.status(500).json({ "error": "Account creation failed" });
+          }
+        }
         res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
       } else {
         res.status(500).json({ "error": "Account creation failed" });
@@ -132,18 +151,7 @@ app.post("/api/register", async (req, res) => {
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-//searchmedicine to get data from mysql
-app.get("/api/searchmedicine", async (req, res) => {
-  console.log("/searchtest --> selectMedicine")
-  try {
-    const data = await search_medicine();
-    //this console.log is to see the data in the terminal
-    console.log(data);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
+
 
 /** Session
  * Verifies the session for a user
@@ -365,33 +373,8 @@ async function hasAccount(email) {
   }
 }
 
-//--------------------------------------------------------------------------------------------------------------------------------
-// Selects all columns from the user table
-async function select_user() {
-  console.log("selectuser()");
-  try {
-    const query = "SELECT * FROM User;";
-    const [result, fields] = await db.query(query);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-//--------------------------------------------------------------------------------------------------------------------------------
-// Selects all columns from the prescription table
-async function search_medicine() {
-  console.log("searchmedicine()");
-  try {
-    const query = "SELECT * FROM prescription;";
-    const [result, fields] = await db.execute(query);
-    // console.log(result);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
+
+
 
 // -----------------------------------------------------------------------------------------------------------------------
 /** Add Medication
@@ -430,21 +413,7 @@ app.post("/api/addmedicine", async (req, res) => {
     console.error(error);
     throw error;
   }
-    // Previously had Wing
-  //   console.log("Adding medicine...");
-  //   const insertQuery = `INSERT INTO prescription (user_id, med_name, description, dose_amt, start_date, end_date, 
-  //                         doctor_first_name, doctor_last_name, doctor_phone) 
-  //                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  //   const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
-  //   if (results && results.affectedRows == 1) {
-  //     res.status(201).json({msg: "Medicine successfully added"});
-  //   } else {
-  //     res.status(500).json({ "error": "Medicine addition failed" });
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).json({ "error": "Internal server error" });
-  // }
+  
 });
 // -----------------------------------------------------------------------------------------------------------------------
 /** Delete Medication
@@ -529,3 +498,65 @@ app.post("/api/logout", async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// emergency contact api if we decide to implement into database
+
+// app.post("/api/emergencycontact", async (req, res) => {
+//   let { user_id, first_name, last_name, phone, email } = req.body;
+//   try {
+//     console.log("Adding emergency contact...");
+//     const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
+//                           VALUES (?, ?, ?, ?, ?)`;
+//     const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
+//     if (results && results.affectedRows == 1) {
+//       res.status(201).json({msg: "Emergency contact successfully added"});
+//     } else {
+//       res.status(500).json({ "error": "Emergency contact addition failed" });
+//     }
+//   } catch (error) {
+//      console.error(error);
+//      res.status(500).json({ "error": "Internal server error" });
+//   }
+// });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// View emergency contact api if we decide to implement into database
+
+// app.post("/api/viewemergencycontact", async (req, res) => {
+//   const { user_id } = req.body;
+//   try {
+//     console.log("Viewing emergency contact...");
+//     const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
+//     const [results, fields] =  await db.query(selectQuery, [user_id]);
+//     if (results && results.length > 0) {
+//       res.status(200).json(results);
+//     } else {
+//       res.status(404).json({ "error": "No emergency contact found" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ "error": "Internal server error" });
+//   }
+// });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+//showing all patients for a caregiver
+//Works with mysql database through postman
+app.post("/api/showpatients", async (req, res) => {
+ try {
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length >= 1) {
+      console.log(results);
+      res.status(200).json(results);
+    } else {
+      res.status(204).json({ msg: "No patients for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
