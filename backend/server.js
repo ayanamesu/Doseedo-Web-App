@@ -139,6 +139,23 @@ app.post("/api/Register", async (req, res) => {
       const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
 
       if (results && results.affectedRows == 1) {
+        if(req.body.account_type === "Caregiver") {
+          const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
+          const [results1, fields] = await db.query(insertQuery2, [req.body.user_id, req.body.email]);
+          if (results1 && results1.affectedRows == 1) {
+            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
+          } else {
+            res.status(500).json({ "error": "Account creation failed" });
+          }
+        } else if (req.body.account_type === "Patient") {
+          const insertQuery1 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
+          const [results2, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
+          if (results2 && results2.affectedRows == 1) {
+            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
+          } else {
+            res.status(500).json({ "error": "Account creation failed" });
+          }
+        }
         res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
       } else {
         res.status(500).json({ "error": "Account creation failed" });
