@@ -13,7 +13,6 @@ const SettingsPage = () => {
     const navigate = useNavigate();
     const [email, setLinkEmail] = useState("");
     const [userId, setUserId] = useState("");
-    const [accountType, setAccountType] = useState("");
     const [isAccountLinked, setAccountLink] = useState(false);
     const [AccountList, setAccountList] = useState([]);
 
@@ -64,28 +63,18 @@ const SettingsPage = () => {
 
     function handleAccountPairClick(event) {
 
-        // Previously had via github commit e462e7b (the pervious change to this)
-        // axios.get('http://localhost:8000/api/account_link', { params: { linkEmail, userId, accountType } })
-        //     .then((apiRes) => {
-        //         const accountLink = apiRes.data;
-        //         setUserName=apiRes.data.userName;
-        //         if (accountLink) {
-        //             setAccountLink(true);
-        //             alert("Account linked successfully!");
-        //         } else {
-        //             alert("Invalid input");
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         console.error(error);
-        //     });
+        if (!userId || !email ) {
+            // Display an error message or perform any necessary actions
+            alert('Please fill out all required fields.');
+            return; // Prevent the form from being submitted
+        }
 
         event.preventDefault();
         let data = {
             user_id: userId, 
             email: email, 
-            account_type: accountType
         }
+        
         axios.post('http://localhost:8000/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
@@ -107,41 +96,6 @@ const SettingsPage = () => {
                 console.error(error);
                 // alert(error);
             });
-    };
-
-    const renderAccountLink = () => {
-        if (isAccountLinked) {
-            return (
-                <div className="account-linked">
-                    
-                <p>Linked Account Infomation</p><br></br>
-                <p>Email: {email}</p>
-                <p>Account Type: {accountType}</p>
-                
-            </div>
-            );
-        } else {
-            return (
-                <div>
-                    <div>
-                        <label>Email:</label>
-                        <input type="text" value={email} onChange={(e) => setLinkEmail(e.target.value)} />
-                    </div>
-                    <div>
-                        <label>Account Type:</label>
-                        <input type="text" value={accountType} onChange={(e) => setAccountType(e.target.value)} />
-                    </div>
-                    <button onClick={handleAccountPairClick}>
-                        Pair Account
-                    </button>
-                
-                </div>
-            );
-        }
-    };
-
-    const handleBackClick = () => {
-        window.history.go(-1);
     };
 
     return (

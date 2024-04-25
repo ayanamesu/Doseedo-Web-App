@@ -40,6 +40,12 @@ const HomePage = () => {
     
   function handleLoginForm(event) {
 
+    if ( !email || !password ) {
+        alert("Please fill out all the fields.");
+        return;
+    }
+    
+
     event.preventDefault();
     let userData = {
         email: email,
@@ -69,6 +75,7 @@ const HomePage = () => {
             navigate('/dashboard');
 
         } else {
+            alert("Invalid Password or email");
             console.log("Something weird happened...");
 
             // TODO: Frontend - do whatever for error handling
@@ -79,8 +86,17 @@ const HomePage = () => {
     console.log("Button has been clicked!");
 }
   
+
+
+
   function handleRegisterForm(event) {
     event.preventDefault();
+
+    if (!fname || !lname || !email || !password || !confPassword) {
+        alert("Please fill out all the fields.");
+        return;
+    }
+
     if (password !== confPassword) {
         console.log("passwords do not match!");
         setNotificationType('error');
