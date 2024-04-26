@@ -169,10 +169,10 @@ const HomePage = () => {
                             {/*keeping this feild without a name since im assuming we would check if the passwords
                             match on the front-end*/}
                             <input type="password" placeholder="Confirm Password" id="password-confirmation-input" onChange={e => setConfPassword(e.target.value)}/>
+                            <p> Are you a Caregiver or Patient?</p>
                             <div id="account-type-input">
-                                <p> Are you a Caregiver or Patient?</p>
                                 <label>
-                                    <input type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
                                     Caregiver
                                 </label>
                                 <label>

@@ -63,7 +63,7 @@ const getCurrentDate = () => {
                 <div className="Dashboard-Button-row">
                     <div className="Dashboard-Button-container">
                         <FontAwesomeIcon className="Dashboard-Button" icon={faCircleExclamation} title="911" onClick={handle911Click} />
-                        <p className="Dashboard-Button-text">911</p>
+                        <p className="Dashboard-Button-text">Emergency contact</p>
                     </div>
                     <div className="Dashboard-Button-container">
                         <FontAwesomeIcon className="Dashboard-Button" icon={faGear} title="Settings" onClick={handleSettingsClick} />
