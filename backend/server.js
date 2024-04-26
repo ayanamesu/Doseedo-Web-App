@@ -95,7 +95,7 @@ app.get("/dbtest", async (req, res) => {
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-app.post("/api/register", async (req, res) => {
+app.post("/register", async (req, res) => {
   let { first_name, last_name, email, password, account_type } = req.body;
 
   if (!first_name || !last_name || !email || !password || !account_type) {
@@ -160,7 +160,7 @@ app.post("/api/register", async (req, res) => {
  * Backend res: Status code, user_id, session_id
  * Postman Check - SUCESS
  */ 
-app.post("/api/session", async (req, res) => {
+app.post("/session", async (req, res) => {
   if (!req.body.session_id) {
     return res.status(400).json({ msg: "No session_id in req"})
   }
@@ -184,7 +184,7 @@ app.post("/api/session", async (req, res) => {
  * Backend res: Status code, all user information (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
  * Postman Check - SUCCESS
  */ 
-app.post('/api/profile', async (req, res) => {
+app.post('/profile', async (req, res) => {
   if (!req.body.user_id) {
     return res.status(400).json({ msg: "No user_id in req"})
   }
@@ -209,7 +209,7 @@ app.post('/api/profile', async (req, res) => {
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-app.post('/api/profile/edit', async (req, res) => {
+app.post('/profile/edit', async (req, res) => {
   if (!req.body.user_id) {
     return res.status(400).json({ msg: "No user_id in req"})
   }
@@ -248,7 +248,7 @@ app.post('/api/profile/edit', async (req, res) => {
  * Backend res: Status code, all user information of caregiver(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
  * Postman Check - SUCCESS
  */ 
-app.post('/api/showcaregivers', async (req, res) => {
+app.post('/showcaregivers', async (req, res) => {
   if (!req.body.user_id) {
     return res.status(400).json({ msg: "No user_id in req"})
   }
@@ -276,7 +276,7 @@ app.post('/api/showcaregivers', async (req, res) => {
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-app.post('/api/linkAccounts', async (req, res) => {
+app.post('/linkAccounts', async (req, res) => {
   console.log("Linking accounts")
   const { user_id, email} = req.body;
   if (!user_id || !email) {
@@ -419,7 +419,7 @@ async function getAccountType(user_id) {
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-app.post("/api/addmedicine", async (req, res) => {
+app.post("/addmedicine", async (req, res) => {
   let { user_id, med_name, dose_amt, start_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   if (!user_id || !med_name || !dose_amt || !start_date || !doctor_first_name || !doctor_last_name || !doctor_phone){
     res.status(400).json({ msg: "Missing one or more required fields"})
@@ -458,7 +458,7 @@ app.post("/api/addmedicine", async (req, res) => {
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-app.post("/api/deletemedicine", async (req, res) => {
+app.post("/deletemedicine", async (req, res) => {
   const { id } = req.body;
   console.log(req.body);
   if (!id){
@@ -486,7 +486,7 @@ app.post("/api/deletemedicine", async (req, res) => {
  * Backend res: Status code, prescription information (id, user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone )
  * Postman Check - SUCCESS
 */ 
-app.post("/api/viewmedicine", async (req, res) => {
+app.post("/viewmedicine", async (req, res) => {
   console.log(req.body);
   const { user_id } = req.body;
   console.log("userid backend: " + user_id);
@@ -516,7 +516,7 @@ app.post("/api/viewmedicine", async (req, res) => {
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-app.post("/api/logout", async (req, res) => {
+app.post("/logout", async (req, res) => {
   const { session_id } = req.body;
   if (!session_id) {
     return res.status(400).json({ msg: "Missing session_id from req" });
@@ -586,7 +586,7 @@ app.post("/api/logout", async (req, res) => {
  * Backend res: Status code, all user information of patient(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
  * Postman Check - SUCCESS
  */ 
-app.post("/api/showpatients", async (req, res) => {
+app.post("/showpatients", async (req, res) => {
   if (!req.body.user_id){
     res.status(400).json({ msg: "Missing the user_id"})
   }
