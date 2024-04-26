@@ -218,21 +218,24 @@ app.post('/profile', async (req, res) => {
 // Postman Test - SUCCESS
 app.post('/profile/edit', async (req, res) => {
   // Assuming the frontend is sending a res of the user_id
+  console.log(req.body)
   try {
     const modified_columns = [];
     const values = [];
 
-    Object.entries(req.body.values).forEach(([key, value]) => {
-      if (value !== null) {
+    for (const [key, value] of Object.entries(req.body)) {
+      if (value !== '' && key !== 'id') {
         modified_columns.push(key);
         values.push(value);
       }
-    });
+    }
 
     const column_map = modified_columns.map((column, index) => `${column} = "${values[index]}"`).join(", ");
-    const query = `UPDATE user SET ${column_map} WHERE id = ?`;
+    const query = `UPDATE user SET ${column_map} WHERE id = ${req.body.id}`;
 
-    const [results, fields] = await db.query(query, [req.body.user_id]);
+    console.log(query)
+
+    const [results, fields] = await db.execute(query);
     if (results && results.affectedRows === 1) {
       res.status(200).json({ msg: "Update successful!"});
     } else {

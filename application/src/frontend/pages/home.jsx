@@ -18,6 +18,7 @@ const HomePage = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+  const [accountType, setAccountType] = useState("");
 
   useEffect(() => {
     if (Cookies.get('user_id') && Cookies.get('session_id')) {
@@ -184,6 +185,17 @@ const HomePage = () => {
                             {/*keeping this feild without a name since im assuming we would check if the passwords
                             match on the front-end*/}
                             <input type="password" placeholder="Confirm Password" id="password-confirmation-input" onChange={e => setConfPassword(e.target.value)}/>
+                            <p> Are you a Caregiver or Patient?</p>
+                            <div id="account-type-input">
+                                <label>
+                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    Caregiver
+                                </label>
+                                <label>
+                                    <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    Patient
+                                </label>
+                            </div>
                             <button type="submit" id="submit">submit</button>
                             {/* 
                                 this is a quick test to see functionality - wing can change later
