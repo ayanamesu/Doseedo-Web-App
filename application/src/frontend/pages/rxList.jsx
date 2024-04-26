@@ -30,27 +30,24 @@ function RxListPage() {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
            // console.log("User id has been set!" + user_id)
-            let data = {
-            user_id: user_id
-            }
-           if (user_id) {
-            axios.post('http://localhost:8000/viewmedicine', data )
-           .then((res) => {
-             console.log("res.data" + res.data);
-              
-             console.log("res.status" + res.status);
-               setMedications(res.data);//list
-           })
-           .catch((error) => {
-               console.error('Error fetching medications:', error);
-           });
-        }
         } else {
             alert("You need to relog in!")
             navigate('/');
         }
+        let data = {
+            user_id: user_id
+        }
+     console.log(data);
         //front-end api to view all medicines 
-        
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
+            .then((res) => {
+              console.log(res.data);
+              console.log(res.status);
+                setMedications(res.data);//list
+            })
+            .catch((error) => {
+                console.error('Error fetching medications:', error);
+            });
     }, [user_id]);
 
     const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
@@ -69,6 +66,13 @@ function RxListPage() {
     );
     
     function handleAddMedication(event) {
+
+        if ( !user_id || !medName ||! doseAmt||!startDate||!doctorFirstName ||!doctorLastName||!doctorPhone) {
+            alert("Please fill out userID, Medicine name, dose amount,start date, doctor name and phone number.");
+            return;
+        }
+        
+
         event.preventDefault();
         setShowMedList(false);
         setShowAddMed(true);
@@ -85,21 +89,11 @@ function RxListPage() {
             doctor_phone: doctorPhone
         }
         
-        axios.post('http://localhost:8000/addmedicine', userData)
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page
-                let data = {
-                    user_id: user_id
-                    }
-                axios.post('http://localhost:8000/viewmedicine', data )
-                .then((res) => {
-                  console.log("res.data" + res.data);
-                   
-                  console.log("res.status" + res.status);
-                    setMedications(res.data);//list
-                })
             })
             .catch(error => {
                 console.error('Error adding medication:', error);         
@@ -146,7 +140,6 @@ function RxListPage() {
             setShowMedsforTheDay(false);
         }
     const handleNextClick = () => {
-        //if medlist has nothing else render
         console.log(selectedMedicationId);
         if (medications.length > selectedMedicationId + 1) {//index0=1,1=2
             setSelectedMedicationId(prevCount => prevCount + 1);
