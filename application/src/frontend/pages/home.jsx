@@ -18,6 +18,7 @@ const HomePage = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+  const [accountType, setAccountType] = useState("");
 
   useEffect(() => {
     if (Cookies.get('user_id') && Cookies.get('session_id')) {
@@ -40,13 +41,19 @@ const HomePage = () => {
     
   function handleLoginForm(event) {
 
+    if ( !email || !password ) {
+        alert("Please fill out all the fields.");
+        return;
+    }
+    
+
     event.preventDefault();
     let userData = {
         email: email,
         password: password
     }
 
-    axios.post('http://localhost:8000/api/login', userData)
+    axios.post('http://localhost:8000/login', userData)
     .then(res => {
         console.log(res.status); 
         //res = backend res.status(200).json(req.session.id); from the post
@@ -69,6 +76,7 @@ const HomePage = () => {
             navigate('/dashboard');
 
         } else {
+            alert("Invalid Password or email");
             console.log("Something weird happened...");
 
             // TODO: Frontend - do whatever for error handling
@@ -79,8 +87,17 @@ const HomePage = () => {
     console.log("Button has been clicked!");
 }
   
+
+
+
   function handleRegisterForm(event) {
     event.preventDefault();
+
+    if (!fname || !lname || !email || !password || !confPassword) {
+        alert("Please fill out all the fields.");
+        return;
+    }
+
     if (password !== confPassword) {
         console.log("passwords do not match!");
         setNotificationType('error');
@@ -96,7 +113,7 @@ const HomePage = () => {
         password: password
     }
    
-    axios.post('http://localhost:8000/api/Register', userData)
+    axios.post('http://localhost:8000/Register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {
@@ -168,6 +185,17 @@ const HomePage = () => {
                             {/*keeping this feild without a name since im assuming we would check if the passwords
                             match on the front-end*/}
                             <input type="password" placeholder="Confirm Password" id="password-confirmation-input" onChange={e => setConfPassword(e.target.value)}/>
+                            <p> Are you a Caregiver or Patient?</p>
+                            <div id="account-type-input">
+                                <label>
+                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    Caregiver
+                                </label>
+                                <label>
+                                    <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    Patient
+                                </label>
+                            </div>
                             <button type="submit" id="submit">submit</button>
                             {/* 
                                 this is a quick test to see functionality - wing can change later

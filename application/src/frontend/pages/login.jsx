@@ -15,7 +15,7 @@ const LoginPage = () => {
             password: password
         }
 
-        axios.post('http://localhost:8000/api/login', userData)
+        axios.post('http://localhost:8000/login', userData)
         .then(res => {
             console.log(res.status); 
             //res = backend res.status(200).json(req.session.id); from the post

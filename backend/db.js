@@ -3,19 +3,12 @@ const pool = mysql.createPool({
         /* Make sure to uncomment this when we move this to the server! */
         // host: "db-bte.ch4s2cmka1az.us-east-2.rds.amazonaws.com",
         // user: "admin",
-        // database: "doseedodb_test", // insert your db info here
-        // password: "password", //mysql password here
-        // port: "3306", //default port for mysql
-        connectionLimit: 10,
+        // database: "doseedodb", 
+        // password: "pass", 
+        // port: "3306", 
+        // connectionLimit: 10,
         /* Make sure to comment this out when we move this to the server! */
         // WING DB
-        host: "localhost",
-        user: "root",
-        database: "csc648newdb", // insert your db info here
-        password: "Wing12345678L", //mysql password here
-        port: "3306",
-
-        // ALEIA DB
         // host: "localhost",
         // user: "root",
         // database: "csc648newdb", // insert your db info here
@@ -23,18 +16,23 @@ const pool = mysql.createPool({
         // port: "3306",
 
         // ALEIA DB
-//        host: "localhost",
-//        user: "root",
-//        database: "doseedodb", // insert your db info here
-//        password: "1234", //mysql password here
-//        port: "3306",
+       host: "localhost",
+       user: "root",
+       database: "doseedodb", // insert your db info here
+       password: "1234", //mysql password here
+       port: "3306",
         //Yuto DB
-             // ALEIA DB
         //      host: "localhost",
         //      user: "root",
         //      database: "doseedodb", // insert your db info here
         //      password: "password", //mysql password here
         //      port: "3306",
+         //paige db
+         host: "localhost",
+        user: "root",
+        database: "doseedo_db_test", // insert your db info here
+        password: "TinyDog65!", //mysql password here
+        port: "3306",
 });
 
 const promisePool = pool.promise();

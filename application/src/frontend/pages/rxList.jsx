@@ -12,6 +12,7 @@ function RxListPage() {
     const [showMedList, setShowMedList] = useState(true); // Define state variables
     const [showMedsforTheDay, setShowMedsforTheDay] = useState(false);
     const [showAddMed, setShowAddMed] = useState(false);
+    const [showDeleteMed, setShowDeleteMed]= useState(false);
   
     const [user_id, setUserId] = useState("");
     const [id, setPrescriptionId]= useState("");
@@ -38,7 +39,7 @@ function RxListPage() {
         }
      console.log(data);
         //front-end api to view all medicines 
-        axios.post('http://localhost:8000/api/viewmedicine', data )
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
             .then((res) => {
               console.log(res.data);
               console.log(res.status);
@@ -65,6 +66,13 @@ function RxListPage() {
     );
     
     function handleAddMedication(event) {
+
+        if ( !user_id || !medName ||! doseAmt||!startDate||!doctorFirstName ||!doctorLastName||!doctorPhone) {
+            alert("Please fill out userID, Medicine name, dose amount,start date, doctor name and phone number.");
+            return;
+        }
+        
+
         event.preventDefault();
         setShowMedList(false);
         setShowAddMed(true);
@@ -81,7 +89,7 @@ function RxListPage() {
             doctor_phone: doctorPhone
         }
         
-        axios.post('http://localhost:8000/api/addmedicine', userData)
+        axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
                 setShowAddMed(false);
@@ -104,19 +112,23 @@ function RxListPage() {
     }
 
         const handleDeleteMedicationClick = () => {
-          // console.log("from api pass: " + medications[selectedMedicationId].id);
-            let toDelete = medications[selectedMedicationId].id;
-          axios.post('http://localhost:8000/api/deletemedicine', { id: toDelete })
+          console.log("med list length: " + medications.length);
+          if (medications.length != 0){
+          let toDelete = medications[selectedMedicationId].id;
+          axios.post('http://localhost:8000/deletemedicine', { id: toDelete })
             .then(response => {
                 setMedications(response.data);
                 console.log("Medication deleted successfully:", response.data);
                 navigate('/rxlist');
+                setShowDeleteMed(false);
             })
             .catch(error => {
                 console.error('Error deleting medication:', error);
             });
    
+        }
         };
+
     const handleMedsForTheDayClick =()=>{
         setShowMedList(false);
         setShowAddMed(false);
@@ -277,13 +289,22 @@ function RxListPage() {
     };
 
     const renderAddDeleteButton = () => {
-        if (!showAddMed) {
+        if (!showDeleteMed && (medications.length > 0) ) { 
             return (
                 <>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
+ 
                 </>
             );
+        }
+        else if (!showAddMed) {
+            return (
+                <>
+                    <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
+                </>
+            );
+
         }
         return null; // If showAddMed is true, return null (no buttons rendered)
     };
