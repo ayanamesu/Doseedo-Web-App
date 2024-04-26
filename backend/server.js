@@ -40,7 +40,7 @@ app.use(session({
  * Backend res: Status code, session_id, user_id
  * Postman Check - SUCCESS
  */
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   let { email, password } = req.body;
 
   if (!email || !password){
