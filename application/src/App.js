@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import AboutUsPage from "./frontend/pages/index";
 import HomePage from "./frontend/pages/home";
-import LoginPage from "./frontend/pages/login";
+
 import { QueryClient, QueryClientProvider } from "react-query";
-import SignUpPage from "./frontend/pages/signUp";
+
 import SettingsPage from "./frontend/pages/settings";
 import Sidebar from "./frontend/Components/Sidebar";
 import Topbar from "./frontend/Components/topbar";
@@ -35,9 +35,6 @@ function App() {
               <Route path="/" element={<HomePage />} />
 
               <Route path="/about" element={<AboutUsPage />} />
-
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
               <Route path="/settings" element={<SettingsPage/>} />
               <Route path="/rxList" element={<RxListPage/>} />
               <Route path="/calendar" element={<CalendarPage/>} />
