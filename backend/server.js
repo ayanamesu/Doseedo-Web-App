@@ -391,6 +391,27 @@ async function hasAccount(email) {
     throw error;
   }
 }
+//yuto
+//req userID
+//res account_type
+app.post('/getAccountType', async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(400).json({ msg: "No user_id in req"})
+  }
+
+  try {
+      const userAccType = await getAccountType(user_id);
+    if (userAccType){
+      return res.status(200).json(userAccType);
+    }else{
+      return res.status(400).json({ msg: "no userID found" });
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
 
 // Checks the account type
 async function getAccountType(user_id) {
