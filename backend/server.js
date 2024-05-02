@@ -37,7 +37,7 @@ app.use(session({
 
 /** LOGIN
  * Frontend req: email, password
- * Backend res: Status code, session_id, user_id
+ * Backend res: Status code, session_id, user_id , account_type
  * Postman Check - SUCCESS
  */
 app.post('/login', async (req, res) => {
@@ -50,7 +50,7 @@ app.post('/login', async (req, res) => {
   try {
     if (email && password) {
       const user_id = await checkCredentials(email, password); // returns the user id
-
+      const userAccType = await getAccountType(user_id);
       // Credentials are good
       if (user_id !== false) {
         const device = req.headers['user-agent']; // gets the login device
@@ -64,7 +64,7 @@ app.post('/login', async (req, res) => {
         if (session_creation) {
           // req.session.id will return the session id to the frontend to create a cookie
           // We can add to this if we like
-          res.status(200).json({session_id: req.session.id, user_id: user_id}); 
+          res.status(200).json({session_id: req.session.id, user_id: user_id,user_accountType: userAccType}); 
         } else {
           res.status(500);
         }

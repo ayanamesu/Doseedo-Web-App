@@ -75,28 +75,14 @@ const HomePage = () => {
             // the dashboard page switch based on userid(account_type)
             //user switch
             console.log(userData);
-            console.log("redirecting based on the account type");
-       
-            let userID = {
-                id:user_id
-            }
-axios.post('http://localhost:8000/getAccountType', userID)
-    .then(res => {
-        console.log(res.status); 
-        console.log(res.account_type); 
-        //res = backend res.status(200).json(req.session.id); from the post
-        if (res.data.account_type) {
-            if(res.data.account_type=='patient'){
+
+            if(res.account_type==='patient'){
                 navigate('/patient_dashboard');
             }else{
-                navigate('/caregiver_dashboard')
+                navigate('/caregiver_dashboard');
             }
+            console.log("redirecting based on the account type");
 
-        } else {
-            console.log("No userID found");
-        }
-    })
-    .catch(err => console.log(err));
 
         }
     })
