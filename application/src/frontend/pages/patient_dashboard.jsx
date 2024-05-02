@@ -1,17 +1,28 @@
 // still debugging skeleton code
-import React from "react";
+import React, {useState} from "react";
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleMedical, faGear, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faCalendar } from '@fortawesome/free-regular-svg-icons';
 import BackButton from "../Components/BackButton";
- 
+import Cookies from 'js-cookie';
 import "../App.css";
 
 function DashBoard() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
+    const [userId, setUserId] = useState("");
 
+        useEffect(() => {
+            if (Cookies.get('user_id') && Cookies.get('session_id')) {
+                setUserId(Cookies.get('user_id'));
+                console.log("User id has been set!" + userId);
+            } else {
+                alert("You need to relog in!")
+                navigate('/');
+            }
+        }, [userId]);
 
     const handleCalendarClick = () => {
         navigate("/calendar", { replace: true });
@@ -63,7 +74,7 @@ const getCurrentDate = () => {
                 <div className="Dashboard-Button-row">
                     <div className="Dashboard-Button-container">
                         <FontAwesomeIcon className="Dashboard-Button" icon={faCircleExclamation} title="911" onClick={handle911Click} />
-                        <p className="Dashboard-Button-text">911</p>
+                        <p className="Dashboard-Button-text">Emergency contact</p>
                     </div>
                     <div className="Dashboard-Button-container">
                         <FontAwesomeIcon className="Dashboard-Button" icon={faGear} title="Settings" onClick={handleSettingsClick} />

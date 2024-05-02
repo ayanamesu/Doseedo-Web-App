@@ -18,19 +18,20 @@ const HomePage = () => {
   const [notificationMessage, setNotificationMessage] = useState('');
   const [notificationType, setNotificationType] = useState('');
   const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+  const [accountType, setAccountType] = useState("");
 
   useEffect(() => {
-    if (Cookies.get('user_id') && Cookies.get('session_id')) {
+    if (!(Cookies.get('user_id') && Cookies.get('session_id'))) {
         setUserId(Cookies.get('user_id'));
         console.log("User id has been set!" + user_id)
-       navigate('/dashboard');
+       navigate('/');
     } 
 
 }, [user_id]);
 //   const sessionUserId = UseSessionCheck();
 
 //   useEffect(() => {
-//     if (sessionUserId === "") {
+//     if (sessionUserId === "") 
 //         navigate('/');
 //     } else {
 //         navigate('/dashboard');
@@ -40,13 +41,19 @@ const HomePage = () => {
     
   function handleLoginForm(event) {
 
+    if ( !email || !password ) {
+        alert("Please fill out all the fields.");
+        return;
+    }
+    
+
     event.preventDefault();
     let userData = {
         email: email,
         password: password
     }
 
-    axios.post('http://localhost:8000/api/login', userData)
+    axios.post('http://localhost:8000/login', userData)
     .then(res => {
         console.log(res.status); 
         //res = backend res.status(200).json(req.session.id); from the post
@@ -64,14 +71,33 @@ const HomePage = () => {
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
             setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
             alert("Successfuly logged In!");
-            // TODO: Frontend - do whatever you gotta do with this information
-            // change this to the dashboard page
-            navigate('/dashboard');
+            // TODO: Frontend - 
+            // the dashboard page switch based on userid(account_type)
+            //user switch
+            console.log(userData);
+            console.log("redirecting based on the account type");
+       
+            let userID = {
+                id:user_id
+            }
+axios.post('http://localhost:8000/getAccountType', userID)
+    .then(res => {
+        console.log(res.status); 
+        console.log(res.account_type); 
+        //res = backend res.status(200).json(req.session.id); from the post
+        if (res.data.account_type) {
+            if(res.data.account_type=='patient'){
+                navigate('/patient_dashboard');
+            }else{
+                navigate('/caregiver_dashboard')
+            }
 
         } else {
-            console.log("Something weird happened...");
+            console.log("No userID found");
+        }
+    })
+    .catch(err => console.log(err));
 
-            // TODO: Frontend - do whatever for error handling
         }
     })
     .catch(err => console.log(err));
@@ -79,8 +105,16 @@ const HomePage = () => {
     console.log("Button has been clicked!");
 }
   
-  function handleRegisterForm(event) {
+
+
+function handleRegisterForm(event) {
     event.preventDefault();
+
+    if (!fname || !lname || !email || !password || !confPassword) {
+        alert("Please fill out all the fields.");
+        return;
+    }
+
     if (password !== confPassword) {
         console.log("passwords do not match!");
         setNotificationType('error');
@@ -93,15 +127,16 @@ const HomePage = () => {
         first_name: fname,
         last_name: lname,
         email: email,
+        account_type:accountType,
         password: password
     }
    
-    axios.post('http://localhost:8000/api/Register', userData)
+    axios.post('http://localhost:8000/Register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {
                 setNotificationType('success');
-                console.log("They account successfully made!")
+                console.log("The account successfully made!")
                 setNotificationMessage("Account Creation was successful😀");
                 setShowNotification(true);
                 //this is only here so that it delays the redirect enough for the user to see the notification
@@ -168,6 +203,17 @@ const HomePage = () => {
                             {/*keeping this feild without a name since im assuming we would check if the passwords
                             match on the front-end*/}
                             <input type="password" placeholder="Confirm Password" id="password-confirmation-input" onChange={e => setConfPassword(e.target.value)}/>
+                            <p> Are you a Caregiver or Patient?</p>
+                            <div id="account-type-input">
+                                <label>
+                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    Caregiver
+                                </label>
+                                <label>
+                                    <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    Patient
+                                </label>
+                            </div>
                             <button type="submit" id="submit">submit</button>
                             {/* 
                                 this is a quick test to see functionality - wing can change later

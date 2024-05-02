@@ -25,6 +25,7 @@ function PatientProfilePage() {
     const [phone, setPhone] = useState("");
     // const sessionUserId = useSessionCheck(); 
     const [isLoading, setLoading] = useState(true);
+    const [isEditingProfile, setIsEditingProfile] = useState(false);
  
     useEffect(() => {
         // Fetch user profile data     if (sessionUserId === "") {
@@ -33,22 +34,23 @@ function PatientProfilePage() {
         // } else { 
         //     setUserId(sessionUserId[0]);
         // } 
-        if (Cookies.get('user_id') && Cookies.get('session_id')) {
-            setUserId(Cookies.get('user_id'));
-            console.log("User id has been set!" + user_id)
-        } else {
-            alert("You need to relog in!")
-            navigate('/');
-        }
+        // if (Cookies.get('user_id') && Cookies.get('session_id')) {
+        //     setUserId(Cookies.get('user_id'));
+        //     console.log("User id has been set!" + user_id)
+        // } else {
+        //     alert("You need to relog in!")
+        //     //navigate('/');
+        // }
 
         let data = {
             user_id: user_id
         }
-        axios.post('http://localhost:8000/api/profile', data)
+        axios.post('http://localhost:8000/profile', data)
             .then((apiRes) => {
                 console.log(apiRes.data);
                 setUserFName(apiRes.data.first_name);
                 setUserLName(apiRes.data.last_name);
+                setEmail(apiRes.data.email);
                 setAddress1(apiRes.data.address_1);
                 setAddress2(apiRes.data.address_2);
                 setCity(apiRes.data.city);
@@ -58,24 +60,7 @@ function PatientProfilePage() {
             }) 
             .catch((error) => {
                 console.error(error);
-            });
-        //     const dummyData = [
-        //         {
-        //             id: 1,
-        //             userFName: "John",
-        //             userLName: "Doe",
-        //             email: "sfsu@gmail.com",
-        //             address1: "San Francisco State University Drive",
-        //             address2: "unit 100",
-        //             state: "CA",
-        //             city: "San Francisco",
-        //             zip_code: "94122",
-        //             phone: "6669998888"
-        //         }
-        //     ]
-        //    // console.log(dummyData[0]);
-        //  //   setUser(dummyData[0]);
-              
+            });       
            
     }, [user_id]); // end of useEffect
 
@@ -134,9 +119,37 @@ function PatientProfilePage() {
         </div>
       );
 
+    const editProfileForm = () => (
+        <div>
+            <form className="edit-profile-form" onSubmit={handleEditProfile}>
+                <h2>Edit Profile</h2>
+                <input type="text" placeholder="First name" id="firstname-input" name="firstName" onChange={e => setUserFName(e.target.value)}/>
+                <input type="text" placeholder="Last name" id="lastname-input" name="lastName" onChange={e => setUserLName(e.target.value)}/>
+                <input type="email" placeholder="Email" id="email-input" name="email" onChange={e => setEmail(e.target.value)}/>
+                <input type="text" placeholder="Address 1" id="address1-input" name="address1" onChange={e => setAddress1(e.target.value)}/>
+                <input type="text" placeholder="Address 2" id="address2-input" name="address2" onChange={e => setAddress2(e.target.value)}/>
+                <input type="text" placeholder="City" id="city-input" name="city" onChange={e => setCity(e.target.value)}/>
+                <input type="text" placeholder="Zip Code" id="zip-code-input" name="zipCode" onChange={e => setZipCode(e.target.value)}/>
+                <input type="text" placeholder="Phone" id="phone-input" name="phone" onChange={e => setPhone(e.target.value)}/>
+                <button type="submit" id="submit">submit</button>
+            </form>
+        </div>
+    );
+
+    const editProfileClicked = () => {
+        setIsEditingProfile(!isEditingProfile);
+    };
+
+    const renderEditProfileForm = () => {
+        if (isEditingProfile) {
+            return editProfileForm();
+        }
+        return null;
+    };
+
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-        axios.post('http://localhost:8000/api/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+        axios.post('http://localhost:8000/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
        
                 if (apiRes.status === 200) {
@@ -162,11 +175,6 @@ function PatientProfilePage() {
 
     };
 
-    const handleBack = () => {
-        console.log("Back clicked");
-        window.history.go(-1);
-    };
-
     return (
         <div>
             <h1 className="profile-title">Profile Page</h1>
@@ -179,7 +187,8 @@ function PatientProfilePage() {
                         {<UserCard/>} 
                     </div>
                     <div className="profile-buttons">
-                        <button className="edit-button" onClick={handleEditProfile}><FontAwesomeIcon icon={faPenToSquare} title="Edit Profile"/></button>
+                        <button className="edit-button" onClick={editProfileClicked}><FontAwesomeIcon icon={faPenToSquare} title="Edit Profile"/></button>
+                        {renderEditProfileForm()}
                         <button className="share-button" onClick={handleShareProfile}><FontAwesomeIcon icon={faShare} title="Share Profile"/></button>
                         <button className="add-button" onClick={handleAddConnections}><FontAwesomeIcon icon={faUserPlus} title="Add Connections"/></button>
                     </div>

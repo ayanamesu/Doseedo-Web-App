@@ -24,7 +24,7 @@ app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true })); 
 /* Where our get/post routes will go 
-    Will need to change to /api/... when implementing to our server
+    Will need to change to /... when implementing to our server
 */
 
 // Sessions
@@ -35,18 +35,18 @@ app.use(session({
   saveUninitialized: false // generates log in system everytime you make a new session id, so make sure to set to false
 }));
 
-
-//Sample Get/Post Requests request
-app.get('/api', (req, res) => {
-  res.send('This is the server!');
-});
-
-// Login page
-// Issue: Cookies are created in Postman but not the browser :(/
-app.post('/api/login', async (req, res) => {
+/** LOGIN
+ * Frontend req: email, password
+ * Backend res: Status code, session_id, user_id
+ * Postman Check - SUCCESS
+ */
+app.post('/login', async (req, res) => {
   let { email, password } = req.body;
-  console.log("req.session.id: " + req.session.id);
 
+  if (!email || !password){
+    return res.status(400).json({ msg: "One or both of the fields are missing"})
+  }
+  
   try {
     if (email && password) {
       const user_id = await checkCredentials(email, password); // returns the user id
@@ -78,45 +78,10 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
-//--------------------------------------------------------------------------------------------------------------------------------
-// WE DONT NEED THIS ANYMORE
-// Sign Up Page
-app.post('/api/signup', async (req, res) => {
-  let { first_name, last_name, email, password } = req.body;
-  console.log("We in the right route\n" + req.body.data);
 
-  try {
-    // Check if the user already has an account with that email
-    const account = await hasAccount(email);
-
-    if (account) {
-      console.log("ALREADY GOT ONE")
-      res.status(200).json({msg: "User already has an account!"});
-      return;
-    } else {
-      console.log("oh no more")
-      // hash the password before storing it on the database
-      const hash_pwd = await bcrypt.hash(password, 10);
-      console.log(hash_pwd);
-
-      const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
-                       VALUES (?, ?, ?, ?)`;
-      const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
-      
-      if (results && results.affectedRows == 1) {
-        res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
-      } else {
-        res.status(500).json({ "error": "Account creation failed" });
-      } 
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
-  }
-});
 //--------------------------------------------------------------------------------------------------------------------------------
 //dbtest page for select * from user
-app.get("/api/dbtest", async (req, res) => {
+app.get("/dbtest", async (req, res) => {
   try {
     const data = await select_user();
     res.json(data);
@@ -125,16 +90,24 @@ app.get("/api/dbtest", async (req, res) => {
   }
 });
 //--------------------------------------------------------------------------------------------------------------------------------
-//HomePage Register 
-app.post("/api/Register", async (req, res) => {
-  let { first_name, last_name, email, password } = req.body;
-  console.log(req.body);
+/** Registration
+ * Frontend req: first_name, last_name, email, password, account_type
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+app.post("/register", async (req, res) => {
+  let { first_name, last_name, email, password, account_type } = req.body;
+
+  if (!first_name || !last_name || !email || !password || !account_type) {
+    return res.status(400).json({ msg: "One or more of the fields are missing"})
+  }
+
   try {
     // Check if the user already has an account with that email
-    const account = await hasAccount(email);
+    const user_id = await hasAccount(email);
       // Has an account --> show that they already have an account and take them back to the home page for login
     // If the user already has an account, redirect to the login page
-    if (account) {
+    if (user_id) {
       console.log("User already has an account!");
       res.status(200).json({msg: "User already has an account!"});
       return;
@@ -142,13 +115,32 @@ app.post("/api/Register", async (req, res) => {
       console.log("Creating new account...");
       // hash the password before storing it on the database
       const hash_pwd = await bcrypt.hash(password, 10);
-      console.log(hash_pwd);
       const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
                        VALUES (?, ?, ?, ?)`;
       const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
+      
+      const new_user_id = await hasAccount(email);
 
       if (results && results.affectedRows == 1) {
-        res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
+        if(req.body.account_type === "Caregiver") {
+          const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
+          const [results1, fields] = await db.query(insertQuery2, [new_user_id]);
+          if (results1 && results1.affectedRows == 1) {
+            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED as Caregiver"});
+          } else {
+            res.status(500).json({ "error": "Account creation failed" });
+          }
+        } else if (req.body.account_type === "Patient") {
+          const insertQuery1 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
+          const [results2, fields] = await db.query(insertQuery1, [new_user_id]);
+          if (results2 && results2.affectedRows == 1) {
+            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED as patient"});
+          } else {
+            res.status(500).json({ "error": "Account creation failed" });
+          }
+        } else {
+          res.status(400).json({msg: "Account type is unspecified!"});
+        }
       } else {
         res.status(500).json({ "error": "Account creation failed" });
       } 
@@ -160,23 +152,18 @@ app.post("/api/Register", async (req, res) => {
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-//searchmedicine to get data from mysql
-app.get("/api/searchmedicine", async (req, res) => {
-  console.log("/searchtest --> selectMedicine")
-  try {
-    const data = await search_medicine();
-    //this console.log is to see the data in the terminal
-    console.log(data);
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
 
-// Sessions - return  [ session_id, user_id]
-// Postman Test - SUCCESS
-app.post("/api/session", async (req, res) => {
-  // Assuming the frontend is sending a res of the session_id from cookie
+
+/** Session
+ * Verifies the session for a user
+ * Frontend req:session
+ * Backend res: Status code, user_id, session_id
+ * Postman Check - SUCESS
+ */ 
+app.post("/session", async (req, res) => {
+  if (!req.body.session_id) {
+    return res.status(400).json({ msg: "No session_id in req"})
+  }
   try {
     const query = "SELECT user_id, logout_time FROM session WHERE id = ?";
     const [results, fields] = await db.query(query, [req.body.session_id]);
@@ -192,11 +179,16 @@ app.post("/api/session", async (req, res) => {
   }
 });
 
-// Profile - return user information [ everything but password]
-// Postman Test - SUCCESS
-app.post('/api/profile', async (req, res) => {
-  // Assuming the frontend is sending a res of the user_id
-  console.log("api/profile");
+/** Profile
+ * Frontend req: user_id
+ * Backend res: Status code, all user information (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+ * Postman Check - SUCCESS
+ */ 
+app.post('/profile', async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(400).json({ msg: "No user_id in req"})
+  }
+
   try {
     const query = "SELECT first_name, last_name, email, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
     const [results, fields] = await db.query(query, [req.body.user_id]);
@@ -212,25 +204,33 @@ app.post('/api/profile', async (req, res) => {
   }
 });
 
-// Profile Edit - When a user edits their basic information
-// Postman Test - SUCCESS
-app.post('/api/profile/edit', async (req, res) => {
-  // Assuming the frontend is sending a res of the user_id
+/** Profile Edit
+ * Frontend req: user_id
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+app.post('/profile/edit', async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(400).json({ msg: "No user_id in req"})
+  }
+
   try {
     const modified_columns = [];
     const values = [];
 
-    Object.entries(req.body.values).forEach(([key, value]) => {
-      if (value !== null) {
+    for (const [key, value] of Object.entries(req.body)) {
+      if (value !== '' && key !== 'user_id') {
         modified_columns.push(key);
         values.push(value);
       }
-    });
+    }
 
     const column_map = modified_columns.map((column, index) => `${column} = "${values[index]}"`).join(", ");
-    const query = `UPDATE user SET ${column_map} WHERE id = ?`;
+    const query = `UPDATE user SET ${column_map} WHERE id = ${req.body.id}`;
 
-    const [results, fields] = await db.query(query, [req.body.user_id]);
+    console.log(query)
+
+    const [results, fields] = await db.execute(query);
     if (results && results.affectedRows === 1) {
       res.status(200).json({ msg: "Update successful!"});
     } else {
@@ -242,10 +242,17 @@ app.post('/api/profile/edit', async (req, res) => {
   }
 });
 
-// Account Link - Show ever patient linked to user ID (caregiver)
-// Postman Test - SUCCESS
-app.post('/api/accountLink', async (req, res) => {
-  // Assuming the frontend is sending a res of the logged in user id
+/** Caregiver List
+ * Show the list of caregivers for a patient
+ * Frontend req: user_id
+ * Backend res: Status code, all user information of caregiver(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+ * Postman Check - SUCCESS
+ */ 
+app.post('/showcaregivers', async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(400).json({ msg: "No user_id in req"})
+  }
+
   try {
     const query = "SELECT user.* FROM account_link JOIN user ON account_link.caregiver_id = user.id WHERE account_link.patient_id = ?;";
     const [results, fields] = await db.query(query, [req.body.user_id]);
@@ -254,7 +261,7 @@ app.post('/api/accountLink', async (req, res) => {
       console.log(results);
       res.status(200).json(results);
     } else {
-      res.status(204).json({ msg: "No patients for this user"});
+      res.status(204).json({ msg: "No caregivers for this user"});
     }
   } catch (error) {
     console.error(error);
@@ -262,24 +269,45 @@ app.post('/api/accountLink', async (req, res) => {
   }
 });
 
-// Account Link - Links the accounts
-// Postman Test - SUCCESS
-app.post('/api/linkAccounts', async (req, res) => {
-  // Assuming the frontend sends the logged in user id AND an email
+
+/** Link Accounts
+ * Links an account to another account
+ * Frontend req: user_id, email
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+app.post('/linkAccounts', async (req, res) => {
   console.log("Linking accounts")
-  console.log(req.body); 
+  const { user_id, email} = req.body;
+  if (!user_id || !email) {
+    return res.status(400).json({ msg: "Missing field in req"})
+  }
+
     try {
-      if (req.body.account_type === "Caregiver") {
-        const insertQuery1 = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
-        const [results, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
+      const userAccType = await getAccountType(user_id);
+      const newID = await hasAccount(email);
+      if (!newID) {
+        res.status(400).json({ msg: "Incorrect email given"});
+      }
+      const addAccType = await getAccountType(newID);
+
+      console.log("userAcctType: " + userAccType + "\taddAccType: " + addAccType);
+
+      if (userAccType === addAccType) {
+        res.status(400).json({ msg: "Cannot add two of the same type accounts"})
+      }
+
+      if (userAccType === 'caregiver') {
+        const insertQuery = "INSERT INTO account_link (caregiver_id, patient_id) VALUES (?, ?);";
+        const [results, fields] = await db.query(insertQuery, [user_id, newID]);
         if (results && results.affectedRows == 1) {
           res.status(201).json({ msg: "Link successful!"});
         } else {
           res.status(500).json({ msg: "Something went wrong when linking accounts"});
         }
-      } else if (req.body.account_type === "Patient") {
-        const insertQuery = "INSERT INTO account_link (patient_id, caregiver_id) SELECT ?, id FROM user WHERE email = ?;";
-        const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
+      } else if (userAccType === 'patient') {
+        const insertQuery = "INSERT INTO account_link (caregiver_id, patient_id) VALUES (?, ?);";
+        const [results, fields] = await db.query(insertQuery, [newID, user_id]);
         if (results && results.affectedRows == 1) {
           res.status(201).json({ msg: "Link successful!"});
         } else {
@@ -287,53 +315,13 @@ app.post('/api/linkAccounts', async (req, res) => {
         }
       } else {
         res.status(500).json({ msg: "Incorrect account_type given"});
-      }
+      }  
     } catch(error) {
       console.error(error);
       throw error;
     }
   });
-  
-  // app.post('/api/linkAccounts', async (req, res) => {
-  //   // Assuming the frontend sends the logged in user id AND an email
-  //     try {
-  //       if (req.body.account_type === "caregiver") {
-  //         var q1 = false;
-  //         const insertQuery1 = "INSERT INTO account_link (caregiver_id, patient_id) SELECT ?, id FROM user WHERE email = ?;";
-  //         const [results, fields] = await db.query(insertQuery1, [req.body.user_id, req.body.email]);
-  //         if (results && results.affectedRows == 1) {
-  //           q1 = true;
-  //         }
-  //         const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
-  //         const [results2, fields2] = await db.query(insertQuery2, [req.body.user_id]);
-  //         if (results2 && results2.affectedRows == 1 && q1) {
-  //           res.status(201).json({ msg: "Link successful!"});
-  //         } else {
-  //           res.status(500).json({ msg: "Something went wrong when linking accounts"});
-  //         }
-  //       } else if (req.body.account_type === "patient") {
-  //         var q1 = false;
-  //         const insertQuery = "INSERT INTO account_link (patient_id, caregiver_id) SELECT ?, id FROM user WHERE email = ?;";
-  //         const [results, fields] = await db.query(insertQuery, [req.body.user_id, req.body.email]);
-  //         if (results && results.affectedRows == 1) {
-  //           q1 = true;
-  //         }
-  //         const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
-  //         const [results2, fields2] = await db.query(insertQuery2, [req.body.user_id]);
-  //         if (results2 && results2.affectedRows == 1 && q1) {
-  //           res.status(201).json({ msg: "Link successful!"});
-  //         } else {
-  //           res.status(500).json({ msg: "Something went wrong when linking accounts"});
-  //         }
-    
-  //       } else {
-  //         res.status(500).json({ msg: "Incorrect account_type given"});
-  //       }
-  //     } catch(error) {
-  //       console.error(error);
-  //       throw error;
-  //     }
-  //   });
+
 
 /* Where our app will listen from */
 app.listen(port, () => {
@@ -347,7 +335,7 @@ app.listen(port, () => {
 async function checkCredentials(email, password) {
   console.log("Checking credentials...");
   try {
-    const query = "SELECT id, password FROM User WHERE email=?;";
+    const query = "SELECT id, password FROM user WHERE email=?;";
     const [results, fields] = await db.query(query, [email]);
     if (results && results.length == 1) {
       let dbPassword = results[0].password;
@@ -385,56 +373,79 @@ async function createSession(session_id, user_id, device) {
   }
 }
 //--------------------------------------------------------------------------------------------------------------------------------
-// Checks if the user has an account
+// Checks if email is valid and return the user id
 async function hasAccount(email) {
   console.log("Checking if they have an account...");
   try {
-    const query = "SELECT * FROM user WHERE email = ?;"
+    const query = "SELECT id FROM user WHERE email = ?;";
     const [results, fields] = await db.query(query, [email]);
     if (results && results.length == 1) {
-      return true;
+      console.log("account found, user_id: " + results[0].id)
+      return results[0].id;
     } else {
-      return false;
+      console.log("Not a valid account!")
+      return null;
     } 
   } catch (error) {
     console.log(error);
     throw error;
   }
 }
+//yuto
+//req userID
+//res account_type
+app.post('/getAccountType', async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(400).json({ msg: "No user_id in req"})
+  }
 
-//--------------------------------------------------------------------------------------------------------------------------------
-// Selects all columns from the user table
-async function select_user() {
-  console.log("selectuser()");
   try {
-    const query = "SELECT * FROM User;";
-    const [result, fields] = await db.query(query);
-    return result;
+      const userAccType = await getAccountType(user_id);
+    if (userAccType){
+      return res.status(200).json(userAccType);
+    }else{
+      return res.status(400).json({ msg: "no userID found" });
+    }
   } catch (error) {
     console.error(error);
     throw error;
   }
-}
-//--------------------------------------------------------------------------------------------------------------------------------
-// Selects all columns from the prescription table
-async function search_medicine() {
-  console.log("searchmedicine()");
+});
+
+
+// Checks the account type
+async function getAccountType(user_id) {
+  console.log("Getting the account type for user_id: " + user_id);
   try {
-    const query = "SELECT * FROM prescription;";
-    const [result, fields] = await db.execute(query);
-    // console.log(result);
-    return result;
+    const query = "SELECT account_type FROM account WHERE user_id = ?;";
+    const [results, fields] = await db.query(query, [user_id]);
+    if (results && results.length == 1) {
+      console.log(results[0].account_type)
+      return results[0].account_type;
+    } else {
+      console.log("Account has no account_type associated")
+      return null;
+    } 
+
   } catch (error) {
-    console.error(error);
+    console.log(error);
     throw error;
   }
 }
 
 // -----------------------------------------------------------------------------------------------------------------------
-// Add medicine to the prescription table (Tested with postman and works with mysql database)
-// Accounts for nullable entries (description, end date)
-app.post("/api/addmedicine", async (req, res) => {
-  // let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
+/** Add Medication
+ * Accounts for nullable entries (description, end date)
+ * Frontend req: user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+app.post("/addmedicine", async (req, res) => {
+  let { user_id, med_name, dose_amt, start_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
+  if (!user_id || !med_name || !dose_amt || !start_date || !doctor_first_name || !doctor_last_name || !doctor_phone){
+    res.status(400).json({ msg: "Missing one or more required fields"})
+  }
+
   try {
     const columns = [];
     const placeholders = [];
@@ -460,28 +471,21 @@ app.post("/api/addmedicine", async (req, res) => {
     console.error(error);
     throw error;
   }
-    // Previously had Wing
-  //   console.log("Adding medicine...");
-  //   const insertQuery = `INSERT INTO prescription (user_id, med_name, description, dose_amt, start_date, end_date, 
-  //                         doctor_first_name, doctor_last_name, doctor_phone) 
-  //                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  //   const [results, fields] =  await db.query(insertQuery, [user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone]);
-  //   if (results && results.affectedRows == 1) {
-  //     res.status(201).json({msg: "Medicine successfully added"});
-  //   } else {
-  //     res.status(500).json({ "error": "Medicine addition failed" });
-  //   }
-  // } catch (error) {
-  //   console.error(error);
-  //   res.status(500).json({ "error": "Internal server error" });
-  // }
+  
 });
 // -----------------------------------------------------------------------------------------------------------------------
-// delete medicine in the prescription table (Tested with postman and works with mysql database)
-app.post("/api/deletemedicine", async (req, res) => {
+/** Delete Medication
+ * Frontend req: prescription id
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+app.post("/deletemedicine", async (req, res) => {
   const { id } = req.body;
   console.log(req.body);
-  //console.log(id);
+  if (!id){
+    res.status(400).json({ msg: "Missing the prescription id"})
+  }
+
   try {
     console.log("Deleting medicine...");
     const deleteQuery = "DELETE FROM prescription WHERE id = ?";
@@ -498,11 +502,20 @@ app.post("/api/deletemedicine", async (req, res) => {
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-// View medicine in the prescription table (Tested with postman and works with mysql database)
-app.post("/api/viewmedicine", async (req, res) => {
+/** View Medication
+ * Frontend req: user_id
+ * Backend res: Status code, prescription information (id, user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone )
+ * Postman Check - SUCCESS
+*/ 
+app.post("/viewmedicine", async (req, res) => {
   console.log(req.body);
   const { user_id } = req.body;
-console.log("userid backend: " + user_id);
+  console.log("userid backend: " + user_id);
+
+  if (!user_id){
+    res.status(400).json({ msg: "Missing the user_id"})
+  }
+
   try {
     console.log("Viewing medicine...");
     const selectQuery = `SELECT * FROM prescription WHERE user_id = ?`;
@@ -519,9 +532,17 @@ console.log("userid backend: " + user_id);
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-// logout api
-app.post("/api/logout", async (req, res) => {
+/** Logout
+ * Frontend req: session_id
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+app.post("/logout", async (req, res) => {
   const { session_id } = req.body;
+  if (!session_id) {
+    return res.status(400).json({ msg: "Missing session_id from req" });
+  }
+
   try {
     console.log("Logging out...");
     console.log(session_id);
@@ -537,3 +558,73 @@ app.post("/api/logout", async (req, res) => {
     res.status(500).json({ "error": "Internal server error" });
   }
 });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// Add emergency contact api if we decide to implement into database
+
+// app.post("/api/emergencycontact", async (req, res) => {
+//   let { user_id, first_name, last_name, phone, email } = req.body;
+//   try {
+//     console.log("Adding emergency contact...");
+//     const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
+//                           VALUES (?, ?, ?, ?, ?)`;
+//     const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
+//     if (results && results.affectedRows == 1) {
+//       res.status(201).json({msg: "Emergency contact successfully added"});
+//     } else {
+//       res.status(500).json({ "error": "Emergency contact addition failed" });
+//     }
+//   } catch (error) {
+//      console.error(error);
+//      res.status(500).json({ "error": "Internal server error" });
+//   }
+// });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+// View emergency contact api if we decide to implement into database
+
+// app.post("/api/viewemergencycontact", async (req, res) => {
+//   const { user_id } = req.body;
+//   try {
+//     console.log("Viewing emergency contact...");
+//     const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
+//     const [results, fields] =  await db.query(selectQuery, [user_id]);
+//     if (results && results.length > 0) {
+//       res.status(200).json(results);
+//     } else {
+//       res.status(404).json({ "error": "No emergency contact found" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ "error": "Internal server error" });
+//   }
+// });
+
+//--------------------------------------------------------------------------------------------------------------------------------
+/** Patient List
+ * Show the list of patients for a caregiver
+ * Frontend req: user_id
+ * Backend res: Status code, all user information of patient(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+ * Postman Check - SUCCESS
+ */ 
+app.post("/showpatients", async (req, res) => {
+  if (!req.body.user_id){
+    res.status(400).json({ msg: "Missing the user_id"})
+  }
+
+  try {
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length >= 1) {
+      console.log(results);
+      res.status(200).json(results);
+    } else {
+      res.status(204).json({ msg: "No patients for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
