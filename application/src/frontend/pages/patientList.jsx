@@ -26,7 +26,7 @@ const PatientList = () => {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+                const apiRes = await axios.post('http://localhost:8000/showcaregivers', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {
