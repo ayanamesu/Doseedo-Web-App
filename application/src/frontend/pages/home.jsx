@@ -27,7 +27,7 @@ const HomePage = () => {
        navigate('/');
     } else{
         
-        if(Cookies.get('patient')){
+        if(Cookies.get('accountType')==='patient'){
             navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
             
         }else{
@@ -86,10 +86,10 @@ const HomePage = () => {
             console.log(userData);
             console.log(res.data);
             if(res.data.user_accountType==='patient'){
-                setCookie('patient', res.data.user_accountType, { sameSite: 'lax'});
+                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
                 navigate('/patient_dashboard');
             }else{
-                setCookie('caregiver', res.data.user_accountType, { sameSite: 'lax'});
+                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
                 navigate('/caregiver_dashboard');
             }
             console.log("redirecting based on the account type");
