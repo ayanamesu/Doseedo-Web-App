@@ -15,7 +15,15 @@ function Topbar() {
         session_id : session_id
     }
     const handleHomeClick = () => {
-        navigate("/dashboard", { replace: true }); // Programmatically navigate to "/"
+
+        
+        if(Cookies.get('patient')){
+            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+            
+        }else{
+            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+        }
+       
     };
 
     const NavigateToContacts = () => {

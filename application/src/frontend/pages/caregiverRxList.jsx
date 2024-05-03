@@ -7,19 +7,50 @@ import Cookies from 'js-cookie';
 function CareGiverRxListPage() {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
-
-    const paitentList = [
-        {
-            name: "wing lee",
-            email: "amongus@gmail.com",
-            id: 1,
-        },
-        {
-            name: "yak attack",
-            email: "sussy@gmail.com",
-            id: 2,
+    const [patientList, setPatientList] = useState([]);
+    const [userId, setUserId] = useState("");
+    const [AccountList, setAccountList] = useState([]);
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!" + userId);
+        } else {
+            alert("You need to relog in!")
+            navigate('/');
         }
-    ];
+    const fetchAccountList = async () => {
+        try {
+            const data = {
+                user_id: userId
+            };
+            const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+            if (apiRes.status === 200) {
+                setPatientList(apiRes.data);
+            } else if (apiRes.status === 204) {
+                console.log("There are no patients for this user");
+            } else {
+                console.log("Something went wrong with the backend...");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    fetchAccountList();
+}, [userId]);
+
+    // const paitentList = [
+    //     {
+    //         name: "wing lee",
+    //         email: "amongus@gmail.com",
+    //         id: 1,
+    //     },
+    //     {
+    //         name: "yak attack",
+    //         email: "sussy@gmail.com",
+    //         id: 2,
+    //     }
+    // ];
     const medicationList = [
         {
             userId: 1,
@@ -83,7 +114,7 @@ const renderMedicationList = () => {
             <div className="paitent-list-container">
                 <h1>List of patients</h1>
                 <div className="rxlist-account">
-                    {paitentList.map((paitent, index) => (
+                    {patientList.map((paitent, index) => (
                         <div key={index} className="paitent">
                             <p>{paitent.name}</p>
                             <p>{paitent.email}</p>

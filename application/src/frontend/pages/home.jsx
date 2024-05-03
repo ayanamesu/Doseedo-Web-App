@@ -25,7 +25,16 @@ const HomePage = () => {
         setUserId(Cookies.get('user_id'));
         console.log("User id has been set!" + user_id)
        navigate('/');
-    } 
+    } else{
+        
+        if(Cookies.get('patient')){
+            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+            
+        }else{
+            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+        }
+       
+    }
 
 }, [user_id]);
 //   const sessionUserId = UseSessionCheck();
@@ -69,15 +78,18 @@ const HomePage = () => {
             */
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
             setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
+            
             alert("Successfuly logged In!");
             // TODO: Frontend - 
             // the dashboard page switch based on userid(account_type)
             //user switch
             console.log(userData);
             console.log(res.data);
-            if(res.data.user_accountType=='patient'){
+            if(res.data.user_accountType==='patient'){
+                setCookie('patient', res.data.user_accountType, { sameSite: 'lax'});
                 navigate('/patient_dashboard');
             }else{
+                setCookie('caregiver', res.data.user_accountType, { sameSite: 'lax'});
                 navigate('/caregiver_dashboard');
             }
             console.log("redirecting based on the account type");
