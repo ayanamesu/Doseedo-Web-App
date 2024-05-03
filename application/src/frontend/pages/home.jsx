@@ -40,7 +40,6 @@ const HomePage = () => {
 // }, []);
     
   function handleLoginForm(event) {
-
     if ( !email || !password ) {
         alert("Please fill out all the fields.");
         return;
@@ -75,8 +74,8 @@ const HomePage = () => {
             // the dashboard page switch based on userid(account_type)
             //user switch
             console.log(userData);
-
-            if(res.account_type==='patient'){
+            console.log(res.data);
+            if(res.data.user_accountType=='patient'){
                 navigate('/patient_dashboard');
             }else{
                 navigate('/caregiver_dashboard');
