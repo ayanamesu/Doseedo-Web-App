@@ -7,13 +7,12 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import SettingsPage from "./frontend/pages/settings";
 import Sidebar from "./frontend/Components/Sidebar";
 import Topbar from "./frontend/Components/topbar";
-import UseSessionCheck from './frontend/Components/UseSessionCheck';
 import RxListPage from "./frontend/pages/rxList";
 import CalendarPage from "./frontend/pages/calendar";
 import PatientProfilePage from "./frontend/pages/profile";
-import DashBoard from "./frontend/pages/dashboard";
+import Caregiver_DashBoard from "./frontend/pages/caregiver_dashboard"
+import Pateint_DashBoard from "./frontend/pages/patient_dashboard"
 import BackButton from "./frontend/Components/BackButton";
-import Caregiver from "./frontend/pages/caregiver";
 import PatientList from "./frontend/pages/patientList";
 import CareGiverRxListPage from "./frontend/pages/caregiverRxList";
 
@@ -39,8 +38,8 @@ function App() {
               <Route path="/rxList" element={<RxListPage/>} />
               <Route path="/calendar" element={<CalendarPage/>} />
               <Route path="/profile" element={<PatientProfilePage/>} />
-              <Route path="/dashboard" element={<DashBoard/>} />
-              <Route path="/caregiver" element={<Caregiver/>} />
+              <Route path="/patient_dashboard" element={<Pateint_DashBoard/>} />
+              <Route path="/caregiver_dashboard" element={<Caregiver_DashBoard/>} />
               <Route path="/patientlist" element={<PatientList/>} />
               <Route path="/caregiverRxList" element={<CareGiverRxListPage/>} />
 

@@ -1,17 +1,23 @@
 // still debugging skeleton code
-import React from "react";
+import React, {useState} from "react";
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrescriptionBottleMedical, faGear, faHospitalUser } from '@fortawesome/free-solid-svg-icons';
+import { faPrescriptionBottleMedical, faGear, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faCalendar } from '@fortawesome/free-regular-svg-icons';
 import BackButton from "../Components/BackButton";
- 
+import Cookies from 'js-cookie';
 import "../App.css";
 
-function Caregiver() {
+function DashBoard() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
+    const [userId, setUserId] = useState("");
 
+        useEffect(() => {
+           
+           
+        }, [userId]);
 
     const handleCalendarClick = () => {
         navigate("/calendar", { replace: true });
@@ -26,8 +32,8 @@ const handleSettingsClick = () => {
 const handleProfileClick = () => {
     navigate("/Profile", { replace: true });  
 };
-const handlePatientsClick = () => {
-    navigate("/patientList", { replace: true });  
+const handle911Click = () => {
+    navigate("/911", { replace: true });  
 };
 const getCurrentDate = () => {
     let today = new Date();
@@ -62,8 +68,8 @@ const getCurrentDate = () => {
                 </div>
                 <div className="Dashboard-Button-row">
                     <div className="Dashboard-Button-container">
-                        <FontAwesomeIcon className="Dashboard-Button" icon={faHospitalUser} title="Patients" onClick={handlePatientsClick} />
-                        <p className="Dashboard-Button-text">Patients</p>
+                        <FontAwesomeIcon className="Dashboard-Button" icon={faCircleExclamation} title="911" onClick={handle911Click} />
+                        <p className="Dashboard-Button-text">Emergency contact</p>
                     </div>
                     <div className="Dashboard-Button-container">
                         <FontAwesomeIcon className="Dashboard-Button" icon={faGear} title="Settings" onClick={handleSettingsClick} />
@@ -75,4 +81,4 @@ const getCurrentDate = () => {
         </div>
     );
 }
-export default Caregiver;
+export default DashBoard;

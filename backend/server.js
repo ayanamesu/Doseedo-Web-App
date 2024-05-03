@@ -37,10 +37,11 @@ app.use(session({
 
 /** LOGIN
  * Frontend req: email, password
- * Backend res: Status code, session_id, user_id
+ * Backend res: Status code, session_id, user_id , account_type
  * Postman Check - SUCCESS
  */
 app.post('/login', async (req, res) => {
+  
   let { email, password } = req.body;
 
   if (!email || !password){
@@ -50,7 +51,7 @@ app.post('/login', async (req, res) => {
   try {
     if (email && password) {
       const user_id = await checkCredentials(email, password); // returns the user id
-
+      const userAccType = await getAccountType(user_id);
       // Credentials are good
       if (user_id !== false) {
         const device = req.headers['user-agent']; // gets the login device
@@ -64,7 +65,7 @@ app.post('/login', async (req, res) => {
         if (session_creation) {
           // req.session.id will return the session id to the frontend to create a cookie
           // We can add to this if we like
-          res.status(200).json({session_id: req.session.id, user_id: user_id}); 
+          res.status(200).json({session_id: req.session.id, user_id: user_id,user_accountType: userAccType}); 
         } else {
           res.status(500);
         }
@@ -358,6 +359,27 @@ async function hasAccount(email) {
     throw error;
   }
 }
+//yuto
+//req userID
+//res account_type
+app.post('/getAccountType', async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(400).json({ msg: "No user_id in req"})
+  }
+
+  try {
+      const userAccType = await getAccountType(user_id);
+    if (userAccType){
+      return res.status(200).json(userAccType);
+    }else{
+      return res.status(400).json({ msg: "no userID found" });
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
 
 // Checks the account type
 async function getAccountType(user_id) {

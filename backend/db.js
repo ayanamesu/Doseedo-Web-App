@@ -22,11 +22,11 @@ const pool = mysql.createPool({
        password: "1234", //mysql password here
        port: "3306",
         //Yuto DB
-        //      host: "localhost",
-        //      user: "root",
-        //      database: "doseedodb", // insert your db info here
-        //      password: "password", //mysql password here
-        //      port: "3306",
+             host: "localhost",
+             user: "root",
+             database: "doseedodb2", // insert your db info here
+             password: "Zero1998!", //mysql password here
+             port: "3306"
          //paige db
         //  host: "localhost",
         // user: "root",
