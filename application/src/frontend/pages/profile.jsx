@@ -34,13 +34,13 @@ function PatientProfilePage() {
         // } else { 
         //     setUserId(sessionUserId[0]);
         // } 
-        if (Cookies.get('user_id') && Cookies.get('session_id')) {
-            setUserId(Cookies.get('user_id'));
-            console.log("User id has been set!" + user_id)
-        } else {
-            alert("You need to relog in!")
-            navigate('/');
-        }
+        // if (Cookies.get('user_id') && Cookies.get('session_id')) {
+        //     setUserId(Cookies.get('user_id'));
+        //     console.log("User id has been set!" + user_id)
+        // } else {
+        //     alert("You need to relog in!")
+        //     //navigate('/');
+        // }
 
         let data = {
             user_id: user_id

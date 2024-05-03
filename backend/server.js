@@ -37,20 +37,21 @@ app.use(session({
 
 /** LOGIN
  * Frontend req: email, password
- * Backend res: Status code, session_id, user_id
+ * Backend res: Status code, session_id, user_id, account_type
  * Postman Check - SUCCESS
  */
 app.post('/login', async (req, res) => {
+  
   let { email, password } = req.body;
 
   if (!email || !password){
-    return res.status(400).json({ msg: "One or both of the fields are missing"})
+    return res.status(400).json({ msg: "One or both of the fields are missing"});
   }
   
   try {
     if (email && password) {
       const user_id = await checkCredentials(email, password); // returns the user id
-
+      const userAccType = await getAccountType(user_id);
       // Credentials are good
       if (user_id !== false) {
         const device = req.headers['user-agent']; // gets the login device
@@ -60,35 +61,23 @@ app.post('/login', async (req, res) => {
 
         const session_creation = await createSession(req.session.id, user_id, device); // stores session in our db
 
-        // if session creation was successful
         if (session_creation) {
           // req.session.id will return the session id to the frontend to create a cookie
-          // We can add to this if we like
-          res.status(200).json({session_id: req.session.id, user_id: user_id}); 
+          return res.status(200).json({session_id: req.session.id, user_id: user_id, user_accountType: userAccType}); 
         } else {
-          res.status(500);
+          return res.status(500);
         }
 
       } else {
-        res.status(403).json({ msg: "Wrong email or password :(" }); // Error handling style needs to be done in the front end
+        return res.status(403).json({ msg: "Wrong email or password :(" }); // Error handling style needs to be done in the front end
       }
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    return res.status(500).json({ "error": "Internal server error" });
   }
 });
 
-//--------------------------------------------------------------------------------------------------------------------------------
-//dbtest page for select * from user
-app.get("/dbtest", async (req, res) => {
-  try {
-    const data = await select_user();
-    res.json(data);
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
-  }
-});
 //--------------------------------------------------------------------------------------------------------------------------------
 /** Registration
  * Frontend req: first_name, last_name, email, password, account_type
@@ -99,60 +88,37 @@ app.post("/register", async (req, res) => {
   let { first_name, last_name, email, password, account_type } = req.body;
 
   if (!first_name || !last_name || !email || !password || !account_type) {
-    return res.status(400).json({ msg: "One or more of the fields are missing"})
+    return res.status(400).json({ msg: "One or more of the fields are missing"});
   }
 
   try {
     // Check if the user already has an account with that email
     const user_id = await hasAccount(email);
-      // Has an account --> show that they already have an account and take them back to the home page for login
+    // Has an account --> show that they already have an account and take them back to the home page for login
     // If the user already has an account, redirect to the login page
     if (user_id) {
       console.log("User already has an account!");
-      res.status(200).json({msg: "User already has an account!"});
-      return;
+      return res.status(200).json({msg: "User already has an account!"});
     } else {
-      console.log("Creating new account...");
       // hash the password before storing it on the database
       const hash_pwd = await bcrypt.hash(password, 10);
-      const insertQuery = `INSERT INTO user (first_name, last_name, email, password) 
-                       VALUES (?, ?, ?, ?)`;
-      const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd]);
+      const insertQuery = `INSERT INTO user (first_name, last_name, email, password, account_type) 
+                       VALUES (?, ?, ?, ?, ?)`;
+      const [results, fields] =  await db.query(insertQuery, [first_name, last_name, email, hash_pwd, account_type]);
       
-      const new_user_id = await hasAccount(email);
-
       if (results && results.affectedRows == 1) {
-        if(req.body.account_type === "Caregiver") {
-          const insertQuery2 = `INSERT INTO account (user_id, account_type) VALUES (?, 'caregiver');`
-          const [results1, fields] = await db.query(insertQuery2, [new_user_id]);
-          if (results1 && results1.affectedRows == 1) {
-            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED as Caregiver"});
-          } else {
-            res.status(500).json({ "error": "Account creation failed" });
-          }
-        } else if (req.body.account_type === "Patient") {
-          const insertQuery1 = `INSERT INTO account (user_id, account_type) VALUES (?, 'patient');`
-          const [results2, fields] = await db.query(insertQuery1, [new_user_id]);
-          if (results2 && results2.affectedRows == 1) {
-            res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED as patient"});
-          } else {
-            res.status(500).json({ "error": "Account creation failed" });
-          }
-        } else {
-          res.status(400).json({msg: "Account type is unspecified!"});
-        }
+        return res.status(201).json({msg: "ACCOUNT SUCCESSFULLY CREATED"});
       } else {
-        res.status(500).json({ "error": "Account creation failed" });
-      } 
+        return res.status(500).json({ "error": "Account creation failed" });
+      }
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    return res.status(500).json({ "error": "Internal server error" });
   }
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-
 
 /** Session
  * Verifies the session for a user
@@ -162,16 +128,16 @@ app.post("/register", async (req, res) => {
  */ 
 app.post("/session", async (req, res) => {
   if (!req.body.session_id) {
-    return res.status(400).json({ msg: "No session_id in req"})
+    return res.status(400).json({ msg: "No session_id in req"});
   }
   try {
     const query = "SELECT user_id, logout_time FROM session WHERE id = ?";
     const [results, fields] = await db.query(query, [req.body.session_id]);
 
     if (results && results.length == 1 && !results[0].logout_time) {
-      res.status(200).json({user_id: results[0].user_id, session_id: req.body.session_id});
+      return res.status(200).json({user_id: results[0].user_id, session_id: req.body.session_id});
     } else {
-      res.status(401).json({ msg: "No session for this user"});
+      return res.status(401).json({ msg: "No session for this user"});
     }
   } catch (error) {
     console.error(error);
@@ -181,22 +147,22 @@ app.post("/session", async (req, res) => {
 
 /** Profile
  * Frontend req: user_id
- * Backend res: Status code, all user information (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+ * Backend res: Status code, all user information (first_name, last_name, email, phone, account_type, address_1, address_2, state, city, zip_code)
  * Postman Check - SUCCESS
  */ 
 app.post('/profile', async (req, res) => {
   if (!req.body.user_id) {
-    return res.status(400).json({ msg: "No user_id in req"})
+    return res.status(400).json({ msg: "No user_id in req"});
   }
 
   try {
-    const query = "SELECT first_name, last_name, email, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
+    const query = "SELECT first_name, last_name, email, account_type, phone, address_1, address_2, state, city, zip_code FROM user WHERE id = ?";
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length == 1) {
-      res.status(200).json(results[0]);
+      return res.status(200).json(results[0]);
     } else {
-      res.status(401).json({ msg: ""});
+      return res.status(401).json({ msg: "Invalid User ID"});
     }
   } catch (error) {
     console.error(error);
@@ -205,13 +171,14 @@ app.post('/profile', async (req, res) => {
 });
 
 /** Profile Edit
- * Frontend req: user_id
+ * Takes into account any fields that were left blank
+ * Frontend req: user_id, IF ANY CHANGES: (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
 app.post('/profile/edit', async (req, res) => {
   if (!req.body.user_id) {
-    return res.status(400).json({ msg: "No user_id in req"})
+    return res.status(400).json({ msg: "No user_id in req"});
   }
 
   try {
@@ -232,9 +199,9 @@ app.post('/profile/edit', async (req, res) => {
 
     const [results, fields] = await db.execute(query);
     if (results && results.affectedRows === 1) {
-      res.status(200).json({ msg: "Update successful!"});
+      return res.status(200).json({ msg: "Update successful!"});
     } else {
-      res.status(500).json({ msg: "Something went wrong when updating information"});
+      return res.status(500).json({ msg: "Something went wrong when updating information"});
     }
   } catch (error) {
     console.error(error);
@@ -250,7 +217,7 @@ app.post('/profile/edit', async (req, res) => {
  */ 
 app.post('/showcaregivers', async (req, res) => {
   if (!req.body.user_id) {
-    return res.status(400).json({ msg: "No user_id in req"})
+    return res.status(400).json({ msg: "No user_id in req"});
   }
 
   try {
@@ -259,9 +226,9 @@ app.post('/showcaregivers', async (req, res) => {
 
     if (results && results.length >= 1) {
       console.log(results);
-      res.status(200).json(results);
+      return res.status(200).json(results);
     } else {
-      res.status(204).json({ msg: "No caregivers for this user"});
+      return res.status(204).json({ msg: "No caregivers for this user"});
     }
   } catch (error) {
     console.error(error);
@@ -269,6 +236,34 @@ app.post('/showcaregivers', async (req, res) => {
   }
 });
 
+/** Patient List
+ * Show the list of patients for a caregiver
+ * Frontend req: user_id
+ * Backend res: Status code, all user information of patient(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+ * Postman Check - SUCCESS
+ */ 
+app.post("/showpatients", async (req, res) => {
+  console.log("Show patients api")
+  console.log(req.body)
+  if (!req.body.user_id){
+    return res.status(400).json({ msg: "Missing the user_id"});
+  }
+
+  try {
+    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
+    const [results, fields] = await db.query(query, [req.body.user_id]);
+
+    if (results && results.length >= 1) {
+      console.log(results);
+      return res.status(200).json(results);
+    } else {
+      return res.status(204).json({ msg: "No patients for this user"});
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
 
 /** Link Accounts
  * Links an account to another account
@@ -277,44 +272,43 @@ app.post('/showcaregivers', async (req, res) => {
  * Postman Check - SUCCESS
  */ 
 app.post('/linkAccounts', async (req, res) => {
-  console.log("Linking accounts")
   const { user_id, email} = req.body;
   if (!user_id || !email) {
-    return res.status(400).json({ msg: "Missing field in req"})
+    return res.status(400).json({ msg: "Missing field in req"});
   }
 
     try {
       const userAccType = await getAccountType(user_id);
       const newID = await hasAccount(email);
       if (!newID) {
-        res.status(400).json({ msg: "Incorrect email given"});
+        return res.status(400).json({ msg: "Incorrect email given"});
       }
       const addAccType = await getAccountType(newID);
 
       console.log("userAcctType: " + userAccType + "\taddAccType: " + addAccType);
 
       if (userAccType === addAccType) {
-        res.status(400).json({ msg: "Cannot add two of the same type accounts"})
+        return res.status(400).json({ msg: "Cannot link two of the same type accounts"})
       }
 
       if (userAccType === 'caregiver') {
         const insertQuery = "INSERT INTO account_link (caregiver_id, patient_id) VALUES (?, ?);";
         const [results, fields] = await db.query(insertQuery, [user_id, newID]);
         if (results && results.affectedRows == 1) {
-          res.status(201).json({ msg: "Link successful!"});
+          return res.status(201).json({ msg: "Link successful!"});
         } else {
-          res.status(500).json({ msg: "Something went wrong when linking accounts"});
+          return res.status(500).json({ msg: "Something went wrong when linking accounts"});
         }
       } else if (userAccType === 'patient') {
         const insertQuery = "INSERT INTO account_link (caregiver_id, patient_id) VALUES (?, ?);";
         const [results, fields] = await db.query(insertQuery, [newID, user_id]);
         if (results && results.affectedRows == 1) {
-          res.status(201).json({ msg: "Link successful!"});
+          return res.status(201).json({ msg: "Link successful!"});
         } else {
-          res.status(500).json({ msg: "Something went wrong when linking accounts"});
+          return res.status(500).json({ msg: "Something went wrong when linking accounts"});
         }
       } else {
-        res.status(500).json({ msg: "Incorrect account_type given"});
+        return res.status(500).json({ msg: "Incorrect account_type given"});
       }  
     } catch(error) {
       console.error(error);
@@ -383,7 +377,6 @@ async function hasAccount(email) {
       console.log("account found, user_id: " + results[0].id)
       return results[0].id;
     } else {
-      console.log("Not a valid account!")
       return null;
     } 
   } catch (error) {
@@ -391,18 +384,38 @@ async function hasAccount(email) {
     throw error;
   }
 }
+//yuto
+//req userID
+//res account_type
+app.post('/getAccountType', async (req, res) => {
+  if (!req.body.user_id) {
+    return res.status(400).json({ msg: "No user_id in req"})
+  }
+
+  try {
+      const userAccType = await getAccountType(user_id);
+    if (userAccType){
+      return res.status(200).json(userAccType);
+    }else{
+      return res.status(400).json({ msg: "no userID found" });
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+});
+
 
 // Checks the account type
 async function getAccountType(user_id) {
   console.log("Getting the account type for user_id: " + user_id);
   try {
-    const query = "SELECT account_type FROM account WHERE user_id = ?;";
+    const query = "SELECT account_type FROM user WHERE id = ?;";
     const [results, fields] = await db.query(query, [user_id]);
     if (results && results.length == 1) {
-      console.log(results[0].account_type)
       return results[0].account_type;
     } else {
-      console.log("Account has no account_type associated")
+      console.log("Account has no account_type associated");
       return null;
     } 
 
@@ -411,7 +424,6 @@ async function getAccountType(user_id) {
     throw error;
   }
 }
-
 // -----------------------------------------------------------------------------------------------------------------------
 /** Add Medication
  * Accounts for nullable entries (description, end date)
@@ -422,7 +434,7 @@ async function getAccountType(user_id) {
 app.post("/addmedicine", async (req, res) => {
   let { user_id, med_name, dose_amt, start_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   if (!user_id || !med_name || !dose_amt || !start_date || !doctor_first_name || !doctor_last_name || !doctor_phone){
-    res.status(400).json({ msg: "Missing one or more required fields"})
+    return res.status(400).json({ msg: "Missing one or more required fields"});
   }
 
   try {
@@ -442,9 +454,9 @@ app.post("/addmedicine", async (req, res) => {
     const [results, fields] = await db.query(query, values);
 
     if (results && results.affectedRows === 1) {
-      res.status(200).json({ msg: "Update successful!"});
+      return res.status(200).json({ msg: "Update successful!"});
     } else {
-      res.status(500).json({ msg: "Something went wrong when updating information"});
+      return res.status(500).json({ msg: "Something went wrong when updating information"});
     }
   } catch (error) {
     console.error(error);
@@ -462,7 +474,7 @@ app.post("/deletemedicine", async (req, res) => {
   const { id } = req.body;
   console.log(req.body);
   if (!id){
-    res.status(400).json({ msg: "Missing the prescription id"})
+    return res.status(400).json({ msg: "Missing the prescription id"});
   }
 
   try {
@@ -470,13 +482,13 @@ app.post("/deletemedicine", async (req, res) => {
     const deleteQuery = "DELETE FROM prescription WHERE id = ?";
     const [results, fields] = await db.query(deleteQuery, [id]);
     if (results && results.affectedRows == 1) {
-      res.status(200).json({msg: "Medicine successfully deleted"});
+      return res.status(200).json({msg: "Medicine successfully deleted"});
     } else {
-      res.status(404).json({ "error": "Medicine not found" });
+      return res.status(404).json({ "error": "Medicine not found" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    return res.status(500).json({ "error": "Internal server error" });
   }
 });
 
@@ -492,7 +504,7 @@ app.post("/viewmedicine", async (req, res) => {
   console.log("userid backend: " + user_id);
 
   if (!user_id){
-    res.status(400).json({ msg: "Missing the user_id"})
+    return res.status(400).json({ msg: "Missing the user_id"});
   }
 
   try {
@@ -500,13 +512,13 @@ app.post("/viewmedicine", async (req, res) => {
     const selectQuery = `SELECT * FROM prescription WHERE user_id = ?`;
     const [results, fields] =  await db.query(selectQuery, [user_id]);
     if (results && results.length > 0) {
-      res.status(200).json(results);
+      return res.status(200).json(results);
     } else {
-      res.status(404).json({ "error": "No medicine found" });
+      return res.status(404).json({ "error": "No medicine found" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    return res.status(500).json({ "error": "Internal server error" });
   }
 });
 
@@ -528,82 +540,77 @@ app.post("/logout", async (req, res) => {
     const updateQuery = "UPDATE session SET logout_time = NOW() WHERE id = ?";
     const [results, fields] = await db.query(updateQuery, [session_id]);
     if (results && results.affectedRows == 1) {
-      res.status(200).json({msg: "Logout successful"});
+      return res.status(200).json({msg: "Logout successful"});
     } else {
-      res.status(404).json({ "error": "Session not found" });
+      return res.status(404).json({ "error": "Session not found" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    return res.status(500).json({ "error": "Internal server error" });
   }
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-// Add emergency contact api if we decide to implement into database
-
-// app.post("/api/emergencycontact", async (req, res) => {
-//   let { user_id, first_name, last_name, phone, email } = req.body;
-//   try {
-//     console.log("Adding emergency contact...");
-//     const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
-//                           VALUES (?, ?, ?, ?, ?)`;
-//     const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
-//     if (results && results.affectedRows == 1) {
-//       res.status(201).json({msg: "Emergency contact successfully added"});
-//     } else {
-//       res.status(500).json({ "error": "Emergency contact addition failed" });
-//     }
-//   } catch (error) {
-//      console.error(error);
-//      res.status(500).json({ "error": "Internal server error" });
-//   }
-// });
-
-//--------------------------------------------------------------------------------------------------------------------------------
-// View emergency contact api if we decide to implement into database
-
-// app.post("/api/viewemergencycontact", async (req, res) => {
-//   const { user_id } = req.body;
-//   try {
-//     console.log("Viewing emergency contact...");
-//     const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
-//     const [results, fields] =  await db.query(selectQuery, [user_id]);
-//     if (results && results.length > 0) {
-//       res.status(200).json(results);
-//     } else {
-//       res.status(404).json({ "error": "No emergency contact found" });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ "error": "Internal server error" });
-//   }
-// });
-
-//--------------------------------------------------------------------------------------------------------------------------------
-/** Patient List
- * Show the list of patients for a caregiver
- * Frontend req: user_id
- * Backend res: Status code, all user information of patient(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+/** Add Emergency Contact
+ * Frontend req: user_id, first_name, last_name, phone, email
+ * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-app.post("/showpatients", async (req, res) => {
-  if (!req.body.user_id){
-    res.status(400).json({ msg: "Missing the user_id"})
+
+app.post("/emergencycontact/add", async (req, res) => {
+  let { user_id, first_name, last_name, phone, email } = req.body;
+  if (!user_id | !first_name | !last_name | !phone | !email) {
+    return res.status(400).json({ msg: "Missing one or more required fields in req" });
   }
 
   try {
-    const query = "SELECT user.* FROM account_link JOIN user ON account_link.patient_id = user.id WHERE account_link.caregiver_id = ?;";
-    const [results, fields] = await db.query(query, [req.body.user_id]);
-
-    if (results && results.length >= 1) {
-      console.log(results);
-      res.status(200).json(results);
+    console.log("Adding emergency contact...");
+    // const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
+    //                       VALUES (?, ?, ?, ?, ?)`;
+    const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, email, phone) 
+    VALUES (?, ?, ?, ?, ?)
+    ON DUPLICATE KEY UPDATE
+        first_name = VALUES(first_name),
+        last_name = VALUES(last_name),
+        phone = VALUES(phone),
+        email = VALUES(email);`;
+    const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
+    if (results && results.affectedRows == 1) {
+      return res.status(201).json({msg: "Emergency contact successfully added"});
     } else {
-      res.status(204).json({ msg: "No patients for this user"});
+      return res.status(500).json({ "error": "Emergency contact addition failed" });
+    }
+  } catch (error) {
+     console.error(error);
+     return res.status(500).json({ "error": "Internal server error" });
+  }
+});
+
+//--------------------------------------------------------------------------------------------------------------------------------
+/** View Emergency Contact information
+ * Frontend req: user_id
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+
+app.post("/emergencycontact", async (req, res) => {
+  const { user_id } = req.body;
+  if (!user_id) {
+    return res.status(400).json({ msg: "Missing user_id from req" });
+  }
+
+  try {
+    console.log("Viewing emergency contact...");
+    const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
+    const [results, fields] =  await db.query(selectQuery, [user_id]);
+    if (results && results.length > 0) {
+      return res.status(200).json(results);
+    } else {
+      return res.status(404).json({ "error": "No emergency contact found" });
     }
   } catch (error) {
     console.error(error);
-    throw error;
+    return res.status(500).json({ "error": "Internal server error" });
   }
 });
 

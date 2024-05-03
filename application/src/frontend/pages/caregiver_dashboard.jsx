@@ -1,34 +1,30 @@
 // still debugging skeleton code
-import React, {useState} from "react";
-import { useEffect } from 'react';
+import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPrescriptionBottleMedical, faGear, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { faPrescriptionBottleMedical, faGear, faHospitalUser } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faCalendar } from '@fortawesome/free-regular-svg-icons';
 import BackButton from "../Components/BackButton";
 import Cookies from 'js-cookie';
 import "../App.css";
 
-function DashBoard() {
+function Caregiver() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     const [userId, setUserId] = useState("");
+    const [AccountList, setAccountList] = useState([]);
 
-        useEffect(() => {
-            if (Cookies.get('user_id') && Cookies.get('session_id')) {
-                setUserId(Cookies.get('user_id'));
-                console.log("User id has been set!" + userId);
-            } else {
-                alert("You need to relog in!")
-                navigate('/');
-            }
-        }, [userId]);
+    useEffect(() => {
+
+         
+    }, [userId]);
 
     const handleCalendarClick = () => {
         navigate("/calendar", { replace: true });
     };
     const handleRXListClick = () => {
-        navigate("/rxlist", { replace: true });
+        navigate("/caregiverRxList", { replace: true });
     };
 
 const handleSettingsClick = () => {
@@ -37,8 +33,8 @@ const handleSettingsClick = () => {
 const handleProfileClick = () => {
     navigate("/Profile", { replace: true });  
 };
-const handle911Click = () => {
-    navigate("/911", { replace: true });  
+const handlePatientsClick = () => {
+    navigate("/patientList", { replace: true });  
 };
 const getCurrentDate = () => {
     let today = new Date();
@@ -73,8 +69,8 @@ const getCurrentDate = () => {
                 </div>
                 <div className="Dashboard-Button-row">
                     <div className="Dashboard-Button-container">
-                        <FontAwesomeIcon className="Dashboard-Button" icon={faCircleExclamation} title="911" onClick={handle911Click} />
-                        <p className="Dashboard-Button-text">Emergency contact</p>
+                        <FontAwesomeIcon className="Dashboard-Button" icon={faHospitalUser} title="Patients" onClick={handlePatientsClick} />
+                        <p className="Dashboard-Button-text">Patients</p>
                     </div>
                     <div className="Dashboard-Button-container">
                         <FontAwesomeIcon className="Dashboard-Button" icon={faGear} title="Settings" onClick={handleSettingsClick} />
@@ -86,4 +82,4 @@ const getCurrentDate = () => {
         </div>
     );
 }
-export default DashBoard;
+export default Caregiver;
