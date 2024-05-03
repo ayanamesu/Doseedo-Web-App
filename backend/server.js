@@ -561,25 +561,25 @@ app.post("/logout", async (req, res) => {
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-// Add emergency contact api if we decide to implement into database
-
-// app.post("/api/emergencycontact", async (req, res) => {
-//   let { user_id, first_name, last_name, phone, email } = req.body;
-//   try {
-//     console.log("Adding emergency contact...");
-//     const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
-//                           VALUES (?, ?, ?, ?, ?)`;
-//     const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
-//     if (results && results.affectedRows == 1) {
-//       res.status(201).json({msg: "Emergency contact successfully added"});
-//     } else {
-//       res.status(500).json({ "error": "Emergency contact addition failed" });
-//     }
-//   } catch (error) {
-//      console.error(error);
-//      res.status(500).json({ "error": "Internal server error" });
-//   }
-// });
+app.post("/addemergencycontact", async (req, res) => {
+  console.log("req"+ req);
+  let { user_id, first_name, last_name, phone, email } = req.body;
+  console.log(req.body);
+  try {
+    console.log("Adding emergency contact...");
+    const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
+                          VALUES (?, ?, ?, ?, ?)`;
+    const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
+    if (results && results.affectedRows == 1) {
+      res.status(201).json({msg: "Emergency contact successfully added"});
+    } else {
+      res.status(500).json({ "error": "Emergency contact addition failed" });
+    }
+  } catch (error) {
+     console.error(error);
+     res.status(500).json({ "error": "Internal server error" });
+  }
+});
 
 //--------------------------------------------------------------------------------------------------------------------------------
 // View emergency contact api if we decide to implement into database

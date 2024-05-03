@@ -33,7 +33,7 @@ const handleProfileClick = () => {
     navigate("/Profile", { replace: true });  
 };
 const handle911Click = () => {
-    navigate("/911", { replace: true });  
+    navigate("/EmergencyContactPage", { replace: true });  
 };
 const getCurrentDate = () => {
     let today = new Date();

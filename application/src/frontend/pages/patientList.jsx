@@ -11,14 +11,21 @@ const PatientList = () => {
     const [userId, setUserId] = useState("");
     const [AccountList, setAccountList] = useState([]);
 
-    // from yakbranch
     useEffect(() => {
-       
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!" + userId);
+        } else {
+            alert("You need to relog in!")
+            navigate('/');
+        }
+
         const fetchAccountList = async () => {
             try {
                 const data = {
                     user_id: userId
                 };
+                if (data.user_id){
                 const apiRes = await axios.post('http://localhost:8000/showpatients', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
@@ -27,9 +34,11 @@ const PatientList = () => {
                 } else {
                     console.log("Something went wrong with the backend...");
                 }
+            }
             } catch (error) {
                 console.error(error);
             }
+        
         };
             fetchAccountList();
     }, [userId]);

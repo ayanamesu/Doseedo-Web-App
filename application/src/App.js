@@ -17,6 +17,7 @@ import Pateint_DashBoard from "./frontend/pages/patient_dashboard"
 import BackButton from "./frontend/Components/BackButton";
 import PatientList from "./frontend/pages/patientList";
 import CareGiverRxListPage from "./frontend/pages/caregiverRxList";
+import EmergencyContactPage from "./frontend/pages/emergencyContact";
 
 
 const queryClient = new QueryClient({});
@@ -44,7 +45,7 @@ function App() {
               <Route path="/caregiver_dashboard" element={<Caregiver_DashBoard/>} />
               <Route path="/patientlist" element={<PatientList/>} />
               <Route path="/caregiverRxList" element={<CareGiverRxListPage/>} />
-
+              <Route path="/emergencyContactPage" element={<EmergencyContactPage/>} />
             </Routes>
           </div>
         </Router>
