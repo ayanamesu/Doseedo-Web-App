@@ -588,3 +588,4 @@ app.post("/showpatients", async (req, res) => {
   }
 });
 
+module.exports = app; 
