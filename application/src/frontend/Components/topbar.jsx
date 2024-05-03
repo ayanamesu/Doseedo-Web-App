@@ -15,7 +15,13 @@ function Topbar() {
         session_id : session_id
     }
     const handleHomeClick = () => {
-        navigate("/dashboard", { replace: true }); // Programmatically navigate to "/"
+        if(Cookies.get('accountType')==='patient'){
+            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+            
+        }else{
+            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+        }
+      
     };
 
     const NavigateToContacts = () => {
@@ -41,6 +47,7 @@ function Topbar() {
                 // document.cookie = "session_id=; expires=Thu, 01 Jan 1942 00:00:00 UTC; path=/;";
                 Cookies.remove("session_id");
                 Cookies.remove("user_id");
+                Cookies.remove("user_accountType");
                 alert("Sucessfuly logged out!");
                 navigate('/');
             }

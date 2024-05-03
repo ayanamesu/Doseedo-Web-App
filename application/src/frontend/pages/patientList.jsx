@@ -13,20 +13,13 @@ const PatientList = () => {
 
     // from yakbranch
     useEffect(() => {
-        if (Cookies.get('user_id') && Cookies.get('session_id')) {
-            setUserId(Cookies.get('user_id'));
-            console.log("User id has been set!" + userId);
-        } else {
-            alert("You need to relog in!")
-            navigate('/');
-        }
-
+       
         const fetchAccountList = async () => {
             try {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {

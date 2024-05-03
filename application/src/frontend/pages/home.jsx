@@ -24,8 +24,17 @@ const HomePage = () => {
     if (!(Cookies.get('user_id') && Cookies.get('session_id'))) {
         setUserId(Cookies.get('user_id'));
         console.log("User id has been set!" + user_id)
-       navigate('/');
-    } 
+       
+    } else{
+        
+        if(Cookies.get('accountType')==='patient'){
+            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+            
+        }else{
+            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+        }
+       
+    }
 
 }, [user_id]);
 //   const sessionUserId = UseSessionCheck();
@@ -40,7 +49,6 @@ const HomePage = () => {
 // }, []);
     
   function handleLoginForm(event) {
-
     if ( !email || !password ) {
         alert("Please fill out all the fields.");
         return;
@@ -70,33 +78,22 @@ const HomePage = () => {
             */
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
             setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
+            
             alert("Successfuly logged In!");
             // TODO: Frontend - 
             // the dashboard page switch based on userid(account_type)
             //user switch
             console.log(userData);
-            console.log("redirecting based on the account type");
-       
-            let userID = {
-                id:user_id
-            }
-axios.post('http://localhost:8000/getAccountType', userID)
-    .then(res => {
-        console.log(res.status); 
-        console.log(res.account_type); 
-        //res = backend res.status(200).json(req.session.id); from the post
-        if (res.data.account_type) {
-            if(res.data.account_type=='patient'){
+            console.log(res.data);
+            if(res.data.user_accountType==='patient'){
+                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
                 navigate('/patient_dashboard');
             }else{
-                navigate('/caregiver_dashboard')
+                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
+                navigate('/caregiver_dashboard');
             }
+            console.log("redirecting based on the account type");
 
-        } else {
-            console.log("No userID found");
-        }
-    })
-    .catch(err => console.log(err));
 
         }
     })
