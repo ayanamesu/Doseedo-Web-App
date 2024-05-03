@@ -24,7 +24,7 @@ const HomePage = () => {
     if (!(Cookies.get('user_id') && Cookies.get('session_id'))) {
         setUserId(Cookies.get('user_id'));
         console.log("User id has been set!" + user_id)
-       navigate('/');
+       
     } else{
         
         if(Cookies.get('accountType')==='patient'){

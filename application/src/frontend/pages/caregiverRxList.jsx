@@ -9,7 +9,7 @@ function CareGiverRxListPage() {
     const [viewClicked, setViewClicked] = useState(false);
     const [patientList, setPatientList] = useState([]);
     const [userId, setUserId] = useState("");
-    const [AccountList, setAccountList] = useState([]);
+    const [MedList, setMedList] = useState([]);
     const navigate = useNavigate();
     useEffect(() => {
         
@@ -18,7 +18,7 @@ function CareGiverRxListPage() {
             const data = {
                 user_id: userId
             };
-            const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+            const apiRes = await axios.post('http://localhost:8000/showpatients', data);
             if (apiRes.status === 200) {
                 setPatientList(apiRes.data);
             } else if (apiRes.status === 204) {
@@ -30,6 +30,7 @@ function CareGiverRxListPage() {
             console.error(error);
         }
     };
+
     fetchAccountList();
 }, [userId]);
 
@@ -45,53 +46,67 @@ function CareGiverRxListPage() {
     //         id: 2,
     //     }
     // ];
-    const medicationList = [
-        {
-            userId: 1,
-            name: "Tylenol",
-            dosage: "500mg",
-            frequency: "once a day",
-            time: "8:00am"
-        },
-        {
-            userId: 2,
-            name: "Advil",
-            dosage: "200mg",
-            frequency: "twice a day",
-            time: "8:00am, 8:00pm"
-        },
-        {
-            userId: 1,
-            name: "crack cocaine",
-            dosage: "200mg",
-            frequency: "twice a day",
-            time: "8:00am, 8:00pm"
-        },
-        {
-            userId: 1,
-            name: "crack cocaine",
-            dosage: "200mg",
-            frequency: "twice a day",
-            time: "8:00am, 8:00pm"
-        },
-        {
-            userId: 1,
-            name: "crack cocaine",
-            dosage: "200mg",
-            frequency: "twice a day",
-            time: "8:00am, 8:00pm"
-        },
-        {
-            userId: 1,
-            name: "crack cocaine",
-            dosage: "200mg",
-            frequency: "twice a day",
-            time: "8:00am, 8:00pm"
-        }
-    ];
+    // const medicationList = [
+    //     {
+    //         userId: 1,
+    //         name: "Tylenol",
+    //         dosage: "500mg",
+    //         frequency: "once a day",
+    //         time: "8:00am"
+    //     },
+    //     {
+    //         userId: 2,
+    //         name: "Advil",
+    //         dosage: "200mg",
+    //         frequency: "twice a day",
+    //         time: "8:00am, 8:00pm"
+    //     },
+    //     {
+    //         userId: 1,
+    //         name: "crack cocaine",
+    //         dosage: "200mg",
+    //         frequency: "twice a day",
+    //         time: "8:00am, 8:00pm"
+    //     },
+    //     {
+    //         userId: 1,
+    //         name: "crack cocaine",
+    //         dosage: "200mg",
+    //         frequency: "twice a day",
+    //         time: "8:00am, 8:00pm"
+    //     },
+    //     {
+    //         userId: 1,
+    //         name: "crack cocaine",
+    //         dosage: "200mg",
+    //         frequency: "twice a day",
+    //         time: "8:00am, 8:00pm"
+    //     },
+    //     {
+    //         userId: 1,
+    //         name: "crack cocaine",
+    //         dosage: "200mg",
+    //         frequency: "twice a day",
+    //         time: "8:00am, 8:00pm"
+    //     }
+    // ];
 
-const renderMedicationList = () => {
-    return medicationList
+const renderMedicationList = (selectedUserId) => {
+    try{
+    const apiRes =  axios.post('http://localhost:8000/viewmedicine', selectedUserId )
+    // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
+        .then((apiRes) => {
+          console.log(apiRes.data);
+          console.log(apiRes.status);
+          setMedList(apiRes.data);//list
+        })
+        .catch((error) => {
+            console.error('Error fetching medications:', error);
+        });
+    }  catch (error) {
+        console.error(error);
+    }
+    return MedList
         .filter(medication => medication.userId === selectedUserId)
         .map((medication, index) => (
             <div key={index} className="medication-list-container">
