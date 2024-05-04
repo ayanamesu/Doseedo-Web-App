@@ -5,7 +5,6 @@ import "../App.css";
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 
-
 const PatientList = () => {
     const navigate = useNavigate();
     const [userId, setUserId] = useState("");
@@ -47,6 +46,8 @@ const PatientList = () => {
 
         <div>
             <h2>Linked Accounts:</h2>
+
+            
              <div className="linkedAccountsContainer">
                 {AccountList.map((accountLink, index) => (
                     <div key={index} className="account">
@@ -60,4 +61,11 @@ const PatientList = () => {
     );
 };
 
+module.exports= {
+    patientList: class {
+            static viewPatients(){
+                axios.post('http://localhost:8000/showpatients', data);
+            }
+    }
+}
 export default PatientList;

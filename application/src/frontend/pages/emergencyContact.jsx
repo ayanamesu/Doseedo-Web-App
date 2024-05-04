@@ -4,13 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import Cookies from 'js-cookie';
 
-const CareGiverRxListPage= () => {
+const emergencyContact= () => {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [userId, setUserId] = useState("");
     const navigate = useNavigate();
 
-    //front-end api to view all medicines 
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
@@ -19,6 +18,10 @@ const CareGiverRxListPage= () => {
             alert("You need to relog in!")
             navigate('/');
         }
+
+    //api for view medicine
+
+        //move outside to a callable function
         const addEmergencyContact = async () =>{
             let data = {
                 user_id: 2,
