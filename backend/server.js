@@ -226,8 +226,8 @@ app.post('/profile/edit', async (req, res) => {
     }
 
     const column_map = modified_columns.map((column, index) => `${column} = "${values[index]}"`).join(", ");
-    const query = `UPDATE user SET ${column_map} WHERE id = ${req.body.id}`;
-
+    const query = `UPDATE user SET ${column_map} WHERE id = ${req.body.user_id}`;
+    
     console.log(query)
 
     const [results, fields] = await db.execute(query);

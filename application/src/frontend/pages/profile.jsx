@@ -149,7 +149,7 @@ function PatientProfilePage() {
 
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-        axios.post('http://localhost:8000/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+        axios.post('http://localhost:8000/profile/edit', { user_id: Cookies.get('user_id'), first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
        
                 if (apiRes.status === 200) {
