@@ -198,23 +198,71 @@ describe('POST /showpatients', () => {
 // });
 
 // WING TO DO 
-describe('POST /showcaregiver', () => {
+describe('POST /showcaregivers', () => {
+  it('should return caregiver details', async () => {
+    const res = await request(server)
+      .post('/showcaregivers')
+      .send({ user_id: 25 });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body[0]).toHaveProperty('id');
+    expect(res.body[0]).toHaveProperty('first_name');
+    expect(res.body[0]).toHaveProperty('last_name');
+    expect(res.body[0]).toHaveProperty('email');
+    expect(res.body[0]).toHaveProperty('password');
+    expect(res.body[0]).toHaveProperty('address_1');
+    expect(res.body[0]).toHaveProperty('address_2');
+    expect(res.body[0]).toHaveProperty('state');
+    expect(res.body[0]).toHaveProperty('city');
+    expect(res.body[0]).toHaveProperty('zip_code');
+    expect(res.body[0]).toHaveProperty('phone');
+    expect(res.body[0]).toHaveProperty('account_type');
+  });
 });
 
 describe('POST /linkAccounts', () => {
 });
 
 describe('POST /addmedicine', () => {
+  it('should return a success message after adding medicine', async () => {
+    const res = await request(server)
+      .post('/addmedicine')
+      .send({
+        user_id: 1,
+        med_name: 'biden sleep aid',
+        dose_amt: '200mgs',
+        start_date: '2024-05-28',
+        doctor_first_name: 'michael',
+        doctor_last_name: 'lee',
+        doctor_phone: '4156689999'
+      });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('msg');
+    expect(res.body.msg).toEqual('Update successful!');
+  });
 });
 
 describe('POST /deletemedicine', () => {
 });
 
-// WING TO DO 
+
 describe('POST /logout', () => {
 });
 
 describe('POST /emergencycontact', () => {
+  it('should return user emergency contact details', async () => {
+    const res = await request(server)
+      .post('/emergencycontact')
+      .send({ user_id: 1 });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body[0]).toHaveProperty('user_id');
+    expect(res.body[0]).toHaveProperty('first_name');
+    expect(res.body[0]).toHaveProperty('last_name');
+    expect(res.body[0]).toHaveProperty('email');
+    expect(res.body[0]).toHaveProperty('phone');
+  });
 });
 
 describe('POST /emergencycontact/add', () => {
