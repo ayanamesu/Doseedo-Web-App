@@ -1,46 +1,26 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react';
-import axios from 'axios';
-import PatientList from './patientList';
+import { render } from '@testing-library/react';
+import PatientList from './patientList'; // Import the component to be tested
+import axios from '../../__mocks__/axios';
 
+jest.mock('axios'); // Automatically mock axios
+const mockedAxios = axios;
 
+const renderComponent = () => (render(<PatientList />));
 
-const patientList = require('./patientList');
+describe('PatientList Component', () => {
+  test('renders linked accounts correctly', async () => {
 
+    // Render the component
+    const { getByText } = renderComponent();
+    console.log("PEEPEE")
+    console.log(await getByText);
 
-/*
-// Mock axios post function
-jest.mock('axios');
+    // // Check if the linked accounts are rendered correctly
+    // const first_name = await findByText(/Lola/i);
+    // expect(first_name).toBeInTheDocument();
 
-describe('PatientList component', () => {
-  test('renders without crashing', () => {
-    render(<PatientList />);
+    // const email = await findByText(/lola@email.com/i);
+    // expect(email).toBeInTheDocument();
   });
-
-  test('fetches and displays account list', async () => {
-    const accountList = [
-      { id: 1, first_name: 'John', last_name: 'Doe', email: 'john.doe@example.com' },
-      { id: 2, first_name: 'Jane', last_name: 'Smith', email: 'jane.smith@example.com' }
-    ];
-
-    // Mock axios post function to return mocked data
-    axios.post.mockResolvedValueOnce({ status: 200, data: accountList });
-
-    const { getByText } = render(<PatientList />);
-
-    // Check if "Linked Accounts:" header is rendered
-    expect(getByText('Linked Accounts:')).toBeInTheDocument();
-
-    // Check if account names and emails are displayed
-    await waitFor(() => {
-      accountList.forEach(account => {
-        expect(getByText(`${account.first_name} ${account.last_name}`)).toBeInTheDocument();
-        expect(getByText(account.email)).toBeInTheDocument();
-      });
-    });
-  });
-
-  // You can write more tests to cover other scenarios like handling no accounts or errors
 });
-
-*/
