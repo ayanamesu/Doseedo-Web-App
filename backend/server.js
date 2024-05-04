@@ -509,7 +509,7 @@ app.post("/deletemedicine", async (req, res) => {
  * Postman Check - SUCCESS
 */ 
 app.post("/viewmedicine", async (req, res) => {
-  console.log(req.body);
+  console.log("req.body" + req.body);
   const { user_id } = req.body;
   console.log("userid backend: " + user_id);
 
