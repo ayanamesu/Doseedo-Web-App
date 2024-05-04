@@ -150,12 +150,14 @@ const user_id = 31;
 describe('POST /showpatient', () => {
 });
 
+// WING TO DO
 describe('POST /showcaregiver', () => {
 });
 
 describe('POST /linkAccounts', () => {
 });
 
+// WING TO DO
 describe('POST /addmedicine', () => {
 });
 
@@ -169,6 +171,7 @@ describe('POST /viewmedicine', () => {
 describe('POST /logout', () => {
 });
 
+// WING TO DO
 describe('POST /emergencycontact', () => {
 });
 
