@@ -53,8 +53,10 @@ app.get("/viewProfile", async (req, res) => {
 });
 
 app.get("/viewMedicine", async (req, res) => {
+  console.log("req.user_id" + req.user_id);
+
    try {
-    const data = await viewMedicine();
+    const data = await viewMedicine(req.user_id);
     res.json(data);
   } catch (error) {
     res.status(500).json({ error: "An error occurred" });
@@ -151,8 +153,8 @@ async function viewProfile(userId) {
 async function viewMedicine() {
   const db = await connectToDB();
   try {
-    const query = "SELECT * FROM Prescription;";
-    const [result, fields] = await db.execute(query);
+    const query = "SELECT * FROM Prescription  WHERE id = ?;";
+    const [result, fields] = await db.execute(query, [userId]);
     return result;
   } catch (error) {
     console.error(error);

@@ -4,120 +4,93 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import Cookies from 'js-cookie';
 
-function CareGiverRxListPage() {
+const CareGiverRxListPage= () => {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [patientList, setPatientList] = useState([]);
     const [userId, setUserId] = useState("");
     const [MedList, setMedList] = useState([]);
     const navigate = useNavigate();
-    useEffect(() => {
-        
+
+useEffect(() => {
+    if (Cookies.get('user_id') && Cookies.get('session_id')) {
+        setUserId(Cookies.get('user_id'));
+        console.log("User id has been set!" + userId);
+    } else {
+        alert("You need to relog in!")
+        navigate('/');
+    }
+
     const fetchAccountList = async () => {
         try {
             const data = {
                 user_id: userId
             };
-            const apiRes = await axios.post('http://localhost:8000/showpatients', data);
-            if (apiRes.status === 200) {
-                setPatientList(apiRes.data);
-            } else if (apiRes.status === 204) {
-                console.log("There are no patients for this user");
-            } else {
-                console.log("Something went wrong with the backend...");
+            if (data.user_id){
+                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
+                if (apiRes.status === 200) {
+                        setPatientList(apiRes.data);
+                } else if (apiRes.status === 204) {
+                    console.log("There are no patients for this user");
+                } else {
+                    console.log("Something went wrong with the backend...");
+                }
+                }
             }
-        } catch (error) {
+        catch (error) {
             console.error(error);
         }
+    
     };
+        fetchAccountList();
+        
 
-    fetchAccountList();
-}, [userId]);
+}, [userId, selectedUserId, viewClicked]);
 
-    // const paitentList = [
-    //     {
-    //         name: "wing lee",
-    //         email: "amongus@gmail.com",
-    //         id: 1,
-    //     },
-    //     {
-    //         name: "yak attack",
-    //         email: "sussy@gmail.com",
-    //         id: 2,
-    //     }
-    // ];
-    // const medicationList = [
-    //     {
-    //         userId: 1,
-    //         name: "Tylenol",
-    //         dosage: "500mg",
-    //         frequency: "once a day",
-    //         time: "8:00am"
-    //     },
-    //     {
-    //         userId: 2,
-    //         name: "Advil",
-    //         dosage: "200mg",
-    //         frequency: "twice a day",
-    //         time: "8:00am, 8:00pm"
-    //     },
-    //     {
-    //         userId: 1,
-    //         name: "crack cocaine",
-    //         dosage: "200mg",
-    //         frequency: "twice a day",
-    //         time: "8:00am, 8:00pm"
-    //     },
-    //     {
-    //         userId: 1,
-    //         name: "crack cocaine",
-    //         dosage: "200mg",
-    //         frequency: "twice a day",
-    //         time: "8:00am, 8:00pm"
-    //     },
-    //     {
-    //         userId: 1,
-    //         name: "crack cocaine",
-    //         dosage: "200mg",
-    //         frequency: "twice a day",
-    //         time: "8:00am, 8:00pm"
-    //     },
-    //     {
-    //         userId: 1,
-    //         name: "crack cocaine",
-    //         dosage: "200mg",
-    //         frequency: "twice a day",
-    //         time: "8:00am, 8:00pm"
-    //     }
-    // ];
 
 const renderMedicationList = (selectedUserId) => {
     try{
-    const apiRes =  axios.post('http://localhost:8000/viewmedicine', selectedUserId )
-    // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
-        .then((apiRes) => {
-          console.log(apiRes.data);
-          console.log(apiRes.status);
-          setMedList(apiRes.data);//list
-        })
-        .catch((error) => {
-            console.error('Error fetching medications:', error);
-        });
+
+        if(selectedUserId && viewClicked){
+            const data = {
+                user_id: selectedUserId
+            };
+            const apiRes =  axios.post('http://localhost:8000/viewmedicine', data )
+        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
+            .then((apiRes) => {
+            console.log("apiRes.data ");
+            console.log( apiRes.data);
+            setMedList(apiRes.data);
+            console.log(" med list: " + MedList);
+            })
+            .catch((error) => {
+                console.error('Error fetching medications:', error);
+            });
+
+            if (MedList.length > 0 ){
+                return(
+                ( // Check if MedList has data
+                MedList.filter(medication => medication.userId === selectedUserId)
+                .map((medication, index) => (
+                    <div key={index} className="medication-list-container">
+                        <p>{medication.name}</p>
+                        <p>{medication.dosage}</p>
+                        <p>{medication.frequency}</p>
+                        <p>{medication.time}</p>
+                    </div>
+                ))
+                )
+            )
+        }
+        setViewClicked(false);
+        }
     }  catch (error) {
         console.error(error);
     }
-    return MedList
-        .filter(medication => medication.userId === selectedUserId)
-        .map((medication, index) => (
-            <div key={index} className="medication-list-container">
-                <p>{medication.name}</p>
-                <p>{medication.dosage}</p>
-                <p>{medication.frequency}</p>
-                <p>{medication.time}</p>
-            </div>
-        ));
+
 };
 
+//const renderMedList =() => {
     return (
         <div className="caregiver-rxlist">
             <div className="paitent-list-container">
@@ -139,12 +112,13 @@ const renderMedicationList = (selectedUserId) => {
             <h1>Medication List</h1>
                 {viewClicked ? (
                     <div>
-                        {renderMedicationList()}
+                    {renderMedicationList(selectedUserId)} 
                     </div>
                 ) : <p>Click on a patient to view their medication list</p>} 
             </div>
         </div>
     );
-}
+};
+
 
 export default CareGiverRxListPage;
