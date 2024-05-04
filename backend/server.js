@@ -567,7 +567,7 @@ app.post("/emergencycontact/add", async (req, res) => {
     console.log("Adding emergency contact...");
     // const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
     //                       VALUES (?, ?, ?, ?, ?)`;
-    const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, email, phone) 
+    const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email) 
     VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
         first_name = VALUES(first_name),

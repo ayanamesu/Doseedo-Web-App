@@ -6,6 +6,20 @@ const server = require('./server');
 const email = "W1@gmail.com";
 const password = "123";
 
+// REGISTER
+// const new_email = "new@email.com";
+// const new_pass = "new";
+// const new_fname = "New";
+// const new_lname = "Egg";
+// const new_acctype = "caregiver";
+
+//SESSION
+// const sess_id = "XVGd24K6FtFn-xn_XF0PO9b3CKyku2pp";
+// const invalid_sess_id = "AY4XgkCXw2UhWmI6LHDApqNhVC69Zp2F";
+
+//PROFILE
+// const user_id = 31;
+
 describe('POST /login', () => {
     it('responds with 200 status', async () => {
       const response = await request(server)
@@ -50,6 +64,8 @@ describe('POST /login', () => {
   });
 });
 
+
+
 describe('POST /showpatients', () => {
   it('responds with 200 status', async () => {
     const response = await request(server)
@@ -74,47 +90,8 @@ describe('POST /showpatients', () => {
     expect(response.body[0]).toHaveProperty('zip_code');
     expect(response.body[0]).toHaveProperty('phone');
   });
-});const request = require('supertest');
-const server = require('./server');
+});
 
-
-
-// REGISTER
-const new_email = "new@email.com";
-const new_pass = "new";
-const new_fname = "New";
-const new_lname = "Egg";
-const new_acctype = "caregiver";
-
-//SESSION
-const sess_id = "XVGd24K6FtFn-xn_XF0PO9b3CKyku2pp";
-const invalid_sess_id = "AY4XgkCXw2UhWmI6LHDApqNhVC69Zp2F";
-
-//PROFILE
-const user_id = 31;
-
-// describe('POST /login', () => {
-//     it('Successful Login Status', async () => {
-//       const response = await request(server)
-//         .post('/login')
-//         .send({ email: email, password: password });
-//       expect(response.statusCode).toBe(200);
-//     });
-  
-//     it('Successful Login Body Check', async () => {
-//       const response = await request(server)
-//         .post('/login')
-//         .send({ email: email, password: password });
-//       expect(response.text).toContain('user_id', 'session_id');
-//     });
-
-//     it('Error Handling Check', async () => {
-//       const response = await request(server)
-//         .post('/login')
-//         .send({ email: email });
-//       expect(response.statusCode).toBe(400);
-//     });
-//   });
 
 // describe('POST /register', () => {
 //   it('Successful Registration Status', async () => {
@@ -221,9 +198,6 @@ const user_id = 31;
 // });
 
 // WING TO DO 
-describe('POST /showpatient', () => {
-});
-
 describe('POST /showcaregiver', () => {
 });
 
@@ -237,9 +211,6 @@ describe('POST /deletemedicine', () => {
 });
 
 // WING TO DO 
-describe('POST /viewmedicine', () => {
-});
-
 describe('POST /logout', () => {
 });
 
@@ -247,4 +218,7 @@ describe('POST /emergencycontact', () => {
 });
 
 describe('POST /emergencycontact/add', () => {
+
 });
+
+
