@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 
 
 const PatientList = () => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [userId, setUserId] = useState("");
     const [AccountList, setAccountList] = useState([]);
 
