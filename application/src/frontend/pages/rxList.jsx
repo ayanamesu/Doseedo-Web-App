@@ -37,6 +37,7 @@ function RxListPage() {
         let data = {
             user_id: user_id
         }
+        console.log("user_id: " + user_id);
      console.log(data);
         //front-end api to view all medicines 
         axios.post('http://localhost:8000/viewmedicine', data )
@@ -55,11 +56,10 @@ function RxListPage() {
             <div className="medication-name">Medication Name: {med_name}</div>
             <div className="medication-dosage">Dosage: {dosage}</div>
             <div className="medication-description">Description: {description}</div>
-            <div className="medication-start-date">Start Date: {start_date}</div>
-            <div className="medication-end-date">End Date: {end_date}</div>
+            <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
+            <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
             <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
             <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
-            <div className="medication-quantity-info">quantity: 30 </div>
         </div>
         //quantity
         //med for the day
@@ -92,8 +92,10 @@ function RxListPage() {
         axios.post('http://localhost:8000/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
+                
                 setShowAddMed(false);
-                setShowMedList(true); // Switch back to the medication list page
+                // setShowMedList(true); // Switch back to the medication list page
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error adding medication:', error);         
@@ -104,18 +106,18 @@ function RxListPage() {
     }
 
     const handleAddMedicationClick = () => {
-
-    console.log("handleAddMed");
+        console.log("handleAddMed");
         setShowMedList(false);
         setShowAddMed(true);
         setShowMedsforTheDay(false);
+        
     }
 
-        const handleDeleteMedicationClick = () => {
-          console.log("med list length: " + medications.length);
-          if (medications.length != 0){
-          let toDelete = medications[selectedMedicationId].id;
-          axios.post('http://localhost:8000/deletemedicine', { id: toDelete })
+    const handleDeleteMedicationClick = () => {
+        console.log("med list length: " + medications.length);
+        if (medications.length != 0){
+            let toDelete = medications[selectedMedicationId].id;
+            axios.post('http://localhost:8000/deletemedicine', { id: toDelete })
             .then(response => {
                 setMedications(response.data);
                 console.log("Medication deleted successfully:", response.data);
@@ -125,9 +127,8 @@ function RxListPage() {
             .catch(error => {
                 console.error('Error deleting medication:', error);
             });
-   
         }
-        };
+    };
 
     const handleMedsForTheDayClick =()=>{
         setShowMedList(false);
@@ -282,29 +283,21 @@ function RxListPage() {
                     {/* <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button> */}
                     <button className="section-title" onClick={handleMedListClick}>Medication list</button>
                 </div>
+                
             );
         }
+        
     };
 
     const renderAddDeleteButton = () => {
-        if (!showDeleteMed && (medications.length > 0) ) { 
+        if (!showAddMed && (medications.length > 0)) { 
             return (
                 <>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
- 
                 </>
             );
         }
-        else if (!showAddMed) {
-            return (
-                <>
-                    <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
-                </>
-            );
-
-        }
-        return null; // If showAddMed is true, return null (no buttons rendered)
     };
 
     return (
