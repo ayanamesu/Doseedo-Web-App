@@ -444,7 +444,7 @@ async function getAccountType(user_id) {
 app.post("/addmedicine", async (req, res) => {
   let { user_id, med_name, dose_amt, start_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   if (!user_id || !med_name || !dose_amt || !start_date || !doctor_first_name || !doctor_last_name || !doctor_phone){
-    res.status(400).json({ msg: "Missing one or more required fields"})
+    return res.status(400).json({ msg: "Missing one or more required fields"});
   }
 
   try {
@@ -464,9 +464,9 @@ app.post("/addmedicine", async (req, res) => {
     const [results, fields] = await db.query(query, values);
 
     if (results && results.affectedRows === 1) {
-      res.status(200).json({ msg: "Update successful!"});
+      return res.status(200).json({ msg: "Update successful!"});
     } else {
-      res.status(500).json({ msg: "Something went wrong when updating information"});
+      return res.status(500).json({ msg: "Something went wrong when updating information"});
     }
   } catch (error) {
     console.error(error);
@@ -509,12 +509,12 @@ app.post("/deletemedicine", async (req, res) => {
  * Postman Check - SUCCESS
 */ 
 app.post("/viewmedicine", async (req, res) => {
-  console.log("req.body" + req.body);
+  console.log(req.body);
   const { user_id } = req.body;
   console.log("userid backend: " + user_id);
 
   if (!user_id){
-    res.status(400).json({ msg: "Missing the user_id"})
+    return res.status(400).json({ msg: "Missing the user_id"});
   }
 
   try {
@@ -522,13 +522,13 @@ app.post("/viewmedicine", async (req, res) => {
     const selectQuery = `SELECT * FROM prescription WHERE user_id = ?`;
     const [results, fields] =  await db.query(selectQuery, [user_id]);
     if (results && results.length > 0) {
-      res.status(200).json(results);
+      return res.status(200).json(results);
     } else {
-      res.status(404).json({ "error": "No medicine found" });
+      return res.status(404).json({ "error": "No medicine found" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ "error": "Internal server error" });
+    return res.status(500).json({ "error": "Internal server error" });
   }
 });
 
@@ -582,24 +582,24 @@ app.post("/addemergencycontact", async (req, res) => {
 });
 
 //--------------------------------------------------------------------------------------------------------------------------------
-// View emergency contact api if we decide to implement into database
+View emergency contact api if we decide to implement into database
 
-// app.post("/api/viewemergencycontact", async (req, res) => {
-//   const { user_id } = req.body;
-//   try {
-//     console.log("Viewing emergency contact...");
-//     const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
-//     const [results, fields] =  await db.query(selectQuery, [user_id]);
-//     if (results && results.length > 0) {
-//       res.status(200).json(results);
-//     } else {
-//       res.status(404).json({ "error": "No emergency contact found" });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ "error": "Internal server error" });
-//   }
-// });
+app.post("/api/viewemergencycontact", async (req, res) => {
+  const { user_id } = req.body;
+  try {
+    console.log("Viewing emergency contact...");
+    const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
+    const [results, fields] =  await db.query(selectQuery, [user_id]);
+    if (results && results.length > 0) {
+      res.status(200).json(results);
+    } else {
+      res.status(404).json({ "error": "No emergency contact found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ "error": "Internal server error" });
+  }
+});
 
 //--------------------------------------------------------------------------------------------------------------------------------
 /** Patient List

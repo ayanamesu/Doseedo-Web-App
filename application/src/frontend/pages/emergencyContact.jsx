@@ -1,6 +1,16 @@
+import React, { useEffect, useState } from "react";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import "../App.css";
+import Cookies from 'js-cookie';
 
-import React from 'react';
-import { useState } from 'react';
+
+const EmergencyContact = () => {
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [viewClicked, setViewClicked] = useState(false);
+    const [IscontactInfo, setContactInfo]=useState(false);
+    const [userId, setUserId] = useState("");
+    let navigate = useNavigate();   
 
 let contactInfo =
     {
@@ -8,13 +18,6 @@ let contactInfo =
         phone: "415-555-5555",
         email: "yuto@hotmail.com"
     };
-
-const EmergencyContact = () => {
-    const [selectedUserId, setSelectedUserId] = useState(null);
-    const [viewClicked, setViewClicked] = useState(false);
-    const [userId, setUserId] = useState("");
-    const navigate = useNavigate();
-
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));

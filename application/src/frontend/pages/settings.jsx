@@ -17,7 +17,14 @@ const SettingsPage = () => {
     const [AccountList, setAccountList] = useState([]);
 
     useEffect(() => {
-       
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!" + userId);
+        } else {
+            alert("You need to relog in!")
+            navigate('/');
+        }
+    
 
         const fetchAccountList = async () => {
             try {
@@ -57,17 +64,13 @@ const SettingsPage = () => {
 
     function handleAccountPairClick(event) {
 
-        if (!userId || !email ) {
-            // Display an error message or perform any necessary actions
-            alert('Please fill out all required fields.');
-            return; // Prevent the form from being submitted
-        }
-
+        
         event.preventDefault();
         let data = {
             user_id: userId, 
             email: email, 
         }
+        console.log(data);
         axios.post('http://localhost:8000/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 

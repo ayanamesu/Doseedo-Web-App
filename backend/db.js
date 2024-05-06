@@ -22,17 +22,17 @@ const pool = mysql.createPool({
 //        password: "pass", //mysql password here
 //        port: "3306",
         //Yuto DB
-        //      host: "localhost",
-        //      user: "root",
-        //      database: "doseedodb2", // insert your db info here
-        //      password: "Zero1998!", //mysql password here
-        //      port: "3306"
+             host: "localhost",
+             user: "root",
+             database: "doseedodb3", // insert your db info here
+             password: "Zero1998!", //mysql password here
+             port: "3306"
          //paige db
-         host: "localhost",
-        user: "root",
-        database: "doseedo_db_test", // insert your db info here
-        password: "TinyDog65!", //mysql password here
-        port: "3306",
+        //  host: "localhost",
+        // user: "root",
+        // database: "doseedo_db_test", // insert your db info here
+        // password: "TinyDog65!", //mysql password here
+        // port: "3306",
 });
 
 const promisePool = pool.promise();
