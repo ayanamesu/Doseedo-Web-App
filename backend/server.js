@@ -33,6 +33,7 @@ app.use(session({
   saveUninitialized: false // generates log in system everytime you make a new session id, so make sure to set to false
 }));
 
+// Getting the proper API link from .env file
 let api;
 if (process.env.STATUS === 'dev') {
   api = process.env.API_LINK; 
@@ -45,7 +46,11 @@ if (process.env.STATUS === 'dev') {
   api = "http://localhost:8000"
 }
 
-/* SEND ENV VARIABLES */
+/* -----------ROUTES----------- */
+
+/** Send env variables 
+ * Called in frontend > App.js
+*/
 app.get('/env-var', async (req, res) =>{
   return res.json( {
     API_LINK: api
@@ -53,15 +58,13 @@ app.get('/env-var', async (req, res) =>{
 }); 
 
 
-/** LOGIN
+/** Login
  * Frontend req: email, password
  * Backend res: Status code, session_id, user_id, account_type
  * Postman Check - SUCCESS
  */
 app.post('/login', async (req, res) => {
-  
   let { email, password } = req.body;
-
   if (!email || !password){
     return res.status(400).json({ msg: "One or both of the fields are missing"});
   }
@@ -96,7 +99,6 @@ app.post('/login', async (req, res) => {
   }
 });
 
-//--------------------------------------------------------------------------------------------------------------------------------
 /** Registration
  * Frontend req: first_name, last_name, email, password, account_type
  * Backend res: Status code, msg
@@ -104,7 +106,6 @@ app.post('/login', async (req, res) => {
  */ 
 app.post("/register", async (req, res) => {
   let { first_name, last_name, email, password, account_type } = req.body;
-
   if (!first_name || !last_name || !email || !password || !account_type) {
     return res.status(400).json({ msg: "One or more of the fields are missing"});
   }
@@ -115,7 +116,6 @@ app.post("/register", async (req, res) => {
     // Has an account --> show that they already have an account and take them back to the home page for login
     // If the user already has an account, redirect to the login page
     if (user_id) {
-      console.log("User already has an account!");
       return res.status(200).json({msg: "User already has an account!"});
     } else {
       // hash the password before storing it on the database
@@ -135,8 +135,6 @@ app.post("/register", async (req, res) => {
     return res.status(500).json({ "error": "Internal server error" });
   }
 });
-
-//--------------------------------------------------------------------------------------------------------------------------------
 
 /** Session
  * Verifies the session for a user
@@ -164,7 +162,7 @@ app.post("/session", async (req, res) => {
 });
 
 /** Profile
- * Frontend req: user_id
+ * Frontend req: user_id (logged in user)
  * Backend res: Status code, all user information (first_name, last_name, email, phone, account_type, address_1, address_2, state, city, zip_code)
  * Postman Check - SUCCESS
  */ 
@@ -190,7 +188,7 @@ app.post('/profile', async (req, res) => {
 
 /** Profile Edit
  * Takes into account any fields that were left blank
- * Frontend req: user_id, IF ANY CHANGES: (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+ * Frontend req: user_id (logged in user), IF ANY CHANGES: (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
@@ -212,8 +210,6 @@ app.post('/profile/edit', async (req, res) => {
 
     const column_map = modified_columns.map((column, index) => `${column} = "${values[index]}"`).join(", ");
     const query = `UPDATE user SET ${column_map} WHERE id = ${req.body.user_id}`;
-    
-    console.log(query)
 
     const [results, fields] = await db.query(query);
     if (results && results.affectedRows === 1) {
@@ -229,7 +225,7 @@ app.post('/profile/edit', async (req, res) => {
 
 /** Caregiver List
  * Show the list of caregivers for a patient
- * Frontend req: user_id
+ * Frontend req: user_id (patient id who is logged in)
  * Backend res: Status code, all user information of caregiver(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
  * Postman Check - SUCCESS
  */ 
@@ -243,7 +239,6 @@ app.post('/showcaregivers', async (req, res) => {
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length >= 1) {
-      console.log(results);
       return res.status(200).json(results);
     } else {
       return res.status(204).json({ msg: "No caregivers for this user"});
@@ -256,13 +251,11 @@ app.post('/showcaregivers', async (req, res) => {
 
 /** Patient List
  * Show the list of patients for a caregiver
- * Frontend req: user_id
+ * Frontend req: user_id (caregiver id who is logged in)
  * Backend res: Status code, all user information of patient(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
  * Postman Check - SUCCESS
  */ 
 app.post("/showpatients", async (req, res) => {
-  console.log("Show patients api")
-  console.log(req.body)
   if (!req.body.user_id){
     return res.status(400).json({ msg: "Missing the user_id"});
   }
@@ -272,7 +265,6 @@ app.post("/showpatients", async (req, res) => {
     const [results, fields] = await db.query(query, [req.body.user_id]);
 
     if (results && results.length >= 1) {
-      console.log(results);
       return res.status(200).json(results);
     } else {
       return res.status(204).json({ msg: "No patients for this user"});
@@ -285,7 +277,7 @@ app.post("/showpatients", async (req, res) => {
 
 /** Link Accounts
  * Links an account to another account
- * Frontend req: user_id, email
+ * Frontend req: user_id (logged in user), email
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
@@ -301,10 +293,8 @@ app.post('/linkAccounts', async (req, res) => {
       if (!newID) {
         return res.status(400).json({ msg: "Incorrect email given"});
       }
+
       const addAccType = await getAccountType(newID);
-
-      console.log("userAcctType: " + userAccType + "\taddAccType: " + addAccType);
-
       if (userAccType === addAccType) {
         return res.status(400).json({ msg: "Cannot link two of the same type accounts"})
       }
@@ -334,97 +324,10 @@ app.post('/linkAccounts', async (req, res) => {
     }
   });
 
-
-/* Where our app will listen from */
-app.listen(port, () => {
-  console.log(`Server is listening at http://${port}`);
-});
-
-//--------------------------------------------------------------------------------------------------------------------------------
-/* Where our functions are */
-
-// Checks for user login information
-async function checkCredentials(email, password) {
-  console.log("Checking credentials...");
-  try {
-    const query = "SELECT id, password FROM user WHERE email=?;";
-    const [results, fields] = await db.query(query, [email]);
-    if (results && results.length == 1) {
-      let dbPassword = results[0].password;
-      const isValid = await bcrypt.compare(password, dbPassword);
-      if (isValid) {
-        console.log("The user id is " + results[0].id);
-        return results[0].id;
-      }
-      return isValid;
-    } else {
-      console.log("ERROR No user found :(");
-      return false;
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-//--------------------------------------------------------------------------------------------------------------------------------
-// Craetes a new session when a user logs in
-async function createSession(session_id, user_id, device) {
-  console.log("Creating new session...");
-  try {
-    const query = "INSERT INTO session (id, user_id, device, login_time) VALUES (?, ?, ?, NOW());";
-    const [results, fields] = await db.query(query, [session_id, user_id, device]);
-
-    if (results && results.affectedRows == 1) {
-      return true;
-    } else {
-      return false;
-    } 
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-//--------------------------------------------------------------------------------------------------------------------------------
-// Checks if email is valid and return the user id
-async function hasAccount(email) {
-  console.log("Checking if they have an account...");
-  try {
-    const query = "SELECT id FROM user WHERE email = ?;";
-    const [results, fields] = await db.query(query, [email]);
-    if (results && results.length == 1) {
-      console.log("account found, user_id: " + results[0].id)
-      return results[0].id;
-    } else {
-      return null;
-    } 
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-
-// Checks the account type
-async function getAccountType(user_id) {
-  console.log("Getting the account type for user_id: " + user_id);
-  try {
-    const query = "SELECT account_type FROM user WHERE id = ?;";
-    const [results, fields] = await db.query(query, [user_id]);
-    if (results && results.length == 1) {
-      return results[0].account_type;
-    } else {
-      console.log("Account has no account_type associated");
-      return null;
-    } 
-
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-}
-// -----------------------------------------------------------------------------------------------------------------------
-/** Add Medication
+ /** Add Medication
  * Accounts for nullable entries (description, end date)
- * Frontend req: user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone
+ * Frontend req: user_id (patient id), 
+ *               med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
@@ -461,7 +364,7 @@ app.post("/addmedicine", async (req, res) => {
   }
   
 });
-// -----------------------------------------------------------------------------------------------------------------------
+
 /** Delete Medication
  * Frontend req: prescription id
  * Backend res: Status code, msg
@@ -469,13 +372,11 @@ app.post("/addmedicine", async (req, res) => {
  */ 
 app.post("/deletemedicine", async (req, res) => {
   const { id } = req.body;
-  console.log(req.body);
   if (!id){
     return res.status(400).json({ msg: "Missing the prescription id"});
   }
 
   try {
-    console.log("Deleting medicine...");
     const deleteQuery = "DELETE FROM prescription WHERE id = ?";
     const [results, fields] = await db.query(deleteQuery, [id]);
     if (results && results.affectedRows == 1) {
@@ -489,23 +390,18 @@ app.post("/deletemedicine", async (req, res) => {
   }
 });
 
-//--------------------------------------------------------------------------------------------------------------------------------
 /** View Medication
- * Frontend req: user_id
+ * Frontend req: user_id (patient id)
  * Backend res: Status code, prescription information (id, user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone )
  * Postman Check - SUCCESS
 */ 
 app.post("/viewmedicine", async (req, res) => {
-  console.log(req.body);
   const { user_id } = req.body;
-  console.log("userid backend: " + user_id);
-
   if (!user_id){
     return res.status(400).json({ msg: "Missing the user_id"});
   }
 
   try {
-    console.log("Viewing medicine...");
     const selectQuery = `SELECT * FROM prescription WHERE user_id = ?`;
     const [results, fields] =  await db.query(selectQuery, [user_id]);
     if (results && results.length > 0) {
@@ -519,52 +415,17 @@ app.post("/viewmedicine", async (req, res) => {
   }
 });
 
-//--------------------------------------------------------------------------------------------------------------------------------
-/** Logout
- * Frontend req: session_id
- * Backend res: Status code, msg
- * Postman Check - SUCCESS
- */ 
-app.post("/logout", async (req, res) => {
-  const { session_id } = req.body;
-  if (!session_id) {
-    return res.status(400).json({ msg: "Missing session_id from req" });
-  }
-
-  try {
-    console.log("Logging out...");
-    console.log(session_id);
-    const updateQuery = "UPDATE session SET logout_time = NOW() WHERE id = ?";
-    const [results, fields] = await db.query(updateQuery, [session_id]);
-    if (results && results.affectedRows == 1) {
-      return res.status(200).json({msg: "Logout successful"});
-    } else {
-      return res.status(404).json({ "error": "Session not found" });
-    }
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ "error": "Internal server error" });
-  }
-});
-
-//--------------------------------------------------------------------------------------------------------------------------------
 /** Add Emergency Contact
- * Frontend req: user_id, first_name, last_name, email, phone
+ * Frontend req: user_id (patient id), first_name, last_name, email, phone
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-
 app.post("/emergencycontact/add", async (req, res) => {
   let { user_id, first_name, last_name, email, phone } = req.body;
   if (!user_id | !first_name | !last_name | !phone | !email) {
     return res.status(400).json({ msg: "Missing one or more required fields in req" });
   }
-
-  console.log(user_id + '\n' +  first_name + '\n' +  last_name + '\n' +  email + '\n' + phone);
   try {
-    console.log("Adding emergency contact...");
-    // const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
-    //                       VALUES (?, ?, ?, ?, ?)`;
     const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, email, phone) 
     VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
@@ -575,8 +436,10 @@ app.post("/emergencycontact/add", async (req, res) => {
     const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, email, phone]);
     if (results && (results.affectedRows == 1 || results.affectedRows == 2)) {
       return res.status(201).json({msg: "Emergency contact successfully added"});
+    // } 
+    //   else if(results.affectedRows == 2){
+    //   return res.status(200).json({msg: "Emergency contact successfully updated"});
     } else {
-      console.log(results)
       return res.status(500).json({ "error": "Emergency contact addition failed" });
     }
   } catch (error) {
@@ -585,13 +448,11 @@ app.post("/emergencycontact/add", async (req, res) => {
   }
 });
 
-//--------------------------------------------------------------------------------------------------------------------------------
 /** View Emergency Contact information
- * Frontend req: user_id
+ * Frontend req: user_id (patient id)
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
-
 app.post("/emergencycontact", async (req, res) => {
   const { user_id } = req.body;
   if (!user_id) {
@@ -599,7 +460,6 @@ app.post("/emergencycontact", async (req, res) => {
   }
 
   try {
-    console.log("Viewing emergency contact...");
     const selectQuery = `SELECT * FROM contact WHERE user_id = ?`;
     const [results, fields] =  await db.query(selectQuery, [user_id]);
     if (results && results.length > 0) {
@@ -613,4 +473,111 @@ app.post("/emergencycontact", async (req, res) => {
   }
 });
 
-module.exports = app; 
+/** Logout
+ * Frontend req: session_id
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+app.post("/logout", async (req, res) => {
+  const { session_id } = req.body;
+  if (!session_id) {
+    return res.status(400).json({ msg: "Missing session_id from req" });
+  }
+
+  try {
+    const updateQuery = "UPDATE session SET logout_time = NOW() WHERE id = ?";
+    const [results, fields] = await db.query(updateQuery, [session_id]);
+    if (results && results.affectedRows == 1) {
+      return res.status(200).json({msg: "Logout successful"});
+    } else {
+      return res.status(404).json({ "error": "Session not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ "error": "Internal server error" });
+  }
+});
+/*---------End of Routes-----------*/
+
+/* Where our app will listen from */
+app.listen(port, () => {
+  console.log(`Server is listening at http://${port}`);
+});
+
+//--------------------------------------------------------------------------------------------------------------------------------
+
+/* ---------Functions--------- */
+// Checks for user login information
+async function checkCredentials(email, password) {
+  try {
+    const query = "SELECT id, password FROM user WHERE email=?;";
+    const [results, fields] = await db.query(query, [email]);
+    if (results && results.length == 1) {
+      let dbPassword = results[0].password;
+      const isValid = await bcrypt.compare(password, dbPassword);
+      if (isValid) {
+        return results[0].id;
+      }
+      return isValid;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// Creates a new session when a user logs in
+async function createSession(session_id, user_id, device) {
+  try {
+    const query = "INSERT INTO session (id, user_id, device, login_time) VALUES (?, ?, ?, NOW());";
+    const [results, fields] = await db.query(query, [session_id, user_id, device]);
+
+    if (results && results.affectedRows == 1) {
+      return true;
+    } else {
+      return false;
+    } 
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// Checks if email is valid and return the user id
+async function hasAccount(email) {
+  try {
+    const query = "SELECT id FROM user WHERE email = ?;";
+    const [results, fields] = await db.query(query, [email]);
+    if (results && results.length == 1) {
+      return results[0].id;
+    } else {
+      return null;
+    } 
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+// Checks the account type
+async function getAccountType(user_id) {
+  try {
+    const query = "SELECT account_type FROM user WHERE id = ?;";
+    const [results, fields] = await db.query(query, [user_id]);
+    if (results && results.length == 1) {
+      return results[0].account_type;
+    } else {
+      return null;
+    } 
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+/*---------End of Functions-----------*/
+
+module.exports = app; // Specific to unit testing
