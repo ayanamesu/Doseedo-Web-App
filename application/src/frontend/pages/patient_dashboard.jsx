@@ -32,13 +32,10 @@ const handleSettingsClick = () => {
 const handleProfileClick = () => {
     navigate("/Profile", { replace: true });  
 };
-<<<<<<< HEAD:application/src/frontend/pages/patient_dashboard.jsx
-const handle911Click = () => {
-    navigate("/EmergencyContactPage", { replace: true });  
-=======
+
 const handleEmergencyClick = () => {
     navigate("/emergencyContact", { replace: true });  
->>>>>>> origin/yakBranch:application/src/frontend/pages/dashboard.jsx
+
 };
 const getCurrentDate = () => {
     let today = new Date();

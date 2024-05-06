@@ -93,19 +93,19 @@ const renderMedicationList = (selectedUserId) => {
 //const renderMedList =() => {
     return (
         <div className="caregiver-rxlist">
-            <div className="paitent-list-container">
+            <div className="patient-list-container">
                 <h1>List of patients:</h1>
                 <div className="rxlist-account">
-                    {paitentList.map((paitent, index) => (
-                        <div key={index} className="paitent">
-                            <p>{paitent.name}</p>
-                            <p>{paitent.email}</p>
+                    {patientList.map((patient, index) => (
+                        <div key={index} className="patient">
+                            <p>{patient.name}</p>
+                            <p>{patient.email}</p>
                             <button onClick={() => {
-                                setSelectedUserId(paitent.id);
+                                setSelectedUserId(patient.id);
                                 setViewClicked(true);
                             }}>
-                            <p>{paitent.name}</p>
-                            <p>{paitent.email}</p>
+                                View Medication List
+                            </button>
                         </div>
                     ))}
                 </div>
@@ -114,13 +114,12 @@ const renderMedicationList = (selectedUserId) => {
                 <h1>Medication List</h1>
                 {viewClicked ? (
                     <div>
-                    {renderMedicationList(selectedUserId)} 
+                        {renderMedicationList(selectedUserId)}
                     </div>
-                ) : <p>Click on a patient to view their medication list</p>} 
+                ) : <p>Click on a patient to view their medication list</p>}
             </div>
         </div>
     );
+
 };
-
-
 export default CareGiverRxListPage;

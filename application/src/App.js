@@ -17,11 +17,9 @@ import Pateint_DashBoard from "./frontend/pages/patient_dashboard"
 import BackButton from "./frontend/Components/BackButton";
 import PatientList from "./frontend/pages/patientList";
 import CareGiverRxListPage from "./frontend/pages/caregiverRxList";
-<<<<<<< HEAD
-import EmergencyContactPage from "./frontend/pages/emergencyContact";
-=======
+ 
 import EmergencyContact from "./frontend/pages/emergencyContact";
->>>>>>> origin/yakBranch
+ 
 
 
 const queryClient = new QueryClient({});
@@ -49,12 +47,9 @@ function App() {
               <Route path="/caregiver_dashboard" element={<Caregiver_DashBoard/>} />
               <Route path="/patientlist" element={<PatientList/>} />
               <Route path="/caregiverRxList" element={<CareGiverRxListPage/>} />
-<<<<<<< HEAD
-              <Route path="/emergencyContactPage" element={<EmergencyContactPage/>} />
-=======
-              <Route path="/emergencyContact" element={<EmergencyContact/>} />
 
->>>>>>> origin/yakBranch
+              <Route path="/emergencyContact" element={<EmergencyContact/>} />
+ 
             </Routes>
           </div>
         </Router>

@@ -40,10 +40,7 @@ function RxListPage() {
      console.log(data);
         //front-end api to view all medicines 
         axios.post('http://localhost:8000/viewmedicine', data )
-<<<<<<< HEAD
-        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
-=======
->>>>>>> origin/yakBranch
+
             .then((res) => {
               console.log(res.data);
               console.log(res.status);
@@ -94,11 +91,7 @@ function RxListPage() {
         }
         
         axios.post('http://localhost:8000/addmedicine', userData)
-<<<<<<< HEAD
-        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/addmedicine', userData)
-=======
->>>>>>> origin/yakBranch
-            .then(response => {
+        .then(response => {
                 console.log("Medication added successfully:", response.data);
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page

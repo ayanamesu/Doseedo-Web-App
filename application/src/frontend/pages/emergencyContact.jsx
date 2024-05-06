@@ -1,11 +1,15 @@
-<<<<<<< HEAD
-import React, { useEffect, useState } from "react";
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import "../App.css";
-import Cookies from 'js-cookie';
 
-const emergencyContact= () => {
+import React from 'react';
+import { useState } from 'react';
+
+let contactInfo =
+    {
+        name: "Yuto Mori",
+        phone: "415-555-5555",
+        email: "yuto@hotmail.com"
+    };
+
+const EmergencyContact = () => {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [userId, setUserId] = useState("");
@@ -50,20 +54,7 @@ const emergencyContact= () => {
             addEmergencyContact();    
     }, [userId]);
 
-};
-export default CareGiverRxListPage;
-=======
-import React from 'react';
-import { useState } from 'react';
 
-let contactInfo =
-    {
-        name: "Yuto Mori",
-        phone: "415-555-5555",
-        email: "yuto@hotmail.com"
-    };
-
-const EmergencyContact = () => {
     const [hasEmergencyContact, setEmergencyContact] = useState(false);
     const handleContactSubmit = (e) => {
         e.preventDefault();
@@ -97,4 +88,3 @@ const EmergencyContact = () => {
 };
 
 export default EmergencyContact;
->>>>>>> origin/yakBranch
