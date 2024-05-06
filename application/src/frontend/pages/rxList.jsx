@@ -5,7 +5,7 @@ import "../App.css";
 import Cookies from 'js-cookie';
 import BackButton from "../Components/BackButton";
 
-function RxListPage() {
+function RxListPage({ apiLink }) {
     
     const [medications, setMedications] = useState([]);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
@@ -39,7 +39,7 @@ function RxListPage() {
         }
      console.log(data);
         //front-end api to view all medicines 
-        axios.post('http://localhost:8000/viewmedicine', data )
+        axios.post(apiLink + '/viewmedicine', data )
         // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
             .then((res) => {
               console.log(res.data);
@@ -90,8 +90,7 @@ function RxListPage() {
             doctor_phone: doctorPhone
         }
         
-        axios.post('http://localhost:8000/addmedicine', userData)
-        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/addmedicine', userData)
+        axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
                 setShowAddMed(false);
@@ -117,7 +116,7 @@ function RxListPage() {
           console.log("med list length: " + medications.length);
           if (medications.length != 0){
           let toDelete = medications[selectedMedicationId].id;
-          axios.post('http://localhost:8000/deletemedicine', { id: toDelete })
+          axios.post(apiLink + '/deletemedicine', { id: toDelete })
             .then(response => {
                 setMedications(response.data);
                 console.log("Medication deleted successfully:", response.data);

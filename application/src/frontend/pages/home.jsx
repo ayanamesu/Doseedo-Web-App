@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
-const HomePage = () => {
+
+const HomePage = ({ apiLink }) => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
@@ -61,7 +62,7 @@ const HomePage = () => {
         password: password
     }
 
-    axios.post('http://localhost:8000/login', userData)
+    axios.post(apiLink + '/login', userData)
     .then(res => {
         console.log(res.status); 
         //res = backend res.status(200).json(req.session.id); from the post
@@ -128,7 +129,7 @@ function handleRegisterForm(event) {
         password: password
     }
    
-    axios.post('http://localhost:8000/Register', userData)
+    axios.post(apiLink + 'register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {

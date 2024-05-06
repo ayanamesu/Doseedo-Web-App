@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 
 
-const PatientList = () => {
+const PatientList = ({ apiLink }) => {
     // const navigate = useNavigate();
     const [userId, setUserId] = useState("");
     const [AccountList, setAccountList] = useState([]);
@@ -19,7 +19,7 @@ const PatientList = () => {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+                const apiRes = await axios.post(apiLink + '/accountLink', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {

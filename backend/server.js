@@ -1,14 +1,15 @@
+const dotenv = require('dotenv');
+const path = require('path');
+dotenv.config({ path: path.resolve(__dirname, '..', '.env')});
 const express = require("express");
 const db = require('./db');
 const bodyParser = require('body-parser'); // parsing middleware - parses incoming request bodies
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
-
-
 const bcrypt = require('bcrypt');
 
-const port = process.env.PORT || 8000;
-var mysql = require("mysql2/promise");
+const port = 8000;
+// var mysql = require("mysql2/promise");
 const cors = require("cors");
 
 const app = express();
@@ -23,9 +24,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true })); 
-/* Where our get/post routes will go 
-    Will need to change to /... when implementing to our server
-*/
 
 // Sessions
 app.use(session({
@@ -34,6 +32,26 @@ app.use(session({
   cookie: { maxAge: 60 * 60 *  24 * 360 }, //Cookie expiration - 60ms 60s 24h 360d
   saveUninitialized: false // generates log in system everytime you make a new session id, so make sure to set to false
 }));
+
+let api;
+if (process.env.STATUS === 'dev') {
+  api = process.env.API_LINK; 
+  console.log("Running Server as DEV: " + api);
+} else if (process.env.STATUS === 'prod') {
+  api = process.env.PROD_API_LINK; 
+  console.log("Running Server as PROD: " + api);
+} else {
+  console.log("Something is wrong with the .env file");
+  api = "http://localhost:8000"
+}
+
+/* SEND ENV VARIABLES */
+app.get('/env-var', async (req, res) =>{
+  return res.json( {
+    API_LINK: api
+  });
+}); 
+
 
 /** LOGIN
  * Frontend req: email, password
@@ -193,11 +211,11 @@ app.post('/profile/edit', async (req, res) => {
     }
 
     const column_map = modified_columns.map((column, index) => `${column} = "${values[index]}"`).join(", ");
-    const query = `UPDATE user SET ${column_map} WHERE id = ${req.body.id}`;
+    const query = `UPDATE user SET ${column_map} WHERE id = ${req.body.user_id}`;
 
     console.log(query)
 
-    const [results, fields] = await db.execute(query);
+    const [results, fields] = await db.query(query);
     if (results && results.affectedRows === 1) {
       return res.status(200).json({ msg: "Update successful!"});
     } else {
@@ -384,27 +402,6 @@ async function hasAccount(email) {
     throw error;
   }
 }
-//yuto
-//req userID
-//res account_type
-app.post('/getAccountType', async (req, res) => {
-  if (!req.body.user_id) {
-    return res.status(400).json({ msg: "No user_id in req"})
-  }
-
-  try {
-      const userAccType = await getAccountType(user_id);
-    if (userAccType){
-      return res.status(200).json(userAccType);
-    }else{
-      return res.status(400).json({ msg: "no userID found" });
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-});
-
 
 // Checks the account type
 async function getAccountType(user_id) {
@@ -552,17 +549,18 @@ app.post("/logout", async (req, res) => {
 
 //--------------------------------------------------------------------------------------------------------------------------------
 /** Add Emergency Contact
- * Frontend req: user_id, first_name, last_name, phone, email
+ * Frontend req: user_id, first_name, last_name, email, phone
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */ 
 
 app.post("/emergencycontact/add", async (req, res) => {
-  let { user_id, first_name, last_name, phone, email } = req.body;
+  let { user_id, first_name, last_name, email, phone } = req.body;
   if (!user_id | !first_name | !last_name | !phone | !email) {
     return res.status(400).json({ msg: "Missing one or more required fields in req" });
   }
 
+  console.log(user_id + '\n' +  first_name + '\n' +  last_name + '\n' +  email + '\n' + phone);
   try {
     console.log("Adding emergency contact...");
     // const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
@@ -574,10 +572,11 @@ app.post("/emergencycontact/add", async (req, res) => {
         last_name = VALUES(last_name),
         phone = VALUES(phone),
         email = VALUES(email);`;
-    const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, phone, email]);
-    if (results && results.affectedRows == 1) {
+    const [results, fields] =  await db.query(insertQuery, [user_id, first_name, last_name, email, phone]);
+    if (results && (results.affectedRows == 1 || results.affectedRows == 2)) {
       return res.status(201).json({msg: "Emergency contact successfully added"});
     } else {
+      console.log(results)
       return res.status(500).json({ "error": "Emergency contact addition failed" });
     }
   } catch (error) {

@@ -1,6 +1,6 @@
-# CSC648-SectionName-sp24-teamNum Repository
+# CSC648-01-sp24-TEAM4 Repository 
 
-**Application URL: <https://example.com>**
+**Application URL: <http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com>**
 
 ## Before completing Milestone 0
 

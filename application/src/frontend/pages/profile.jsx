@@ -10,7 +10,7 @@ import "../App.css";
 import Cookies from 'js-cookie';
 
 
-function PatientProfilePage() {
+function PatientProfilePage({ apiLink }) {
     const navigate = useNavigate();
     const [user, setUser] = useState([]);
     const [user_id, setUserId] = useState("");
@@ -45,7 +45,7 @@ function PatientProfilePage() {
         let data = {
             user_id: user_id
         }
-        axios.post('http://localhost:8000/profile', data)
+        axios.post(apiLink + '/profile', data)
             .then((apiRes) => {
                 console.log(apiRes.data);
                 setUserFName(apiRes.data.first_name);
@@ -149,7 +149,7 @@ function PatientProfilePage() {
 
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-        axios.post('http://localhost:8000/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+        axios.post(apiLink + '/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
        
                 if (apiRes.status === 200) {

@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import Cookies from 'js-cookie';
 
-function CareGiverRxListPage() {
+function CareGiverRxListPage({ apiLink }) {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [patientList, setPatientList] = useState([]);
@@ -18,7 +18,7 @@ function CareGiverRxListPage() {
             const data = {
                 user_id: userId
             };
-            const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+            const apiRes = await axios.post(apiLink + 'accountLink', data);
             if (apiRes.status === 200) {
                 setPatientList(apiRes.data);
             } else if (apiRes.status === 204) {
