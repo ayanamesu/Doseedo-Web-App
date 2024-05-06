@@ -94,22 +94,24 @@ const renderMedicationList = (selectedUserId) => {
     return (
         <div className="caregiver-rxlist">
             <div className="paitent-list-container">
-                <h1>List of patients</h1>
+                <h1>List of patients:</h1>
                 <div className="rxlist-account">
-                    {patientList.map((paitent, index) => (
+                    {paitentList.map((paitent, index) => (
                         <div key={index} className="paitent">
                             <p>{paitent.name}</p>
                             <p>{paitent.email}</p>
                             <button onClick={() => {
                                 setSelectedUserId(paitent.id);
                                 setViewClicked(true);
-                            }}>View</button>
+                            }}>
+                            <p>{paitent.name}</p>
+                            <p>{paitent.email}</p>
                         </div>
                     ))}
                 </div>
             </div>
-            <div className="medication-list-container">
-            <h1>Medication List</h1>
+            <div className="caregiver-medicationlist">
+                <h1>Medication List</h1>
                 {viewClicked ? (
                     <div>
                     {renderMedicationList(selectedUserId)} 

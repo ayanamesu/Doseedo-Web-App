@@ -131,7 +131,7 @@ function PatientProfilePage() {
                 <input type="text" placeholder="City" id="city-input" name="city" onChange={e => setCity(e.target.value)}/>
                 <input type="text" placeholder="Zip Code" id="zip-code-input" name="zipCode" onChange={e => setZipCode(e.target.value)}/>
                 <input type="text" placeholder="Phone" id="phone-input" name="phone" onChange={e => setPhone(e.target.value)}/>
-                <button type="submit" id="submit">submit</button>
+                <button type="submit" id="submitButton" >submit</button>
             </form>
         </div>
     );
@@ -149,7 +149,7 @@ function PatientProfilePage() {
 
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-        axios.post('http://localhost:8000/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+        axios.post('http://localhost:8000/profile/edit', { user_id: Cookies.get('user_id'), first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
        
                 if (apiRes.status === 200) {
@@ -188,9 +188,9 @@ function PatientProfilePage() {
                     </div>
                     <div className="profile-buttons">
                         <button className="edit-button" onClick={editProfileClicked}><FontAwesomeIcon icon={faPenToSquare} title="Edit Profile"/></button>
-                        {renderEditProfileForm()}
                         <button className="share-button" onClick={handleShareProfile}><FontAwesomeIcon icon={faShare} title="Share Profile"/></button>
                         <button className="add-button" onClick={handleAddConnections}><FontAwesomeIcon icon={faUserPlus} title="Add Connections"/></button>
+                        {renderEditProfileForm()}
                     </div>
                 </div>
             </div>

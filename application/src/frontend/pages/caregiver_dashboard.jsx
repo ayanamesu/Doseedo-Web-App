@@ -24,7 +24,11 @@ function Caregiver() {
         navigate("/calendar", { replace: true });
     };
     const handleRXListClick = () => {
+<<<<<<< HEAD:application/src/frontend/pages/caregiver_dashboard.jsx
         navigate("/caregiverRxList", { replace: true });
+=======
+        navigate("/caregiverRxlist", { replace: true });
+>>>>>>> origin/yakBranch:application/src/frontend/pages/caregiver.jsx
     };
 
 const handleSettingsClick = () => {
