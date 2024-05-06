@@ -184,8 +184,8 @@ function RxListPage() {
         <MedicationItem
             key={medications[selectedMedicationId].id}
             med_name={medications[selectedMedicationId].med_name}
-            dosage={medications[selectedMedicationId].dosage}
-            descrpiton={medications[selectedMedicationId].descrpiton}
+            dosage={medications[selectedMedicationId].dose_amt}
+            description={medications[selectedMedicationId].description}
             start_date={medications[selectedMedicationId].start_date}
             end_date={medications[selectedMedicationId].end_date}
             doctor_first_name={medications[selectedMedicationId].doctor_first_name}
@@ -232,8 +232,8 @@ function RxListPage() {
                 <MedicationItem
                     key={medications[selectedMedicationId].id}
                     med_name={medications[selectedMedicationId].med_name}
-                    dosage={medications[selectedMedicationId].dosage}
-                    descrpiton={medications[selectedMedicationId].descrpiton}
+                    dosage={medications[selectedMedicationId].dose_amt}
+                    description={medications[selectedMedicationId].description}
                     start_date={medications[selectedMedicationId].start_date}
                     end_date={medications[selectedMedicationId].end_date}
                     doctor_first_name={medications[selectedMedicationId].doctor_first_name}
