@@ -429,7 +429,7 @@ async function getAccountType(user_id) {
  * Postman Check - SUCCESS
  */ 
 app.post("/addmedicine", async (req, res) => {
-  let { user_id, med_name, dose_amt, start_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
+  let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   if (!user_id || !med_name || !dose_amt || !start_date || !doctor_first_name || !doctor_last_name || !doctor_phone){
     return res.status(400).json({ msg: "Missing one or more required fields"});
   }
@@ -565,7 +565,7 @@ app.post("/emergencycontact/add", async (req, res) => {
     console.log("Adding emergency contact...");
     // const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email)
     //                       VALUES (?, ?, ?, ?, ?)`;
-    const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, phone, email) 
+    const insertQuery = `INSERT INTO contact (user_id, first_name, last_name, email, phone) 
     VALUES (?, ?, ?, ?, ?)
     ON DUPLICATE KEY UPDATE
         first_name = VALUES(first_name),

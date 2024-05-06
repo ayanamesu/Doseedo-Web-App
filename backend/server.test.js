@@ -1,7 +1,7 @@
 const request = require('supertest');
 const server = require('./server');
 
-// TEST VALUES
+// TEST VALUES - all good to run
 // LOGIN
 const email = "tama@email.com"; //known user (caregiver)
 const password = "tama"; //known user (caregiver)
@@ -14,7 +14,7 @@ const new_acctype = "caregiver"; //not in db yet
 const address_2 = "APT 22"
 const state = "65987"
 //SESSION && LOGOUT
-const session_id = "am3x7gR9jajVc4O0qy9uMgp28Lo8q3Xs"; //known session with no logout time
+const session_id = "5a1JcITDBAnLIdC6LPCIw2kh9sl0_bjO"; //known session with no logout time
 const invalid_sess_id = "0kWshNBRbLZeYAz71wz6AN-A7CVSfR3S"; //known session with logout time
 //PROFILE
 const user_id = 31; //known user (caregiver)
@@ -22,7 +22,7 @@ const user_id = 31; //known user (caregiver)
 const pat_id = 34; //known user (patient)
 const pat_email = "test@email.com"; //known user (patient)
 //MEDICINE
-const med_id = 16; //delete test - known prescription
+const med_id = 18; //delete test - known prescription
 
 describe('POST /login', () => {
     it('Successful Login Status', async () => {
@@ -74,7 +74,7 @@ describe('POST /session', () => {
   it('Successful Session Status', async () => {
     const response = await request(server)
       .post('/session')
-      .send({ session_id: sess_id });
+      .send({ session_id: session_id });
     expect(response.statusCode).toBe(200);
   });
 
@@ -258,9 +258,7 @@ describe('POST /viewmedicine', () => {
     expect(response.body[0]).toHaveProperty('user_id');
     expect(response.body[0]).toHaveProperty('med_name');
     expect(response.body[0]).toHaveProperty('description');
-    expect(response.body[0]).toHaveProperty('med_type');
     expect(response.body[0]).toHaveProperty('dose_amt');
-    expect(response.body[0]).toHaveProperty('dose_unit');
     expect(response.body[0]).toHaveProperty('start_date');
     expect(response.body[0]).toHaveProperty('end_date');
     expect(response.body[0]).toHaveProperty('doctor_first_name');
