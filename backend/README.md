@@ -43,47 +43,47 @@ Please ensure you have some data in your database before doing unit testing
 Almost all of the endpoints use the POST method since almost always a user_id is needed to query the database properly.
 Here is a list of our APIs and what information is required for the frontend to send and how the backend will respond
 - /login
- * Frontend req: email, password
- * Backend res: Status code, session_id, user_id, account_type
+    * Frontend req: email, password
+    * Backend res: Status code, session_id, user_id, account_type
 - /register
- * Frontend req: first_name, last_name, email, password, account_type
- * Backend res: Status code, msg
+    * Frontend req: first_name, last_name, email, password, account_type
+    * Backend res: Status code, msg
 - /session
- * Frontend req:session
- * Backend res: Status code, user_id, session_id
+    * Frontend req:session
+    * Backend res: Status code, user_id, session_id
 - /profile
- * Frontend req: user_id
- * Backend res: Status code, all user information (first_name, last_name, email, phone, account_type, address_1, address_2, state, city, zip_code)
+    * Frontend req: user_id
+    * Backend res: Status code, all user information (first_name, last_name, email, phone, account_type, address_1, address_2, state, city, zip_code)
 - /profile/edit
- * Frontend req: user_id, IF ANY CHANGES: (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
- * Backend res: Status code, msg
+    * Frontend req: user_id, IF ANY CHANGES: (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+    * Backend res: Status code, msg
 - /showcaregivers
- * Frontend req: user_id
- * Backend res: Status code, all user information of caregiver(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+    * Frontend req: user_id
+    * Backend res: Status code, all user information of caregiver(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
 - /showpatients
- * Frontend req: user_id
- * Backend res: Status code, all user information of patient(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
+    * Frontend req: user_id
+    * Backend res: Status code, all user information of patient(s) (first_name, last_name, email, phone, address_1, address_2, state, city, zip_code)
 - /linkAccounts
- * Frontend req: user_id, email
- * Backend res: Status code, msg
+    * Frontend req: user_id, email
+    * Backend res: Status code, msg
 - /addmedicine
- * Frontend req: user_id, med_name, description (optional), dose_amt, start_date, end_date (optional), doctor_first_name, doctor_last_name, doctor_phone
- * Backend res: Status code, msg
+    * Frontend req: user_id, med_name, description (optional), dose_amt, start_date, end_date (optional), doctor_first_name, doctor_last_name, doctor_phone
+    * Backend res: Status code, msg
 - /deletemedicine
- * Frontend req: prescription id
- * Backend res: Status code, msg
+    * Frontend req: prescription id
+    * Backend res: Status code, msg
 - /viewmedicine
- * Frontend req: user_id
- * Backend res: Status code, prescription information (id, user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone)
+    * Frontend req: user_id
+    * Backend res: Status code, prescription information (id, user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone)
 - /emergencycontact
- * Frontend req: user_id
- * Backend res: Status code, msg
+    * Frontend req: user_id
+    * Backend res: Status code, msg
 - /emergencycontact/add
- * Frontend req: user_id, first_name, last_name, email, phone
- * Backend res: Status code, msg
+    * Frontend req: user_id, first_name, last_name, email, phone
+    * Backend res: Status code, msg
 - /logout
- * Frontend req: session_id
- * Backend res: Status code, msg
+    * Frontend req: session_id
+    * Backend res: Status code, msg
 
 
 
