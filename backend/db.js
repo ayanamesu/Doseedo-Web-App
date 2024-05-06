@@ -9,24 +9,26 @@ const pool = mysql.createPool({
         // connectionLimit: 10,
         /* Make sure to comment this out when we move this to the server! */
         // WING DB
-        //host: "localhost",
-        //user: "root",
-        //database: "csc648newdb", // insert your db info here
-        //password: "Wing12345678L", //mysql password here
-        //port: "3306",
+        host: "localhost",
+        user: "root",
+        database: "csc648newdb", // insert your db info here
+        password: "Wing12345678L", //mysql password here
+        port: "3306",
 
         // ALEIA DB
 //        host: "localhost",
 //        user: "root",
 //        database: "doseedodb", // insert your db info here
-//        password: "pass", //mysql password here
+//        password: "1234", //mysql password here
 //        port: "3306",
         //Yuto DB
+ 
              host: "localhost",
              user: "root",
              database: "doseedodb3", // insert your db info here
              password: "Zero1998!", //mysql password here
              port: "3306"
+
          //paige db
         //  host: "localhost",
         // user: "root",
