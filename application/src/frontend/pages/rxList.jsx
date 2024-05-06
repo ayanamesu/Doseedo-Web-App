@@ -37,6 +37,7 @@ function RxListPage({ apiLink }) {
         let data = {
             user_id: user_id
         }
+        console.log("user_id: " + user_id);
      console.log(data);
         //front-end api to view all medicines 
         axios.post(apiLink + '/viewmedicine', data )
@@ -56,11 +57,10 @@ function RxListPage({ apiLink }) {
             <div className="medication-name">Medication Name: {med_name}</div>
             <div className="medication-dosage">Dosage: {dosage}</div>
             <div className="medication-description">Description: {description}</div>
-            <div className="medication-start-date">Start Date: {start_date}</div>
-            <div className="medication-end-date">End Date: {end_date}</div>
+            <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
+            <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
             <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
             <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
-            <div className="medication-quantity-info">quantity: 30 </div>
         </div>
         //quantity
         //med for the day
@@ -93,8 +93,10 @@ function RxListPage({ apiLink }) {
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
+                
                 setShowAddMed(false);
-                setShowMedList(true); // Switch back to the medication list page
+                // setShowMedList(true); // Switch back to the medication list page
+                window.location.reload();
             })
             .catch(error => {
                 console.error('Error adding medication:', error);         
@@ -105,11 +107,11 @@ function RxListPage({ apiLink }) {
     }
 
     const handleAddMedicationClick = () => {
-
-    console.log("handleAddMed");
+        console.log("handleAddMed");
         setShowMedList(false);
         setShowAddMed(true);
         setShowMedsforTheDay(false);
+        
     }
 
         const handleDeleteMedicationClick = () => {
@@ -126,9 +128,8 @@ function RxListPage({ apiLink }) {
             .catch(error => {
                 console.error('Error deleting medication:', error);
             });
-   
         }
-        };
+    };
 
     const handleMedsForTheDayClick =()=>{
         setShowMedList(false);
@@ -196,8 +197,8 @@ function RxListPage({ apiLink }) {
                  
                     </div>
                     <div className="medication-actions">
-                                <button className="cancel-button" onClick={handleCancelClick}>back</button>
-                                <button className="next-button" onClick={handleNextClick}>Next</button>
+                                <button className="navButtons" onClick={handleCancelClick}>back</button>
+                                <button className="navButtons" onClick={handleNextClick}>Next</button>
                             </div>
                     <div className="medication-notes" />
                 </div>
@@ -253,21 +254,19 @@ function RxListPage({ apiLink }) {
         } else if (showAddMed) {
             
             return (
-                <div>
+                <div className="add-form">
                     <h2>Add Medication</h2>
                     <form className ="rx-list" onSubmit={handleAddMedication}>
                             <input type="text" placeholder="Medicine Name" id="medName-input" name="medName" onChange={e => setMedName(e.target.value)}/>
                             <input type="text" placeholder="Description" id="description-input" name="description" onChange={e => setDescription(e.target.value)}/>
-                            
                             <input type="text" placeholder="Dose Amount" id="doseAmt-input" name="doseAmt" onChange={e => setDoseAmt(e.target.value)}/>
-                            
-                            <input type="date" placeholder="Start Date" id="startDate-input" name="startDate" onChange={e => setStartDate(e.target.value)}/>
-                            <input type="date" placeholder="End Date" id="endDate-input" name="endDate" onChange={e => setEndDate(e.target.value)}/>
+                            <input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="Start Date" id="startDate-input" name="startDate" onChange={e => setStartDate(e.target.value)}/>
+                            <input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="End Date" id="endDate-input" name="endDate" onChange={e => setEndDate(e.target.value)}/>
                             <input type="text" placeholder="Doctor's First Name" id="doctorFirstName-input" name="doctorFirstName" onChange={e => setDoctorFirstName(e.target.value)}/>
                             <input type="text" placeholder="Doctor's Last Name" id="doctorLastName-input" name="doctorLastName" onChange={e => setDoctorLastName(e.target.value)}/>
                             <input type="text" placeholder="Doctor's Phone" id="doctorPhone-input" name="doctorPhone" onChange={e => setDoctorPhone(e.target.value)}/>
                             <button type="button" onClick={() => handleMedListClick()}>Cancel</button>
-                            <button type="submit" id="submit">submit</button>
+                            <button type="submit">submit</button>
                         
                         </form>
                 </div>
@@ -281,51 +280,39 @@ function RxListPage({ apiLink }) {
             return <button className="section-title" onClick={handleMedListClick}>Medication list</button>;
         } else if (showAddMed) {
             return (
-                <div> 
+                <div className="medlist-button"> 
                     {/* <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button> */}
                     <button className="section-title" onClick={handleMedListClick}>Medication list</button>
                 </div>
+                
             );
         }
+        
     };
 
     const renderAddDeleteButton = () => {
-        if (!showDeleteMed && (medications.length > 0) ) { 
+        if (!showAddMed && (medications.length > 0)) { 
             return (
                 <>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
- 
                 </>
             );
         }
-        else if (!showAddMed) {
-            return (
-                <>
-                    <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
-                </>
-            );
-
-        }
-        return null; // If showAddMed is true, return null (no buttons rendered)
     };
 
     return (
         <div className="app-container">
-            <main className="main-content">
+            <main className="rxlist">
                 <div className="columns-container">
-                    <section className="column medication-actions">
-                        <div className="meds-for-the-day">
-                            {renderMedList()}
-                            {renderAddDeleteButton()}
-                        </div>
-                    </section>
                     <section className="column medication-list">
                         <div className="medication-list-container">
                             {switchPage(showMedList, medications)}
                         </div>
                     </section>
                 </div>
+                {renderMedList()}  
+                {renderAddDeleteButton()}
             </main>
         </div>
     );

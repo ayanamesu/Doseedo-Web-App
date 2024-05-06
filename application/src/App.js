@@ -18,6 +18,7 @@ import Pateint_DashBoard from "./frontend/pages/patient_dashboard"
 import BackButton from "./frontend/Components/BackButton";
 import PatientList from "./frontend/pages/patientList";
 import CareGiverRxListPage from "./frontend/pages/caregiverRxList";
+import EmergencyContact from "./frontend/pages/emergencyContact";
 
 
 const queryClient = new QueryClient({});

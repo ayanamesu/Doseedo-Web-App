@@ -24,7 +24,7 @@ function Caregiver() {
         navigate("/calendar", { replace: true });
     };
     const handleRXListClick = () => {
-        navigate("/caregiverRxList", { replace: true });
+        navigate("/caregiverRxlist", { replace: true });
     };
 
 const handleSettingsClick = () => {
