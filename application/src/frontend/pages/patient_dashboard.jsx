@@ -32,8 +32,10 @@ const handleSettingsClick = () => {
 const handleProfileClick = () => {
     navigate("/Profile", { replace: true });  
 };
-const handle911Click = () => {
-    navigate("/EmergencyContactPage", { replace: true });  
+
+const handleEmergencyClick = () => {
+    navigate("/emergencyContact", { replace: true });  
+
 };
 const getCurrentDate = () => {
     let today = new Date();
@@ -68,7 +70,7 @@ const getCurrentDate = () => {
                 </div>
                 <div className="Dashboard-Button-row">
                     <div className="Dashboard-Button-container">
-                        <FontAwesomeIcon className="Dashboard-Button" icon={faCircleExclamation} title="911" onClick={handle911Click} />
+                        <FontAwesomeIcon className="Dashboard-Button" icon={faCircleExclamation} title="911" onClick={handleEmergencyClick} />
                         <p className="Dashboard-Button-text">Emergency contact</p>
                     </div>
                     <div className="Dashboard-Button-container">

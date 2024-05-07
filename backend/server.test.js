@@ -1,46 +1,97 @@
 const request = require('supertest');
 const server = require('./server');
 
+
 // LOGIN
-const email = "tama@email.com";
-const password = "tama";
+const email = "W1@gmail.com";
+const password = "123";
 
 // REGISTER
-const new_email = "new@email.com";
-const new_pass = "new";
-const new_fname = "New";
-const new_lname = "Egg";
-const new_acctype = "caregiver";
+// const new_email = "new@email.com";
+// const new_pass = "new";
+// const new_fname = "New";
+// const new_lname = "Egg";
+// const new_acctype = "caregiver";
 
 //SESSION
-const sess_id = "XVGd24K6FtFn-xn_XF0PO9b3CKyku2pp";
-const invalid_sess_id = "AY4XgkCXw2UhWmI6LHDApqNhVC69Zp2F";
+// const sess_id = "XVGd24K6FtFn-xn_XF0PO9b3CKyku2pp";
+// const invalid_sess_id = "AY4XgkCXw2UhWmI6LHDApqNhVC69Zp2F";
 
 //PROFILE
-const user_id = 31;
+// const user_id = 31;
 
-// describe('POST /login', () => {
-//     it('Successful Login Status', async () => {
-//       const response = await request(server)
-//         .post('/login')
-//         .send({ email: email, password: password });
-//       expect(response.statusCode).toBe(200);
-//     });
+describe('POST /login', () => {
+    it('responds with 200 status', async () => {
+      const response = await request(server)
+        .post('/login')
+        .send({ email: email, password: password });
+      expect(response.statusCode).toBe(200);
+    });
   
-//     it('Successful Login Body Check', async () => {
-//       const response = await request(server)
-//         .post('/login')
-//         .send({ email: email, password: password });
-//       expect(response.text).toContain('user_id', 'session_id');
-//     });
+    it('response body includes user_id and session_id', async () => {
+      const response = await request(server)
+        .post('/login')
+        .send({ email: email, password: password });
+      expect(response.text).toContain('user_id');
+      expect(response.text).toContain('session_id');
+    });
+  });
 
-//     it('Error Handling Check', async () => {
-//       const response = await request(server)
-//         .post('/login')
-//         .send({ email: email });
-//       expect(response.statusCode).toBe(400);
-//     });
-//   });
+  describe('POST /viewmedicine', () => {
+    it('responds with 200 status', async () => {
+      const response = await request(server)
+        .post('/viewmedicine')
+        .send({ user_id: 22 }); // Send user_id in the request
+        expect(response.statusCode).toBe(200);
+    });
+  
+    it('response body includes user_id and session_id', async () => {
+      const response = await request(server)
+        .post('/viewmedicine')
+        .send({ user_id: 22 }); // Send user_id in the request
+      expect(response.body[0]).toHaveProperty('id');
+      expect(response.body[0]).toHaveProperty('user_id');
+      expect(response.body[0]).toHaveProperty('med_name');
+      expect(response.body[0]).toHaveProperty('description');
+      expect(response.body[0]).toHaveProperty('med_type');
+      expect(response.body[0]).toHaveProperty('dose_amt');
+      expect(response.body[0]).toHaveProperty('dose_unit');
+      expect(response.body[0]).toHaveProperty('start_date');
+      expect(response.body[0]).toHaveProperty('end_date');
+      expect(response.body[0]).toHaveProperty('doctor_first_name');
+      expect(response.body[0]).toHaveProperty('doctor_last_name');
+      expect(response.body[0]).toHaveProperty('doctor_phone');
+  });
+});
+
+
+
+describe('POST /showpatients', () => {
+  it('responds with 200 status', async () => {
+    const response = await request(server)
+      .post('/showpatients')
+      .send({ user_id: 22 }); // Send user_id in the request
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('response body includes expected fields for first patient', async () => {
+    const response = await request(server)
+      .post('/showpatients')
+      .send({ user_id: 22 }); // Send user_id in the request
+    expect(response.body[0]).toHaveProperty('id');
+    expect(response.body[0]).toHaveProperty('first_name');
+    expect(response.body[0]).toHaveProperty('last_name');
+    expect(response.body[0]).toHaveProperty('email');
+    expect(response.body[0]).toHaveProperty('password');
+    expect(response.body[0]).toHaveProperty('address_1');
+    expect(response.body[0]).toHaveProperty('address_2');
+    expect(response.body[0]).toHaveProperty('state');
+    expect(response.body[0]).toHaveProperty('city');
+    expect(response.body[0]).toHaveProperty('zip_code');
+    expect(response.body[0]).toHaveProperty('phone');
+  });
+});
+
 
 // describe('POST /register', () => {
 //   it('Successful Registration Status', async () => {
@@ -147,11 +198,26 @@ const user_id = 31;
 // });
 
 // WING TO DO 
-describe('POST /showpatient', () => {
-});
+describe('POST /showcaregivers', () => {
+  it('should return caregiver details', async () => {
+    const res = await request(server)
+      .post('/showcaregivers')
+      .send({ user_id: 25 });
 
-// WING TO DO
-describe('POST /showcaregiver', () => {
+    expect(res.statusCode).toEqual(200);
+    expect(res.body[0]).toHaveProperty('id');
+    expect(res.body[0]).toHaveProperty('first_name');
+    expect(res.body[0]).toHaveProperty('last_name');
+    expect(res.body[0]).toHaveProperty('email');
+    expect(res.body[0]).toHaveProperty('password');
+    expect(res.body[0]).toHaveProperty('address_1');
+    expect(res.body[0]).toHaveProperty('address_2');
+    expect(res.body[0]).toHaveProperty('state');
+    expect(res.body[0]).toHaveProperty('city');
+    expect(res.body[0]).toHaveProperty('zip_code');
+    expect(res.body[0]).toHaveProperty('phone');
+    expect(res.body[0]).toHaveProperty('account_type');
+  });
 });
 
 describe('POST /linkAccounts', () => {
@@ -159,21 +225,50 @@ describe('POST /linkAccounts', () => {
 
 // WING TO DO
 describe('POST /addmedicine', () => {
+  it('should return a success message after adding medicine', async () => {
+    const res = await request(server)
+      .post('/addmedicine')
+      .send({
+        user_id: 1,
+        med_name: 'biden sleep aid',
+        dose_amt: '200mgs',
+        start_date: '2024-05-28',
+        doctor_first_name: 'michael',
+        doctor_last_name: 'lee',
+        doctor_phone: '4156689999'
+      });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body).toHaveProperty('msg');
+    expect(res.body.msg).toEqual('Update successful!');
+  });
 });
 
 describe('POST /deletemedicine', () => {
 });
 
-// WING TO DO 
-describe('POST /viewmedicine', () => {
-});
 
 describe('POST /logout', () => {
 });
 
 // WING TO DO
 describe('POST /emergencycontact', () => {
+  it('should return user emergency contact details', async () => {
+    const res = await request(server)
+      .post('/emergencycontact')
+      .send({ user_id: 1 });
+
+    expect(res.statusCode).toEqual(200);
+    expect(res.body[0]).toHaveProperty('user_id');
+    expect(res.body[0]).toHaveProperty('first_name');
+    expect(res.body[0]).toHaveProperty('last_name');
+    expect(res.body[0]).toHaveProperty('email');
+    expect(res.body[0]).toHaveProperty('phone');
+  });
 });
 
 describe('POST /emergencycontact/add', () => {
+
 });
+
+

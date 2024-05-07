@@ -60,12 +60,4 @@ const PatientList = () => {
         </div>
     );
 };
-
-module.exports= {
-    patientList: class {
-            static viewPatients(){
-                axios.post('http://localhost:8000/showpatients', data);
-            }
-    }
-}
 export default PatientList;

@@ -40,7 +40,7 @@ function RxListPage() {
      console.log(data);
         //front-end api to view all medicines 
         axios.post('http://localhost:8000/viewmedicine', data )
-        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
+
             .then((res) => {
               console.log(res.data);
               console.log(res.status);
@@ -91,8 +91,7 @@ function RxListPage() {
         }
         
         axios.post('http://localhost:8000/addmedicine', userData)
-        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/addmedicine', userData)
-            .then(response => {
+        .then(response => {
                 console.log("Medication added successfully:", response.data);
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page
@@ -184,8 +183,8 @@ function RxListPage() {
         <MedicationItem
             key={medications[selectedMedicationId].id}
             med_name={medications[selectedMedicationId].med_name}
-            dosage={medications[selectedMedicationId].dosage}
-            descrpiton={medications[selectedMedicationId].descrpiton}
+            dosage={medications[selectedMedicationId].dose_amt}
+            description={medications[selectedMedicationId].description}
             start_date={medications[selectedMedicationId].start_date}
             end_date={medications[selectedMedicationId].end_date}
             doctor_first_name={medications[selectedMedicationId].doctor_first_name}
@@ -197,8 +196,8 @@ function RxListPage() {
                  
                     </div>
                     <div className="medication-actions">
-                                <button className="cancel-button" onClick={handleCancelClick}>back</button>
-                                <button className="next-button" onClick={handleNextClick}>Next</button>
+                                <button className="navButtons" onClick={handleCancelClick}>back</button>
+                                <button className="navButtons" onClick={handleNextClick}>Next</button>
                             </div>
                     <div className="medication-notes" />
                 </div>
@@ -232,8 +231,8 @@ function RxListPage() {
                 <MedicationItem
                     key={medications[selectedMedicationId].id}
                     med_name={medications[selectedMedicationId].med_name}
-                    dosage={medications[selectedMedicationId].dosage}
-                    descrpiton={medications[selectedMedicationId].descrpiton}
+                    dosage={medications[selectedMedicationId].dose_amt}
+                    description={medications[selectedMedicationId].description}
                     start_date={medications[selectedMedicationId].start_date}
                     end_date={medications[selectedMedicationId].end_date}
                     doctor_first_name={medications[selectedMedicationId].doctor_first_name}
@@ -254,21 +253,19 @@ function RxListPage() {
         } else if (showAddMed) {
             
             return (
-                <div>
+                <div className="add-form">
                     <h2>Add Medication</h2>
                     <form className ="rx-list" onSubmit={handleAddMedication}>
                             <input type="text" placeholder="Medicine Name" id="medName-input" name="medName" onChange={e => setMedName(e.target.value)}/>
                             <input type="text" placeholder="Description" id="description-input" name="description" onChange={e => setDescription(e.target.value)}/>
-                            
                             <input type="text" placeholder="Dose Amount" id="doseAmt-input" name="doseAmt" onChange={e => setDoseAmt(e.target.value)}/>
-                            
-                            <input type="date" placeholder="Start Date" id="startDate-input" name="startDate" onChange={e => setStartDate(e.target.value)}/>
-                            <input type="date" placeholder="End Date" id="endDate-input" name="endDate" onChange={e => setEndDate(e.target.value)}/>
+                            <input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="Start Date" id="startDate-input" name="startDate" onChange={e => setStartDate(e.target.value)}/>
+                            <input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="End Date" id="endDate-input" name="endDate" onChange={e => setEndDate(e.target.value)}/>
                             <input type="text" placeholder="Doctor's First Name" id="doctorFirstName-input" name="doctorFirstName" onChange={e => setDoctorFirstName(e.target.value)}/>
                             <input type="text" placeholder="Doctor's Last Name" id="doctorLastName-input" name="doctorLastName" onChange={e => setDoctorLastName(e.target.value)}/>
                             <input type="text" placeholder="Doctor's Phone" id="doctorPhone-input" name="doctorPhone" onChange={e => setDoctorPhone(e.target.value)}/>
                             <button type="button" onClick={() => handleMedListClick()}>Cancel</button>
-                            <button type="submit" id="submit">submit</button>
+                            <button type="submit">submit</button>
                         
                         </form>
                 </div>
@@ -282,7 +279,7 @@ function RxListPage() {
             return <button className="section-title" onClick={handleMedListClick}>Medication list</button>;
         } else if (showAddMed) {
             return (
-                <div> 
+                <div className="medlist-button"> 
                     {/* <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button> */}
                     <button className="section-title" onClick={handleMedListClick}>Medication list</button>
                 </div>
@@ -313,20 +310,16 @@ function RxListPage() {
 
     return (
         <div className="app-container">
-            <main className="main-content">
+            <main className="rxlist">
                 <div className="columns-container">
-                    <section className="column medication-actions">
-                        <div className="meds-for-the-day">
-                            {renderMedList()}
-                            {renderAddDeleteButton()}
-                        </div>
-                    </section>
                     <section className="column medication-list">
                         <div className="medication-list-container">
                             {switchPage(showMedList, medications)}
                         </div>
                     </section>
                 </div>
+                {renderMedList()}  
+                {renderAddDeleteButton()}
             </main>
         </div>
     );
