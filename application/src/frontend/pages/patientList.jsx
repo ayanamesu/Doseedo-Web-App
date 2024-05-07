@@ -5,7 +5,7 @@ import "../App.css";
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 
-const PatientList = () => {
+const PatientList = ({ apiLink }) => {
     // const navigate = useNavigate();
     const [userId, setUserId] = useState("");
     const [AccountList, setAccountList] = useState([]);
@@ -24,6 +24,7 @@ const PatientList = () => {
                 const data = {
                     user_id: userId
                 };
+                
                 if (data.user_id){
                 const apiRes = await axios.post('http://localhost:8000/showpatients', data);
                 if (apiRes.status === 200) {

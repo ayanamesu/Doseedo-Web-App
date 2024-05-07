@@ -18,13 +18,12 @@
         "cors": "^2.8.5",
         "js-cookie": "^3.0.5",
         "mysql2": "^3.9.1",
-        "react": "^18.2.0",
+        "react": "^18.3.1",
         "react-cookie": "^7.1.4",
         "react-dom": "^18.2.0",
-        "react-native": "^0.73.4",
         "react-query": "^3.39.3",
         "react-router-dom": "^6.22.2",
-        "react-scripts": "5.0.1",
+        "react-scripts": "^5.0.1",
         "web-vitals": "^2.1.4"
     },
     "scripts": {

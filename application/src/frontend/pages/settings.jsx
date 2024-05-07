@@ -9,7 +9,7 @@ import Cookies from 'js-cookie';
 // Previously had via github commit e462e7b (the pervious change to this)
 // import UseSessionCheck from '../Components/UseSessionCheck';
 
-const SettingsPage = () => {
+const SettingsPage = ({ apiLink }) => {
     const navigate = useNavigate();
     const [email, setLinkEmail] = useState("");
     const [userId, setUserId] = useState("");
@@ -31,7 +31,7 @@ const SettingsPage = () => {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+                const apiRes = await axios.post(apiLink + '/accountLink', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -70,8 +70,7 @@ const SettingsPage = () => {
             user_id: userId, 
             email: email, 
         }
-        console.log(data);
-        axios.post('http://localhost:8000/linkAccounts', data)
+        axios.post(apiLink + '/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
                 if (accountLink === 201) {

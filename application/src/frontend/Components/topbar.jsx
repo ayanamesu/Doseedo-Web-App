@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faCircleInfo, faBell, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 
-function Topbar() {
+function Topbar({ apiLink }) {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     // const [isSessionActive] = UseSessionCheck();
     const session_id = Cookies.get('session_id');
@@ -40,7 +40,7 @@ function Topbar() {
              
         // Handle sign out
        
-        axios.post('http://localhost:8000/logout', data)//userData contains session id 
+        axios.post(apiLink + '/logout', data)//userData contains session id 
         .then((response) => {
             console.log("response Status"+response.status);
             if (response.status == 200) {

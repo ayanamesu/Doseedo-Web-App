@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import Cookies from 'js-cookie';
 
-const CareGiverRxListPage = () => {
+function CareGiverRxListPage({ apiLink }) {
     const [selectedUserId, setSelectedUserId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [patientList, setPatientList] = useState([]);
