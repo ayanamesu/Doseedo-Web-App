@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 
 const PatientList = ({ apiLink }) => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [userId, setUserId] = useState("");
     const [AccountList, setAccountList] = useState([]);
 

@@ -41,7 +41,7 @@ function PatientProfilePage({ apiLink }) {
         //     alert("You need to relog in!")
         //     //navigate('/');
         // }
-
+        setUserId(Cookies.get('user_id'));
         let data = {
             user_id: user_id
         }
