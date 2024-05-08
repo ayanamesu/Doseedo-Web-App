@@ -2,10 +2,10 @@ const mockResponse = {
   data: {
     results: [
       {
-        id: "1",
+        user_id: "1",
         first_name: "Lola",
         last_name: "Mom",
-        email: "lola@email.com",
+        email: "1@1.com",
         phone: "1234567",
         address_1: "123 Main Street",
         address_2: "Apt 2",

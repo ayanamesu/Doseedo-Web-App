@@ -5,7 +5,25 @@ import "../App.css";
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 
+const fetchAccountList = async () => {
+    try {
+        const data = {
+            user_id: userId
+        };
+        if (data.user_id){
+        const apiRes = await axios.post('http://localhost:8000/showpatients', data);
+        if (apiRes.status === 200)
+        if (apiRes.status === 204) {
+            console.log("There are no patients for this user");
+        } else {
+            console.log("Something went wrong with the backend...");
+        }
+    }
+    } catch (error) {
+        console.error(error);
+    }
 
+};
 const PatientList = () => {
     const navigate = useNavigate();
     const [userId, setUserId] = useState("");
@@ -19,27 +37,6 @@ const PatientList = () => {
             alert("You need to relog in!")
             navigate('/');
         }
-
-        const fetchAccountList = async () => {
-            try {
-                const data = {
-                    user_id: userId
-                };
-                if (data.user_id){
-                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
-                if (apiRes.status === 200) {
-                    setAccountList(apiRes.data);
-                } else if (apiRes.status === 204) {
-                    console.log("There are no patients for this user");
-                } else {
-                    console.log("Something went wrong with the backend...");
-                }
-            }
-            } catch (error) {
-                console.error(error);
-            }
-        
-        };
             fetchAccountList();
     }, [userId]);
 
@@ -60,4 +57,4 @@ const PatientList = () => {
     );
 };
 
-export default PatientList;
+module.exports = fetchAccountList;
