@@ -31,7 +31,9 @@ const EmergencyContact = () => {
             navigate('/');
         }
         const data = {
-            user_id: userId
+            user_id: userId,
+            ...contactInfo
+
         };
         axios.post('http://localhost:8000/emergencycontact', data )
         // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/addEmergencyContact', data )
@@ -52,13 +54,14 @@ const EmergencyContact = () => {
 
 }, [userId]);
         //move outside to a callable function
-        const addEmergencyContact = async () =>{
+        const addEmergencyContact = async (contactInfo) =>{
             
-        
-                axios.post('http://localhost:8000/emergencycontact/add',contactInfo )
+            
+
+            axios.post('http://localhost:8000/emergencycontact/add',contactInfo )
             // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/addEmergencyContact', data )
                 .then((res) => {
-
+                console.log("we are here");
                 console.log(res.data);
                 console.log(res.status);
                 })
@@ -79,8 +82,9 @@ const EmergencyContact = () => {
         const last_name = document.getElementById("lname-input").value;
         const phone = document.getElementById("phone-input").value;
         const email = document.getElementById("email-input").value;
-        setContactInfo({first_name: first_name, last_name:last_name, phone: phone, email: email});
-        addEmergencyContact();    
+        const newContactInfo = {user_id: userId, first_name: first_name, last_name:last_name, phone: phone, email: email};
+        setContactInfo(newContactInfo);
+        addEmergencyContact(newContactInfo);    
         setEmergencyContact(true);
     };
     return (
