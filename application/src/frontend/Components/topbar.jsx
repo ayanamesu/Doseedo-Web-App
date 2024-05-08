@@ -48,7 +48,7 @@ function Topbar({ apiLink }) {
                 Cookies.remove("session_id");
                 Cookies.remove("user_id");
                 Cookies.remove("user_accountType");
-                alert("Sucessfuly logged out!");
+                alert("Sucessfully logged out!");
                 navigate('/');
             }
         })
