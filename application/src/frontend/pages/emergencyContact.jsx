@@ -33,7 +33,7 @@ const EmergencyContact = () => {
         const data = {
             user_id: userId
         };
-        axios.post('http://localhost:8000/EmergencyContact', data )
+        axios.post('http://localhost:8000/emergencycontact', data )
         // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/addEmergencyContact', data )
             .then((res) => {
     
@@ -79,7 +79,7 @@ const EmergencyContact = () => {
         const last_name = document.getElementById("lname-input").value;
         const phone = document.getElementById("phone-input").value;
         const email = document.getElementById("email-input").value;
-        contactInfo = {first_name: first_name,last_name:last_name, phone: phone, email: email};
+        setContactInfo({first_name: first_name, last_name:last_name, phone: phone, email: email});
         addEmergencyContact();    
         setEmergencyContact(true);
     };

@@ -63,6 +63,7 @@ function App() {
               <Route path="/caregiver_dashboard" element={<Caregiver_DashBoard/>} />
               <Route path="/patientlist" element={<PatientList apiLink={apiLink}/>} />
               <Route path="/caregiverRxList" element={<CareGiverRxListPage apiLink={apiLink}/>} />
+              <Route path="/emergencyContact" element={<EmergencyContact apiLink={apiLink}/>} />
 
             </Routes>
           </div>

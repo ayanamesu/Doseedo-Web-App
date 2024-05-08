@@ -80,7 +80,7 @@ const HomePage = ({ apiLink }) => {
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
             setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
             
-            alert("Successfuly logged In!");
+            alert("Successfully logged In!");
             // TODO: Frontend - 
             // the dashboard page switch based on userid(account_type)
             //user switch
@@ -129,7 +129,7 @@ function handleRegisterForm(event) {
         password: password
     }
    
-    axios.post(apiLink + 'register', userData)
+    axios.post(apiLink + '/register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {
