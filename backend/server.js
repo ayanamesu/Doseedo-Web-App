@@ -295,6 +295,20 @@ app.post('/linkAccounts', async (req, res) => {
         return res.status(400).json({ msg: "Incorrect email given"});
       }
 
+      let dupQuery;
+      if (userAccType === 'caregiver') {
+        dupQuery = `SELECT * FROM account_link WHERE caregiver_id = ? AND patient_id = ?;`;
+      } else if (userAccType === 'patient') {
+        dupQuery = `SELECT * FROM account_link WHERE patient_id = ? AND caregiver_id = ?;`;
+      } else {
+        return res.json({ msg: "Account type was not given" })
+      }
+
+      const [results, fields] = await db.query(dupQuery, [user_id, newID]);
+      if (results && results.length == 1) {
+        return res.status(400).json({ msg: "You have already linked to this account" });
+      }
+
       const addAccType = await getAccountType(newID);
       if (userAccType === addAccType) {
         return res.status(400).json({ msg: "Cannot link two of the same type accounts"})
@@ -320,6 +334,7 @@ app.post('/linkAccounts', async (req, res) => {
         return res.status(500).json({ msg: "Incorrect account_type given"});
       }  
     } catch(error) {
+      console.log("peepee")
       console.error(error);
       throw error;
     }
