@@ -116,7 +116,7 @@ function RxListPage({ apiLink }) {
 
         const handleDeleteMedicationClick = () => {
           console.log("med list length: " + medications.length);
-          if (medications.length != 0){
+          if (medications.length > 0){
           let toDelete = medications[selectedMedicationId].id;
           axios.post(apiLink + '/deletemedicine', { id: toDelete })
             .then(response => {

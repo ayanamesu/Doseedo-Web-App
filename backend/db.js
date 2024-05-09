@@ -12,10 +12,10 @@ if (process.env.STATUS === 'dev') {
         database = process.env.PROD_DB_SCHEMA;
         password = process.env.PROD_DB_PASS;
 } else { // Without an ENV file, you can input your DB data here
-        host = "";
-        user = "";
-        database = "";
-        password = "";
+        host = "localhost";
+        user = "root";
+        database = "doseedodb3";
+        password = "Zero1998!";
 }
 
 const pool = mysql.createPool({
