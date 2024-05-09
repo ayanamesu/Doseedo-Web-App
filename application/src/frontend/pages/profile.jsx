@@ -149,7 +149,7 @@ function PatientProfilePage({ apiLink }) {
 
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-        axios.post(apiLink + '/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+        axios.post(apiLink + '/profile/edit', { user_id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 console.log(user_id);
                 if (apiRes.status === 200) {
