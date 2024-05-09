@@ -37,43 +37,45 @@ function CareGiverRxListPage({ apiLink }) {
 
     // useEffect for fetching patient list
     useEffect(() => {
-        const fetchAccountList = async () => {
-            try {
-                const data = {
-                    user_id: userId
-                };
-                if (data.user_id) {
-                    const apiRes = await axios.post('http://localhost:8000/showpatients', data);
-                    if (apiRes.status === 200) {
-                        setPatientList(apiRes.data);
-                    } else if (apiRes.status === 204) {
-                        console.log("There are no patients for this user");
-                    } else {
-                        console.log("Something went wrong with the backend...");
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        };
+   
         fetchAccountList();
     }, [userId, navigate]);
 
+    const fetchAccountList = async () => {
+        try {
+            const data = {
+                user_id: userId
+            };
+            if (data.user_id) {
+                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
+                if (apiRes.status === 200) {
+                    setPatientList(apiRes.data);
+                } else if (apiRes.status === 204) {
+                    console.log("There are no patients for this user");
+                } else {
+                    console.log("Something went wrong with the backend...");
+                }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const fetchMedicationList = async () => {
+        try {
+            if (selectedUserId && viewClicked) {
+                const data = {
+                    user_id: selectedUserId
+                };
+                const apiRes = await axios.post('http://localhost:8000/viewmedicine', data);
+                setMedications(apiRes.data);
+            }
+        } catch (error) {
+            console.error('Error fetching medications:', error);
+        }
+    };
     // Fetch medication list on user selection
     useEffect(() => {
-        const fetchMedicationList = async () => {
-            try {
-                if (selectedUserId && viewClicked) {
-                    const data = {
-                        user_id: selectedUserId
-                    };
-                    const apiRes = await axios.post('http://localhost:8000/viewmedicine', data);
-                    setMedications(apiRes.data);
-                }
-            } catch (error) {
-                console.error('Error fetching medications:', error);
-            }
-        };
+        
         fetchMedicationList();
     }, [selectedUserId, viewClicked]);
   const handleNextClick = () => {
@@ -97,8 +99,9 @@ function CareGiverRxListPage({ apiLink }) {
           .then(response => {
               setMedications(response.data);
               console.log("Medication deleted successfully:", response.data);
-              navigate('/caregiverRxList');
-          })
+              window.alert("Medication deleted successfully");
+              fetchMedicationList();
+            })
           .catch(error => {
               console.error('Error deleting medication:', error);
           });
@@ -122,12 +125,16 @@ function CareGiverRxListPage({ apiLink }) {
             doctor_last_name: doctorLastName,
             doctor_phone: doctorPhone
         };
+        console.log(userData);
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
+                console.log(selectedUserId);
                 console.log("Medication added successfully:", response.data);
+                fetchMedicationList();
+                window.alert("Medication added successfully");
                 setShowAddMed(false);
                 setShowMedList(true);
-                window.location.reload();
+
             })
             .catch(error => {
                 console.error('Error adding medication:', error);
