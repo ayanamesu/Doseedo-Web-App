@@ -95,8 +95,7 @@ function RxListPage({ apiLink }) {
                 console.log("Medication added successfully:", response.data);
                 
                 setShowAddMed(false);
-                // setShowMedList(true); // Switch back to the medication list page
-                window.location.reload();
+                setShowMedList(true); // Switch back to the medication list page
             })
             .catch(error => {
                 console.error('Error adding medication:', error);         
@@ -291,7 +290,7 @@ function RxListPage({ apiLink }) {
     };
 
     const renderAddDeleteButton = () => {
-        if (!showAddMed && (medications.length > 0)) { 
+        if (!showAddMed) { 
             return (
                 <>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
