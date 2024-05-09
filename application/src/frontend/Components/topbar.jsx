@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faCircleInfo, faBell, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 
-function Topbar() {
+function Topbar({ apiLink }) {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     // const [isSessionActive] = UseSessionCheck();
     const session_id = Cookies.get('session_id');
@@ -15,7 +15,13 @@ function Topbar() {
         session_id : session_id
     }
     const handleHomeClick = () => {
-        navigate("/dashboard", { replace: true }); // Programmatically navigate to "/"
+        if(Cookies.get('accountType')==='patient'){
+            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+            
+        }else{
+            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+        }
+      
     };
 
     const NavigateToContacts = () => {
@@ -34,14 +40,15 @@ function Topbar() {
              
         // Handle sign out
        
-        axios.post('http://localhost:8000/logout', data)//userData contains session id 
+        axios.post(apiLink + '/logout', data)//userData contains session id 
         .then((response) => {
             console.log("response Status"+response.status);
             if (response.status == 200) {
                 // document.cookie = "session_id=; expires=Thu, 01 Jan 1942 00:00:00 UTC; path=/;";
                 Cookies.remove("session_id");
                 Cookies.remove("user_id");
-                alert("Sucessfuly logged out!");
+                Cookies.remove("user_accountType");
+                alert("Sucessfully logged out!");
                 navigate('/');
             }
         })

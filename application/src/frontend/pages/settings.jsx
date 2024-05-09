@@ -9,7 +9,7 @@ import Cookies from 'js-cookie';
 // Previously had via github commit e462e7b (the pervious change to this)
 // import UseSessionCheck from '../Components/UseSessionCheck';
 
-const SettingsPage = () => {
+const SettingsPage = ({ apiLink }) => {
     const navigate = useNavigate();
     const [email, setLinkEmail] = useState("");
     const [userId, setUserId] = useState("");
@@ -24,13 +24,14 @@ const SettingsPage = () => {
             alert("You need to relog in!")
             navigate('/');
         }
+    
 
         const fetchAccountList = async () => {
             try {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://localhost:8000/accountLink', data);
+                const apiRes = await axios.post(apiLink + '/accountLink', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -63,18 +64,13 @@ const SettingsPage = () => {
 
     function handleAccountPairClick(event) {
 
-        if (!userId || !email ) {
-            // Display an error message or perform any necessary actions
-            alert('Please fill out all required fields.');
-            return; // Prevent the form from being submitted
-        }
-
+        
         event.preventDefault();
         let data = {
             user_id: userId, 
             email: email, 
         }
-        axios.post('http://localhost:8000/linkAccounts', data)
+        axios.post(apiLink + '/linkAccounts', data)
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 const accountLink = apiRes.status; 
                 if (accountLink === 201) {

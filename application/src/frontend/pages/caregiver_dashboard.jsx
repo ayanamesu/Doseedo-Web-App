@@ -1,23 +1,32 @@
 // still debugging skeleton code
 import React from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleMedical, faGear, faHospitalUser } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faCalendar } from '@fortawesome/free-regular-svg-icons';
 import BackButton from "../Components/BackButton";
- 
+import Cookies from 'js-cookie';
 import "../App.css";
 
 function Caregiver() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
+    const [userId, setUserId] = useState("");
+    const [AccountList, setAccountList] = useState([]);
 
+    useEffect(() => {
+
+         
+    }, [userId]);
 
     const handleCalendarClick = () => {
         navigate("/calendar", { replace: true });
     };
     const handleRXListClick = () => {
-        navigate("/caregiverRxlist", { replace: true });
+
+        navigate("/caregiverRxList", { replace: true });
+
     };
 
 const handleSettingsClick = () => {

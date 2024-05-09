@@ -5,13 +5,11 @@ import "../App.css";
 import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 
-
-const PatientList = () => {
+const PatientList = ({ apiLink }) => {
     const navigate = useNavigate();
     const [userId, setUserId] = useState("");
     const [AccountList, setAccountList] = useState([]);
 
-    // from yakbranch
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
@@ -26,7 +24,9 @@ const PatientList = () => {
                 const data = {
                     user_id: userId
                 };
-                const apiRes = await axios.post('http://localhost:8000/showcaregivers', data);
+                
+                if (data.user_id){
+                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
                 if (apiRes.status === 200) {
                     setAccountList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -34,9 +34,11 @@ const PatientList = () => {
                 } else {
                     console.log("Something went wrong with the backend...");
                 }
+            }
             } catch (error) {
                 console.error(error);
             }
+        
         };
             fetchAccountList();
     }, [userId]);
@@ -45,6 +47,8 @@ const PatientList = () => {
 
         <div>
             <h2>Linked Accounts:</h2>
+
+            
              <div className="linkedAccountsContainer">
                 {AccountList.map((accountLink, index) => (
                     <div key={index} className="account">
@@ -57,5 +61,4 @@ const PatientList = () => {
         </div>
     );
 };
-
 export default PatientList;

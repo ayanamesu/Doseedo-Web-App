@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
-const HomePage = () => {
+
+const HomePage = ({ apiLink }) => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
@@ -21,17 +22,26 @@ const HomePage = () => {
   const [accountType, setAccountType] = useState("");
 
   useEffect(() => {
-    if (Cookies.get('user_id') && Cookies.get('session_id')) {
+    if (!(Cookies.get('user_id') && Cookies.get('session_id'))) {
         setUserId(Cookies.get('user_id'));
         console.log("User id has been set!" + user_id)
-       navigate('/dashboard');
-    } 
+       
+    } else{
+        
+        if(Cookies.get('accountType')==='patient'){
+            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+            
+        }else{
+            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+        }
+       
+    }
 
 }, [user_id]);
 //   const sessionUserId = UseSessionCheck();
 
 //   useEffect(() => {
-//     if (sessionUserId === "") {
+//     if (sessionUserId === "") 
 //         navigate('/');
 //     } else {
 //         navigate('/dashboard');
@@ -40,7 +50,6 @@ const HomePage = () => {
 // }, []);
     
   function handleLoginForm(event) {
-
     if ( !email || !password ) {
         alert("Please fill out all the fields.");
         return;
@@ -53,7 +62,7 @@ const HomePage = () => {
         password: password
     }
 
-    axios.post('http://localhost:8000/login', userData)
+    axios.post(apiLink + '/login', userData)
     .then(res => {
         console.log(res.status); 
         //res = backend res.status(200).json(req.session.id); from the post
@@ -70,16 +79,23 @@ const HomePage = () => {
             */
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
             setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
-            alert("Successfuly logged In!");
-            // TODO: Frontend - do whatever you gotta do with this information
-            // change this to the dashboard page
-            navigate('/dashboard');
+            
+            alert("Successfully logged In!");
+            // TODO: Frontend - 
+            // the dashboard page switch based on userid(account_type)
+            //user switch
+            console.log(userData);
+            console.log(res.data);
+            if(res.data.user_accountType==='patient'){
+                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
+                navigate('/patient_dashboard');
+            }else{
+                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
+                navigate('/caregiver_dashboard');
+            }
+            console.log("redirecting based on the account type");
 
-        } else {
-            alert("Invalid Password or email");
-            console.log("Something weird happened...");
 
-            // TODO: Frontend - do whatever for error handling
         }
     })
     .catch(err => console.log(err));
@@ -89,8 +105,7 @@ const HomePage = () => {
   
 
 
-
-  function handleRegisterForm(event) {
+function handleRegisterForm(event) {
     event.preventDefault();
 
     if (!fname || !lname || !email || !password || !confPassword) {
@@ -110,15 +125,16 @@ const HomePage = () => {
         first_name: fname,
         last_name: lname,
         email: email,
+        account_type:accountType,
         password: password
     }
    
-    axios.post('http://localhost:8000/Register', userData)
+    axios.post(apiLink + '/register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {
                 setNotificationType('success');
-                console.log("They account successfully made!")
+                console.log("The account successfully made!")
                 setNotificationMessage("Account Creation was successful😀");
                 setShowNotification(true);
                 //this is only here so that it delays the redirect enough for the user to see the notification

@@ -10,7 +10,7 @@ import "../App.css";
 import Cookies from 'js-cookie';
 
 
-function PatientProfilePage() {
+function PatientProfilePage({ apiLink }) {
     const navigate = useNavigate();
     const [user, setUser] = useState([]);
     const [user_id, setUserId] = useState("");
@@ -34,18 +34,18 @@ function PatientProfilePage() {
         // } else { 
         //     setUserId(sessionUserId[0]);
         // } 
-        if (Cookies.get('user_id') && Cookies.get('session_id')) {
-            setUserId(Cookies.get('user_id'));
-            console.log("User id has been set!" + user_id)
-        } else {
-            alert("You need to relog in!")
-            navigate('/');
-        }
-
+        // if (Cookies.get('user_id') && Cookies.get('session_id')) {
+        //     setUserId(Cookies.get('user_id'));
+        //     console.log("User id has been set!" + user_id)
+        // } else {
+        //     alert("You need to relog in!")
+        //     //navigate('/');
+        // }
+        setUserId(Cookies.get('user_id'));
         let data = {
             user_id: user_id
         }
-        axios.post('http://localhost:8000/profile', data)
+        axios.post(apiLink + '/profile', data)
             .then((apiRes) => {
                 console.log(apiRes.data);
                 setUserFName(apiRes.data.first_name);
@@ -149,9 +149,9 @@ function PatientProfilePage() {
 
     const handleEditProfile = () => {
         console.log("Edit Profile clicked");
-        axios.post('http://localhost:8000/profile/edit', { user_id: Cookies.get('user_id'), first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
+        axios.post(apiLink + '/profile/edit', { id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
-       
+                console.log(user_id);
                 if (apiRes.status === 200) {
                     // setEditProfile(true);
                     alert("Profile edited successfully!");
