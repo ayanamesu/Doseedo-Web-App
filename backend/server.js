@@ -511,8 +511,8 @@ app.post("/pullAlerts", async (req, res) => {
     return res.status(400).json({ msg: "Missing user_id from req" });
   }
   try{
-    const Alertquery = `SELECT * FROM alert WHERE receiver = ? AND is_active = 1 AND send_time >= NOW()`
-    const [results, fields] = await db.query(Alertquery, [user_id]);
+    const alertQuery = `SELECT * FROM alert WHERE receiver = ? AND is_active = 1 AND send_time <= NOW();`
+    const [results, fields] = await db.query(alertQuery, [user_id]);
     if (results && results.length > 0) {
       return res.status(200).json(results);
     } else {
@@ -534,7 +534,7 @@ app.post("/alertcompleted", async (req, res) => {
   }
   
   try {
-    const updateQuery = 'UPDATE alert SET is_active = FALSE WHERE alert_id = ?';
+    const updateQuery = 'UPDATE alert SET is_active = FALSE WHERE id = ?';
     const [results, fields] = await db.query(updateQuery, [alert_id]);
 
     if (results.affectedRows === 0) {
