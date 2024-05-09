@@ -505,14 +505,48 @@ app.post("/logout", async (req, res) => {
  * Postman Check - SUCCESS
  */ 
 // id, alert_name, receiver, prescription_id, send_time, is_active
-// app.post("/pullAlerts", async (req, res) => {
-//   const { user_id } = req.body;
-//   if (!user_id) {
-//     return res.status(400).json({ msg: "Missing user_id from req" });
-//   }
-//   try{
+app.post("/pullAlerts", async (req, res) => {
+  const { user_id } = req.body;
+  if (!user_id) {
+    return res.status(400).json({ msg: "Missing user_id from req" });
+  }
+  try{
+    const Alertquery = `SELECT * FROM alert WHERE receiver = ? AND is_active = 1 AND send_time >= NOW()`
+    const [results, fields] = await db.query(Alertquery, [user_id]);
+    if (results && results.length > 0) {
+      return res.status(200).json(results);
+    } else {
+      return res.status(404).json({ "error": "No alerts found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ "error": "Internal server error" });
 
-//   }
+  }
+});
+/** alert completed
+ * 
+ */
+app.post("/alertcompleted", async (req, res) => {
+  const { alert_id } = req.body;
+  if (!alert_id) {
+    return res.status(400).json({ msg: "Missing alert_id from req" });
+  }
+  
+  try {
+    const updateQuery = 'UPDATE alert SET is_active = FALSE WHERE alert_id = ?';
+    const [results, fields] = await db.query(updateQuery, [alert_id]);
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ "error": "No alert found with the provided alert_id" });
+    } else {
+      return res.status(200).json({ "msg": "Alert marked as completed" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ "error": "Internal server error" });
+  }
+});
 /*---------End of Routes-----------*/
 
 /* Where our app will listen from */
