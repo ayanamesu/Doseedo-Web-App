@@ -3,8 +3,8 @@ const server = require('./server');
 
 // TEST VALUES - all good to run
 // LOGIN
-const email = "tama@email.com"; //known user (caregiver)
-const password = "tama"; //known user (caregiver)
+const email = "W1@gmail.com"; //known user (caregiver)
+const password = "123"; //known user (caregiver)
 // REGISTER & PROFILE EDIT
 const new_email = "new@email.com"; //not in db yet
 const new_pass = "new"; //not in db yet
@@ -14,15 +14,15 @@ const new_acctype = "caregiver"; //not in db yet
 const address_2 = "APT 22"
 const state = "65987"
 //SESSION && LOGOUT
-const session_id = "5a1JcITDBAnLIdC6LPCIw2kh9sl0_bjO"; //known session with no logout time
-const invalid_sess_id = "0kWshNBRbLZeYAz71wz6AN-A7CVSfR3S"; //known session with logout time
+const session_id = "LSCzitLCg3KpvVU56PzBDZ87G-KoGBWX"; //known session with no logout time
+const invalid_sess_id = "EQBwD4d_wGDtf_gzmvHTIcnauVr457us"; //known session with logout time
 //PROFILE
-const user_id = 31; //known user (caregiver)
+const user_id = 22; //known user (caregiver)
 //LINKACCOUNTS
-const pat_id = 34; //known user (patient)
-const pat_email = "test@email.com"; //known user (patient)
+const pat_id = 26; //known user (patient)
+const pat_email = "yama@hotmail.com"; //known user (patient)
 //MEDICINE
-const med_id = 18; //delete test - known prescription
+const med_id = 33; //delete test - known prescription
 
 describe('POST /login', () => {
     it('Successful Login Status', async () => {

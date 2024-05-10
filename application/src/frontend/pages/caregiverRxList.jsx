@@ -24,6 +24,15 @@ function CareGiverRxListPage({ apiLink }) {
     const [doctorFirstName, setDoctorFirstName] = useState("");
     const [doctorLastName, setDoctorLastName] = useState("");
     const [doctorPhone, setDoctorPhone] = useState("");
+   
+    const [medName, setMedName] = useState("");
+    const [description, setDescription] = useState("");
+    const [doseAmt, setDoseAmt] = useState("");
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
+    const [doctorFirstName, setDoctorFirstName] = useState("");
+    const [doctorLastName, setDoctorLastName] = useState("");
+    const [doctorPhone, setDoctorPhone] = useState("");
     const navigate = useNavigate();
     const [showReminderForm, setShowReminderForm] = useState(false);
     const [repeat, setRepeat] = useState("");
@@ -40,6 +49,13 @@ function CareGiverRxListPage({ apiLink }) {
             alert("You need to relog in!")
             navigate('/');
         }
+    }, [userId, navigate]);
+
+    // useEffect for fetching patient list
+    useEffect(() => {
+   
+        fetchAccountList();
+    }, [userId, navigate]);
     }, [userId, navigate]);
 
     // useEffect for fetching patient list

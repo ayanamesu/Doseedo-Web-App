@@ -333,6 +333,7 @@ app.post('/linkAccounts', async (req, res) => {
  * Postman Check - SUCCESS
  */ 
 app.post("/addmedicine", async (req, res) => {
+  console.log(req.body);
   let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   if (!user_id || !med_name || !dose_amt || !start_date || !doctor_first_name || !doctor_last_name || !doctor_phone){
     return res.status(400).json({ msg: "Missing one or more required fields"});
@@ -498,6 +499,21 @@ app.post("/logout", async (req, res) => {
     return res.status(500).json({ "error": "Internal server error" });
   }
 });
+
+/** Alerts
+ * Frontend req: session_id
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */ 
+// id, alert_name, receiver, prescription_id, send_time, is_active
+// app.post("/pullAlerts", async (req, res) => {
+//   const { user_id } = req.body;
+//   if (!user_id) {
+//     return res.status(400).json({ msg: "Missing user_id from req" });
+//   }
+//   try{
+
+//   }
 /*---------End of Routes-----------*/
 
 /* Where our app will listen from */
