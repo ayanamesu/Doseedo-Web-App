@@ -85,7 +85,7 @@ const HomePage = ({ apiLink }) => {
             // the dashboard page switch based on userid(account_type)
             //user switch
             console.log(userData);
-            console.log(res.data);
+            console.log("data:"+res.data);
             if(res.data.user_accountType==='patient'){
                 setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
                 navigate('/patient_dashboard');
