@@ -72,6 +72,11 @@ function RxListPage({ apiLink }) {
             alert("Please fill out userID, Medicine name, dose amount,start date, doctor name and phone number.");
             return;
         }
+        if(doctorPhone.length > 10){
+            event.preventDefault();
+            alert("Invalid phone number length! Phone numbers should be 10 digits or less.");
+            return;
+        }
         
 
         event.preventDefault();
@@ -115,7 +120,7 @@ function RxListPage({ apiLink }) {
 
         const handleDeleteMedicationClick = () => {
           console.log("med list length: " + medications.length);
-          if (medications.length != 0){
+          if (medications.length > 0){
           let toDelete = medications[selectedMedicationId].id;
           axios.post(apiLink + '/deletemedicine', { id: toDelete })
             .then(response => {
@@ -196,6 +201,7 @@ function RxListPage({ apiLink }) {
                  
                     </div>
                     <div className="medication-actions">
+                    
                                 <button className="navButtons" onClick={handleCancelClick}>back</button>
                                 <button className="navButtons" onClick={handleNextClick}>Next</button>
                             </div>

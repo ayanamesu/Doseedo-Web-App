@@ -44,19 +44,26 @@ const PatientList = ({ apiLink }) => {
     }, [userId]);
 
     return (
-
         <div>
             <h2>Patient List:</h2>
-
-            
              <div className="linkedAccountsContainer">
                 {AccountList.map((accountLink, index) => (
                     <div key={index} className="account">
-                        <p>Name: {accountLink.first_name} {accountLink.last_name}</p>
-                        <p>Email: {accountLink.email}</p>
-                        <p>Address: {accountLink.address_1}</p>
-                        <p>City: {accountLink.city}</p>
-                        <p>Phone: {accountLink.phone}</p>
+                        <div className="account-data">
+                        <strong>Name: </strong> <span>{accountLink.first_name} {accountLink.last_name}</span>
+                        </div>
+                        <div className="account-data">
+                            <strong>Email: </strong> <span>{accountLink.email}</span>
+                        </div>
+                        <div className="account-data">
+                            <strong>Address: </strong> <span>{accountLink.address_1}</span>
+                        </div>
+                        <div className="account-data">
+                            <strong>City: </strong> <span>{accountLink.city}</span>
+                        </div>
+                        <div className="account-data">
+                            <strong>Phone: </strong> <span>{accountLink.phone}</span>
+                        </div>
                         <button>Unlink</button>
                     </div>
                 ))}
