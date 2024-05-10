@@ -15,6 +15,7 @@ function CareGiverRxListPage({ apiLink }) {
     const [showAddMed, setShowAddMed] = useState(false);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     const [medications, setMedications] = useState([]);
+
    
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
@@ -24,6 +25,8 @@ function CareGiverRxListPage({ apiLink }) {
     const [doctorFirstName, setDoctorFirstName] = useState("");
     const [doctorLastName, setDoctorLastName] = useState("");
     const [doctorPhone, setDoctorPhone] = useState("");
+   
+    
     const navigate = useNavigate();
     const [showReminderForm, setShowReminderForm] = useState(false);
     const [repeat, setRepeat] = useState("");
@@ -47,6 +50,7 @@ function CareGiverRxListPage({ apiLink }) {
    
         fetchAccountList();
     }, [userId, navigate]);
+    
 
     const fetchAccountList = async () => {
         try {
@@ -148,6 +152,15 @@ function CareGiverRxListPage({ apiLink }) {
                 console.error('Error adding medication:', error);
                 alert("Error adding medication:");
             });
+    };
+    const renderDeleteButton = () => {
+        if (medications.length > 0) { 
+            return (
+                <div>
+                    <button className="delete-medication-button" onClick={handleDeleteClick}>Delete medication</button>
+                </div>
+            );
+        }
     };
 
     // JSX for medication item
@@ -311,7 +324,7 @@ function CareGiverRxListPage({ apiLink }) {
                         )}
                         <div className="caregiver-medication-actions">
                             <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
-                            <button className="navButtons" onClick={handleDeleteClick}>Delete Medicine</button>
+                            {renderDeleteButton()}
                             <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
                             <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
                             <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>

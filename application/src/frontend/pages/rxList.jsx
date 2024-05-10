@@ -5,12 +5,11 @@ import "../App.css";
 import Cookies from 'js-cookie';
 import BackButton from "../Components/BackButton";
 
-function RxListPage({ apiLink }) {
+function RxListPage({apiLink}) {
     
     const [medications, setMedications] = useState([]);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     const [showMedList, setShowMedList] = useState(true); // Define state variables
-    const [showMedsforTheDay, setShowMedsforTheDay] = useState(false);
     const [showAddMed, setShowAddMed] = useState(false);
     const [showDeleteMed, setShowDeleteMed]= useState(false);
   
@@ -34,22 +33,7 @@ function RxListPage({ apiLink }) {
             alert("You need to relog in!")
             navigate('/');
         }
-        let data = {
-            user_id: user_id
-        }
-        console.log("user_id: " + user_id);
-     console.log(data);
-        //front-end api to view all medicines 
-        axios.post(apiLink + '/viewmedicine', data )
-        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/viewmedicine', data )
-            .then((res) => {
-              console.log(res.data);
-              console.log(res.status);
-                setMedications(res.data);//list
-            })
-            .catch((error) => {
-                console.error('Error fetching medications:', error);
-            });
+        fetchMeds();
     }, [user_id]);
 
     const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
@@ -57,10 +41,11 @@ function RxListPage({ apiLink }) {
             <div className="medication-name">Medication Name: {med_name}</div>
             <div className="medication-dosage">Dosage: {dosage}</div>
             <div className="medication-description">Description: {description}</div>
-            <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
-            <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
+            <div className="medication-start-date">Start Date: {start_date}</div>
+            <div className="medication-end-date">End Date: {end_date}</div>
             <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
             <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
+            <div className="medication-quantity-info">quantity: 30 </div>
         </div>
         //quantity
         //med for the day
@@ -82,7 +67,6 @@ function RxListPage({ apiLink }) {
         event.preventDefault();
         setShowMedList(false);
         setShowAddMed(true);
-        setShowMedsforTheDay(false);
         let userData = {
             user_id: user_id,
             med_name: medName,
@@ -94,28 +78,42 @@ function RxListPage({ apiLink }) {
             doctor_last_name: doctorLastName,
             doctor_phone: doctorPhone
         }
-        
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
-                
+                window.alert("Medication added successfully");
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page
-            })
+                fetchMeds();
+            }, [user_id])
             .catch(error => {
                 console.error('Error adding medication:', error);         
                 alert("Error adding medication:");
                 setShowAddMed(false);
                 setShowMedList(true); 
-            });
-    }
+            })
+    };
+
+    const fetchMeds = () =>{
+        let data = {
+            user_id: user_id
+        }
+        const apiRes =  axios.post(apiLink + '/viewmedicine', data)
+        .then((res) => {
+              console.log(res.data);
+              console.log(res.status);
+                setMedications(res.data);//list
+            })
+            .catch((error) => {
+                console.error('Error fetching medications:', error);
+            })
+    };
 
     const handleAddMedicationClick = () => {
-        console.log("handleAddMed");
+
+    console.log("handleAddMed");
         setShowMedList(false);
         setShowAddMed(true);
-        setShowMedsforTheDay(false);
-        
     }
 
         const handleDeleteMedicationClick = () => {
@@ -123,27 +121,27 @@ function RxListPage({ apiLink }) {
           if (medications.length > 0){
           let toDelete = medications[selectedMedicationId].id;
           axios.post(apiLink + '/deletemedicine', { id: toDelete })
-            .then(response => {
+          .then(response => {
                 setMedications(response.data);
                 console.log("Medication deleted successfully:", response.data);
+                window.alert("Medication deleted successfully");
                 navigate('/rxlist');
                 setShowDeleteMed(false);
             })
             .catch(error => {
                 console.error('Error deleting medication:', error);
             });
+
         }
-    };
+        };
 
     const handleMedsForTheDayClick =()=>{
         setShowMedList(false);
         setShowAddMed(false);
-        setShowMedsforTheDay(true);
     }
         const  handleMedListClick =()=>{
             setShowMedList(true);
             setShowAddMed(false);
-            setShowMedsforTheDay(false);
         }
     const handleNextClick = () => {
         console.log(selectedMedicationId);
@@ -188,8 +186,8 @@ function RxListPage({ apiLink }) {
         <MedicationItem
             key={medications[selectedMedicationId].id}
             med_name={medications[selectedMedicationId].med_name}
-            dosage={medications[selectedMedicationId].dose_amt}
-            description={medications[selectedMedicationId].description}
+            dosage={medications[selectedMedicationId].dosage}
+            descrpiton={medications[selectedMedicationId].descrpiton}
             start_date={medications[selectedMedicationId].start_date}
             end_date={medications[selectedMedicationId].end_date}
             doctor_first_name={medications[selectedMedicationId].doctor_first_name}
@@ -209,69 +207,24 @@ function RxListPage({ apiLink }) {
                 </div>
             </div>
             );
-        } else if (showMedsforTheDay) {
+        }else if (showAddMed) {
+            
             return (
                 <div>
-                    <h2 className="section-title">Meds <br></br>for<br></br>The Day</h2>
-                    
-                    <div className="medication-list-header" />
-                    <div className="medication-list-item" />
-                    <div className="medication-details">
-                        <div className="medication-info-container">
-                            <div className="medication-info-columns">
-                                <div className="column prescription-info">
-                                    <div className="prescription-label">
-                                        <h3 className="prescription-text">RX</h3>
-                                        <div className="prescription-underline" />
-                                    </div>
-                                </div>
-                                <div className="column medication-name-info">
-                                    <div className="medication-name-container">
-                                        <h3 className="medication-name-text">DOSEEDO <br />& CO.</h3>
-                                        <div className="medication-name-underline" />
-                                    </div>
-                                </div>
-                               
-                                
-                                
-                <MedicationItem
-                    key={medications[selectedMedicationId].id}
-                    med_name={medications[selectedMedicationId].med_name}
-                    dosage={medications[selectedMedicationId].dose_amt}
-                    description={medications[selectedMedicationId].description}
-                    start_date={medications[selectedMedicationId].start_date}
-                    end_date={medications[selectedMedicationId].end_date}
-                    doctor_first_name={medications[selectedMedicationId].doctor_first_name}
-                    doctor_last_name={medications[selectedMedicationId].doctor_last_name}
-                />
-            
-            
-                            </div>
-                        </div>
-                        <div className="medication-actions">
-                            <button className="cancel-button" onClick={handleCancelClick}>back</button>
-                            <button className="next-button" onClick={handleNextClick}>Next</button>
-                        </div>
-                        <div className="medication-notes" />
-                    </div>
-                </div>
-            );
-        } else if (showAddMed) {
-            
-            return (
-                <div className="add-form">
                     <h2>Add Medication</h2>
                     <form className ="rx-list" onSubmit={handleAddMedication}>
                             <input type="text" placeholder="Medicine Name" id="medName-input" name="medName" onChange={e => setMedName(e.target.value)}/>
                             <input type="text" placeholder="Description" id="description-input" name="description" onChange={e => setDescription(e.target.value)}/>
+                            
                             <input type="text" placeholder="Dose Amount" id="doseAmt-input" name="doseAmt" onChange={e => setDoseAmt(e.target.value)}/>
-                            <input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="Start Date" id="startDate-input" name="startDate" onChange={e => setStartDate(e.target.value)}/>
-                            <input type="text" onFocus={(e) => e.target.type = 'date'} onBlur={(e) => e.target.type = 'text'} placeholder="End Date" id="endDate-input" name="endDate" onChange={e => setEndDate(e.target.value)}/>
+                            
+                            <input type="date" placeholder="Start Date" id="startDate-input" name="startDate" onChange={e => setStartDate(e.target.value)}/>
+                            <input type="date" placeholder="End Date" id="endDate-input" name="endDate" onChange={e => setEndDate(e.target.value)}/>
                             <input type="text" placeholder="Doctor's First Name" id="doctorFirstName-input" name="doctorFirstName" onChange={e => setDoctorFirstName(e.target.value)}/>
                             <input type="text" placeholder="Doctor's Last Name" id="doctorLastName-input" name="doctorLastName" onChange={e => setDoctorLastName(e.target.value)}/>
                             <input type="text" placeholder="Doctor's Phone" id="doctorPhone-input" name="doctorPhone" onChange={e => setDoctorPhone(e.target.value)}/>
                             <button type="button" onClick={() => handleMedListClick()}>Cancel</button>
-                            <button type="submit">submit</button>
+                            <button type="submit" id="submit">submit</button>
                         
                         </form>
                 </div>
@@ -281,43 +234,53 @@ function RxListPage({ apiLink }) {
     const renderMedList = () => {
         if (showMedList) {
             // return <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button>;
-        } else if (showMedsforTheDay) {
-            return <button className="section-title" onClick={handleMedListClick}>Medication list</button>;
-        } else if (showAddMed) {
+        }  else if (showAddMed) {
             return (
-                <div className="medlist-button"> 
+                <div> 
                     {/* <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button> */}
                     <button className="section-title" onClick={handleMedListClick}>Medication list</button>
                 </div>
-                
             );
         }
-        
     };
 
     const renderAddDeleteButton = () => {
-        if (!showAddMed) { 
+        if (!showDeleteMed && (medications.length > 0) ) { 
             return (
                 <>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
+ 
                 </>
             );
         }
+        else if (!showAddMed) {
+            return (
+                <>
+                    <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
+                </>
+            );
+
+        }
+        return null; // If showAddMed is true, return null (no buttons rendered)
     };
 
     return (
         <div className="app-container">
-            <main className="rxlist">
+            <main className="main-content">
                 <div className="columns-container">
+                    <section className="column medication-actions">
+                        <div className="meds-for-the-day">
+                            {renderMedList()}
+                            {renderAddDeleteButton()}
+                        </div>
+                    </section>
                     <section className="column medication-list">
                         <div className="medication-list-container">
                             {switchPage(showMedList, medications)}
                         </div>
                     </section>
                 </div>
-                {renderMedList()}  
-                {renderAddDeleteButton()}
             </main>
         </div>
     );
