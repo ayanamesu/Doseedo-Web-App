@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt');
 const port = 8000;
 // var mysql = require("mysql2/promise");
 const cors = require("cors");
+const { start } = require('repl');
 
 const app = express();
 app.use(express.json());
@@ -295,6 +296,20 @@ app.post('/linkAccounts', async (req, res) => {
         return res.status(400).json({ msg: "Incorrect email given"});
       }
 
+      let dupQuery;
+      if (userAccType === 'caregiver') {
+        dupQuery = `SELECT * FROM account_link WHERE caregiver_id = ? AND patient_id = ?;`;
+      } else if (userAccType === 'patient') {
+        dupQuery = `SELECT * FROM account_link WHERE patient_id = ? AND caregiver_id = ?;`;
+      } else {
+        return res.json({ msg: "Account type was not given" })
+      }
+
+      const [results, fields] = await db.query(dupQuery, [user_id, newID]);
+      if (results && results.length == 1) {
+        return res.status(400).json({ msg: "You have already linked to this account" });
+      }
+
       const addAccType = await getAccountType(newID);
       if (userAccType === addAccType) {
         return res.status(400).json({ msg: "Cannot link two of the same type accounts"})
@@ -320,6 +335,7 @@ app.post('/linkAccounts', async (req, res) => {
         return res.status(500).json({ msg: "Incorrect account_type given"});
       }  
     } catch(error) {
+      console.log("peepee")
       console.error(error);
       throw error;
     }
@@ -500,20 +516,122 @@ app.post("/logout", async (req, res) => {
   }
 });
 
-/** Alerts
- * Frontend req: session_id
+/** Add Alert
+ * Frontend req: freq, day [array], time [array], prescription_id
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
- */ 
-// id, alert_name, receiver, prescription_id, send_time, is_active
-// app.post("/pullAlerts", async (req, res) => {
-//   const { user_id } = req.body;
-//   if (!user_id) {
-//     return res.status(400).json({ msg: "Missing user_id from req" });
-//   }
-//   try{
+ */
+app.post('/addalert', async (req, res) => {
+  const freq = req.body.freq;
+  let day = req.body.day;
+  let time = req.body.time;
+  const prescription_id = req.body.prescription_id;
 
-//   }
+  if ( !freq || !time || !prescription_id ) {
+    return res.status(400).json({ msg: "Missing one or more required fields in req" });
+  }
+
+  time = time.slice(1, -1);
+  time = time
+          .replace(/'/g, '')
+          .split(',')
+          .map(str => str.trim());
+
+  if (day !== null) {
+    day = day.slice(1, -1);
+    day = day
+          .replace(/'/g, '')
+          .split(',')
+          .map(str => str.trim());
+  }
+
+  try {
+    const prescription_info = await getPrescInfo(prescription_id);
+    if (prescription_info.length !== 3) {
+      return res.status(400).json({ msg: "Could not get start and end dates for the prescription id given"});
+    }
+
+    const user_id = prescription_info[0]
+    const startDate = prescription_info[1];
+    const endDate = prescription_info[2];
+
+    const date_time = await getDateTimeArr(freq, day, time, startDate, endDate);
+
+    const insertQuery = `INSERT INTO alert (receiver, prescription_id, send_time, is_active) VALUES (?, ?, ?, 1);`;
+    let add_success = 0;
+
+    for (let i = 0; i < date_time.length; i++) {
+      const [results, fields] = await db.query(insertQuery, [user_id, prescription_id, date_time[i]]);
+      if (results && results.affectedRows == 1) {
+        add_success++;
+      } else {
+        console.log("Error has occured" + results);
+      }
+    }
+
+    if (add_success === date_time.length) {
+      return res.status(201).json({ msg: "Alerts made!" })
+    } else {
+      return res.status(500).json( { msg: "Only " + add_success + " alerts were created" });
+    }
+
+  } catch(error) {
+    console.error(error);
+    return res.status(500).json({ "error": "Internal server error" });
+  }
+});
+
+/** Get Alerts
+ * Frontend req: user_id
+ * Backend res: Status code, id, receiver, prescription_id, send_time, is_active
+ * Postman Check - SUCCESS
+ */ 
+app.post("/pullAlerts", async (req, res) => {
+  const { user_id } = req.body;
+  if (!user_id) {
+    return res.status(400).json({ msg: "Missing user_id from req" });
+  }
+
+  try{
+    const alertQuery = `SELECT * FROM alert WHERE receiver = ? AND is_active = 1 AND send_time <= NOW()`
+    const [results, fields] = await db.query(alertQuery, [user_id]);
+    if (results && results.length > 0) {
+      return res.status(200).json(results);
+    } else {
+      return res.status(404).json({ "error": "No alerts found" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ "error": "Internal server error" });
+
+  }
+});
+
+/** Alert Completed
+ * Frontend req: alert_id
+ * Backend res: Status code, msg
+ * Postman Check - SUCCESS
+ */
+app.post("/alertcompleted", async (req, res) => {
+  const { alert_id } = req.body;
+  if (!alert_id) {
+    return res.status(400).json({ msg: "Missing alert_id from req" });
+  }
+  
+  try {
+    const updateQuery = 'UPDATE alert SET is_active = FALSE WHERE id = ?';
+    const [results, fields] = await db.query(updateQuery, [alert_id]);
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ "error": "No alert found with the provided alert_id" });
+    } else {
+      return res.status(200).json({ "msg": "Alert marked as completed" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ "error": "Internal server error" });
+  }
+});
 /*---------End of Routes-----------*/
 
 /* Where our app will listen from */
@@ -592,6 +710,93 @@ async function getAccountType(user_id) {
   } catch (error) {
     console.error(error);
     throw error;
+  }
+}
+
+// Gets the user_id, start and end dates of a prescription
+async function getPrescInfo(prescription_id) {
+  let user_id, start_date, end_date;
+
+  try {
+    const query = `SELECT user_id, start_date, end_date FROM prescription WHERE id = ?`;
+    const [results, fields] = await db.query(query, [prescription_id]);
+    if (results) {
+      user_id = results[0].user_id;
+      start_date = new Date(results[0].start_date);
+      end_date = new Date(results[0].end_date);
+      return [user_id, start_date, end_date];
+    } else {
+      return null;
+    } 
+
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+
+}
+
+// Assists with the weekly datetime formatting
+function isDayIncluded(dayArr, date) {
+  const dayOfWeek = date.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+  const dayName = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'][dayOfWeek];
+  return dayArr.includes(dayName);
+}
+
+// Formats dates to a datetime format for the 
+async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_date) {
+  let date_time = [];
+  let current_date = new Date(start_date);
+
+  switch (freq) {
+    case 'daily':
+      while (current_date <= end_date) {
+          const year = current_date.getFullYear();
+          const month = current_date.getMonth() + 1;
+          const day = current_date.getDate();
+
+          // Format the date to 'YYYY-MM-DD'
+          const formatted_date = current_date.toISOString().slice(0, 10);
+          const day_date_times = timeArr.map(time => `${formatted_date} ${time}`);
+
+          date_time.push(...day_date_times);
+
+          current_date.setDate(current_date.getDate() + 1);
+      }
+      return date_time;
+    
+    case 'weekly':
+      for (let date = new Date(start_date); date <= end_date; date.setDate(date.getDate() + 1)) {
+        if (isDayIncluded(dayArr, date)) {
+          const formattedDate = date.toISOString().slice(0, 10);
+      
+          const dateTime = timeArr.map(time => formattedDate + ' ' + time);
+
+          date_time.push(...dateTime);
+        }
+      }
+      return date_time;
+
+    case 'monthly':
+      while (current_date <= end_date) {
+        const year = current_date.getFullYear();
+        const month = current_date.getMonth() + 1;
+        const month_dates = dayArr.map(day => {
+            const date = new Date(year, month - 1, day); 
+            return date.toISOString().slice(0, 10);
+        });
+
+        const month_date_times = month_dates.flatMap(date => timeArr.map(time => date + ' ' + time));
+
+        date_time.push(...month_date_times);
+
+        current_date.setMonth(current_date.getMonth() + 1);
+      }
+      return date_time;
+
+    default:
+      console.log("freq formatting wrong.")
+      return;
   }
 }
 
