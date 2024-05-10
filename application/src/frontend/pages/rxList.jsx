@@ -75,6 +75,7 @@ function RxListPage({apiLink}) {
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
+                window.alert("Medication added successfully");
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page
                 fetchMeds();
@@ -117,6 +118,7 @@ function RxListPage({apiLink}) {
           .then(response => {
                 setMedications(response.data);
                 console.log("Medication deleted successfully:", response.data);
+                window.alert("Medication deleted successfully");
                 navigate('/rxlist');
                 setShowDeleteMed(false);
             })
