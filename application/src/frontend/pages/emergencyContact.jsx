@@ -95,6 +95,7 @@ const EmergencyContact = () => {
                     <h2>Name: {contactInfo.first_name} {contactInfo.last_name}</h2>
                     <h3>Phone: {contactInfo.phone}</h3>
                     <h3>Email: {contactInfo.email}</h3>
+                    <button onClick={() => setEmergencyContact(false)}>Edit</button>
                 </div>
             ) : (
                 <form className="emergency-contact-form" onSubmit={handleContactSubmit}>

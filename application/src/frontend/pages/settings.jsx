@@ -81,9 +81,12 @@ const SettingsPage = ({ apiLink }) => {
                 else if(accountLink === 409){
                     setAccountLink(true);
                     alert("Account already linked");
+                    window.alert("Account already linked");
+
                 }
                 else {
-                    alert("Invalid input");
+                    alert("Account link failed- invalid input");
+                    window.alert("Account link failed- invalid input");
                 }
             })
             .catch((error) => {
