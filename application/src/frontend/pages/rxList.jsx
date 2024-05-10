@@ -197,6 +197,8 @@ function RxListPage({ apiLink }) {
                  
                     </div>
                     <div className="medication-actions">
+                    <button className="navButtons" onClick={handleDeleteMedicationClick}>delete Medication</button>
+                    <button className="navButtons" onClick={handleAddMedicationClick}>add Medication</button>
                                 <button className="navButtons" onClick={handleCancelClick}>back</button>
                                 <button className="navButtons" onClick={handleNextClick}>Next</button>
                             </div>

@@ -45,7 +45,7 @@ function PatientProfilePage({ apiLink }) {
         let data = {
             user_id: user_id
         }
-        axios.post(apiLink + '/profile', data)
+         axios.post(apiLink + '/profile', data)
             .then((apiRes) => {
                 console.log(apiRes.data);
                 setUserFName(apiRes.data.first_name);
