@@ -155,25 +155,11 @@ function PatientProfilePage({ apiLink }) {
     const handleEditProfile = (e) => {
         e.preventDefault(); // Prevent the default form submission behavior
         console.log("Edit Profile clicked");
-        if(phone.length > 10){
-            event.preventDefault();
-            alert("Invalid phone number length! Phone numbers should be 10 digits or less.");
-            return;
-        }
-        axios.post(apiLink + '/profile/edit', { user_id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
-            .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
-                console.log(user_id);
-                if (apiRes.status === 200) {
-                    // setEditProfile(true);
-                    alert("Profile edited successfully!");
-                } else {
-                    alert("Invalid input");
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-                alert(error);
-            });
+        // if(phone.length > 10){
+        //     alert("Invalid phone number length! Phone numbers should be 10 digits or less.");
+        //     return;
+        // }
+        
         console.log(user_id);
     //first_name, last_name, email, phone, address_1, address_2, state, city, zip_code
         const editData = {
