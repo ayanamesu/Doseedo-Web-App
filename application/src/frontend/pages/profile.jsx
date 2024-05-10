@@ -45,7 +45,7 @@ function PatientProfilePage({ apiLink }) {
         let data = {
             user_id: user_id
         }
-        axios.post(apiLink + '/profile', data)
+         axios.post(apiLink + '/profile', data)
             .then((apiRes) => {
                 console.log(apiRes.data);
                 setUserFName(apiRes.data.first_name);
@@ -100,21 +100,21 @@ function PatientProfilePage({ apiLink }) {
     // );
 
     const UserInfo = () => (
-        <div>
+        <div className="profile-details">
           <div className="detail-line">
-            <strong>Address1: </strong>{address1}
+            <strong>Address1: </strong><span>{address1}</span>
           </div>
           <div className="detail-line">
-            <strong>Address2: </strong>{address2}
+            <strong>Address2: </strong><span>{address2}</span>
           </div>
           <div className="detail-line">
-            <strong>City: </strong>{city}
+            <strong>City: </strong><span>{city}</span>
           </div>
           <div className="detail-line">
-            <strong>Zip Code: </strong>{zip_code}
+            <strong>Zip Code: </strong><span>{zip_code}</span>
           </div>
           <div className="detail-line">
-            <strong>Phone: </strong>{phone}
+            <strong>Phone:</strong><span>{phone}</span>
           </div>
         </div>
       );
@@ -147,8 +147,13 @@ function PatientProfilePage({ apiLink }) {
         return null;
     };
 
-    const handleEditProfile = () => {
+    const handleEditProfile = (event) => {
         console.log("Edit Profile clicked");
+        if(phone.length > 10){
+            event.preventDefault();
+            alert("Invalid phone number length! Phone numbers should be 10 digits or less.");
+            return;
+        }
         axios.post(apiLink + '/profile/edit', { user_id: user_id, first_name: userFName, last_name: userLName, email: email,address_1: address1, address_2: address2, city: city, zip_code: zip_code, phone:phone})
             .then((apiRes) => { //apiRes.status = 201 if the link is successful || 500 if somethingn went wrong
                 console.log(user_id);

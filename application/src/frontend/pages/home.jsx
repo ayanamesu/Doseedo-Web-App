@@ -51,6 +51,7 @@ const HomePage = ({ apiLink }) => {
     
   function handleLoginForm(event) {
     if ( !email || !password ) {
+        event.preventDefault();
         alert("Please fill out all the fields.");
         return;
     }
@@ -94,8 +95,10 @@ const HomePage = ({ apiLink }) => {
                 navigate('/caregiver_dashboard');
             }
             console.log("redirecting based on the account type");
+    
 
-
+        }else if(res.status === 403){
+            console.log("User crendentials are not good");
         }
     })
     .catch(err => console.log(err));

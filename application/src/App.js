@@ -22,6 +22,7 @@ import PatientList from "./frontend/pages/patientList";
 import CareGiverRxListPage from "./frontend/pages/caregiverRxList";
  
 import EmergencyContact from "./frontend/pages/emergencyContact";
+import Reminders from "./frontend/pages/reminders";
  
 
 
@@ -64,6 +65,7 @@ function App() {
               <Route path="/patientlist" element={<PatientList apiLink={apiLink}/>} />
               <Route path="/caregiverRxList" element={<CareGiverRxListPage apiLink={apiLink}/>} />
               <Route path="/emergencyContact" element={<EmergencyContact apiLink={apiLink}/>} />
+              <Route path="/Reminders" element={<Reminders apiLink={apiLink}/>} />
 
             </Routes>
           </div>
