@@ -333,6 +333,7 @@ app.post('/linkAccounts', async (req, res) => {
  * Postman Check - SUCCESS
  */ 
 app.post("/addmedicine", async (req, res) => {
+  console.log(req.body);
   let { user_id, med_name, description, dose_amt, start_date, end_date, doctor_first_name, doctor_last_name, doctor_phone } = req.body;
   if (!user_id || !med_name || !dose_amt || !start_date || !doctor_first_name || !doctor_last_name || !doctor_phone){
     return res.status(400).json({ msg: "Missing one or more required fields"});
