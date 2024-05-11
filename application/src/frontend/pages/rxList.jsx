@@ -278,11 +278,10 @@ function RxListPage({apiLink}) {
     
    console.log("isweekly:"+ isWeekly)
     let alertData = {
-        user_id:user_id,
         freq: frequency,
         day: isWeekly ? dayArray : dateArray,
         time: timeArray,
-        prescription_id: selectedMedicationId
+        prescription_id: medications[selectedMedicationId].id
     };
     console.log("patient id: "+user_id );
     console.log("repeat "+repeat);
