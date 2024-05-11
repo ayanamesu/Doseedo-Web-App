@@ -548,7 +548,7 @@ app.post('/addalert', async (req, res) => {
   let day = req.body.day;
   let time = req.body.time;
   const prescription_id = req.body.prescription_id;
-
+console.log(req.body)
   if ( !freq || !time || !prescription_id ) {
     return res.status(400).json({ msg: "Missing one or more required fields in req" });
   }
