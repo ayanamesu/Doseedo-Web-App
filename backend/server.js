@@ -539,32 +539,18 @@ app.post("/logout", async (req, res) => {
 });
 
 /** Add Alert
- * Frontend req: freq, day [array], time [array], prescription_id
+ * Frontend req: repeat, day [array], time [array], prescription_id
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */
 app.post('/addalert', async (req, res) => {
-  const freq = req.body.freq;
+  const repeat = req.body.repeat;
   let day = req.body.day;
   let time = req.body.time;
   const prescription_id = req.body.prescription_id;
-console.log(req.body)
-  if ( !freq || !time || !prescription_id ) {
+
+  if ( !repeat || !time || !prescription_id ) {
     return res.status(400).json({ msg: "Missing one or more required fields in req" });
-  }
-
-  time = time.slice(1, -1);
-  time = time
-          .replace(/'/g, '')
-          .split(',')
-          .map(str => str.trim());
-
-  if (day !== null) {
-    day = day.slice(1, -1);
-    day = day
-          .replace(/'/g, '')
-          .split(',')
-          .map(str => str.trim());
   }
 
   try {
@@ -577,7 +563,9 @@ console.log(req.body)
     const startDate = prescription_info[1];
     const endDate = prescription_info[2];
 
-    const date_time = await getDateTimeArr(freq, day, time, startDate, endDate);
+    const date_time = await getDateTimeArr(repeat, day, time, startDate, endDate);
+
+    console.log("THIS IS THE DATETIME ARR: " + date_time)
 
     const insertQuery = `INSERT INTO alert (receiver, prescription_id, send_time, is_active) VALUES (?, ?, ?, 1);`;
     let add_success = 0;
@@ -768,8 +756,14 @@ function isDayIncluded(dayArr, date) {
 
 // Formats dates to a datetime format for the 
 async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_date) {
+  console.log("getDateTimeArr")
   let date_time = [];
-  let current_date = new Date(start_date);
+  let current_date = new Date();
+  let pres_start_date = new Date(start_date);
+
+  if (pres_start_date > current_date) {
+    current_date = pres_start_date;
+  }
 
   switch (freq) {
     case 'daily':
@@ -786,6 +780,7 @@ async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_d
 
           current_date.setDate(current_date.getDate() + 1);
       }
+      console.log(date_time)
       return date_time;
     
     case 'weekly':

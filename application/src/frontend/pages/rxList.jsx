@@ -269,32 +269,32 @@ function RxListPage({apiLink}) {
     }
     else if (repeat === 'daily') {
         console.log("daily")
-    setIsweekly(false);
+        setIsweekly(false);
         setDateArray([]);
     }else if(repeat==='monthly'){
         console.log("monthly")
-    setIsweekly(false);
+        setIsweekly(false);
     }
     
    console.log("isweekly:"+ isWeekly)
     let alertData = {
-        freq: frequency,
+        repeat: repeat,
+        // freq: frequency, not needed for abckend
         day: isWeekly ? dayArray : dateArray,
         time: timeArray,
         prescription_id: medications[selectedMedicationId].id
     };
     console.log("patient id: "+user_id );
-    console.log("repeat "+repeat);
-    console.log("freq:"+alertData.freq);
+    console.log("repeat "+alertData.repeat);
+    // console.log("freq:"+alertData.freq); not needed for backend
     console.log("day:"+alertData.day);
     console.log("time:"+alertData.time);
     console.log("medID:"+alertData.prescription_id);
 
     axios.post(apiLink + '/addalert', alertData)
         .then(response => {
-            console.error('Success adding alert:', response.status);
-           
-            
+            console.log('Success adding alert:', response.status);
+            alert("Reminder successfully made!") 
         })
         .catch(error => {
             console.error('Error adding alert:', error);
@@ -393,22 +393,22 @@ const renderReminderForm = () => {
                             <option value="3">3 times per week</option>
                         </select>
                         {Array.from({ length: frequency }, (_, i) => (
-<div className="input-wrapper" key={`weekly_${i}`}>
-    <p>Day {i + 1}:</p>
-    <select id={`day_${i}`} onChange={e => handleDayChange(e, i)}>
-    <option value="" disabled selected>Select a day</option>
-        <option value="mon">Monday</option>
-        <option value="tue">Tuesday</option>
-        <option value="wed">Wednesday</option>
-        <option value="thu">Thursday</option>
-        <option value="fri">Friday</option>
-        <option value="sat">Saturday</option>
-        <option value="sun">Sunday</option>
-    </select>
-    <p>Time:</p>
-    <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
-</div>
-))}
+                        <div className="input-wrapper" key={`weekly_${i}`}>
+                            <p>Day {i + 1}:</p>
+                            <select id={`day_${i}`} onChange={e => handleDayChange(e, i)}>
+                            <option value="" disabled selected>Select a day</option>
+                                <option value="mon">Monday</option>
+                                <option value="tue">Tuesday</option>
+                                <option value="wed">Wednesday</option>
+                                <option value="thu">Thursday</option>
+                                <option value="fri">Friday</option>
+                                <option value="sat">Saturday</option>
+                                <option value="sun">Sunday</option>
+                            </select>
+                            <p>Time:</p>
+                            <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
+                        </div>
+                        ))}
                     </>
                 )}
                 {repeat === "monthly" && (
