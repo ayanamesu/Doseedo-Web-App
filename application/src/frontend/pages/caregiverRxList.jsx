@@ -15,8 +15,10 @@ function CareGiverRxListPage({ apiLink }) {
     const [showAddMed, setShowAddMed] = useState(false);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     const [medications, setMedications] = useState([]);
-
-   
+    const[isWeekly,setIsweekly]=useState(false);
+    const[dayArray, setDayArray]=useState([]);
+        const[dateArray, setDateArray]=useState([]);
+        const[timeArray, setTimeArray]=useState([]);
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
     const [doseAmt, setDoseAmt] = useState("");
@@ -145,13 +147,16 @@ function CareGiverRxListPage({ apiLink }) {
                 fetchMedicationList();
                 window.alert("Medication added successfully");
                 setShowAddMed(false);
-                setShowMedList(true);
+                
 
             })
             .catch(error => {
                 console.error('Error adding medication:', error);
                 alert("Error adding medication:");
+                setShowAddMed(false);
+          
             });
+            
     };
     const renderDeleteButton = () => {
         if (medications.length > 0) { 
@@ -206,69 +211,176 @@ function CareGiverRxListPage({ apiLink }) {
             </form>
         </div>
     );
+    //Frontend req: freq, day [array], time [array], prescription_id
+    const handleAddAlert = (event) => {
+        event.preventDefault(); // Prevent default form submission behavior
+        if(repeat==='weekly'){
+            console.log("weekly")
+            setIsweekly(true);
+        }
+        else if (repeat === 'daily') {
+            console.log("daily")
+        setIsweekly(false);
+            setDateArray([]);
+        }else if(repeat==='monthly'){
+            console.log("monthly")
+        setIsweekly(false);
+        }
+        
+       console.log("isweekly:"+ isWeekly)
+        let alertData = {
+            user_id:selectedUserId,
+            freq: frequency,
+            day: isWeekly ? dayArray : dateArray,
+            time: timeArray,
+            prescription_id: selectedMedicationId
+        };
+        console.log("patient id: "+selectedUserId);
+        console.log("repeat "+repeat);
+        console.log("freq:"+alertData.freq);
+        console.log("day:"+alertData.day);
+        console.log("time:"+alertData.time);
+        console.log("medID:"+alertData.prescription_id);
+    
+        axios.post(apiLink + '/addalert', alertData)
+            .then(response => {
+                console.error('Success adding alert:', response.status);
+               
+                
+            })
+            .catch(error => {
+                console.error('Error adding alert:', error);
+                alert("Error adding alert:");
+                
+            });
+            //initialzie after API
+            setDayArray([]);
+            setDateArray([]);
+            setIsweekly(false);
+            setFrequency(1);
+            setTimeArray([]);
+            setShowReminderForm(false);
+            
+    };
+    
+    const handleTimeChange = (event, index) => {
+        // Handle time change for a specific input field
+        const newTime = event.target.value;
+        // Assuming you have an array to store time values
+        setTimeArray(prevTimeArray => {
+            const updatedTimeArray = [...prevTimeArray];
+            updatedTimeArray[index] = newTime;
+            return updatedTimeArray;
+        });
+    };
+    
+    const handleDateChange = (event, index) => {
+        // Handle date change for a specific input field
+        const newDate = event.target.value;
+        console.log("newdate: "+newDate)
+     
+        setDateArray(prevDateArray => {
+            const updatedDateArray = [...prevDateArray];
+            updatedDateArray[index] = newDate;
+            return updatedDateArray;
+        });
+        console.log("newdateArray: "+dateArray)
+        setIsweekly(false)
+    };
+    
+
+    const handleDayChange = (event, index) => {
+        // Handle date change for a specific input field
+        const newDay = event.target.value;
+        console.log("newday: "+newDay)
+        
+        setDayArray(prevDayArray => {
+            const updatedDateArray = [...prevDayArray];
+            updatedDateArray[index] = newDay;
+            return updatedDateArray;
+        });
+        console.log("newdateArray: "+dayArray)
+        setIsweekly(true)
+    };
     const renderReminderForm = () => {
+        
         return (
             <div className="add-form">
                 <h2>Add Reminder</h2>
-                <form className="reminder-form" onSubmit="">
+                <form className="reminder-form" onSubmit={handleAddAlert}>
                     <p>Repeat:</p>
                     <select onChange={e => setRepeat(e.target.value)}>
-                        <option value="">Select...</option>
+                    <option value="" disabled selected>Select...</option>
+
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
                     </select>
                     {repeat === "daily" && (
                         <>
+                          
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value="1">1 time per day</option>
+                            <option value=""disabled selected>Select Frequency</option>
+                                <option value="1"defaultValue>1 time per day</option>
                                 <option value="2">2 times per day</option>
                                 <option value="3">3 times per day</option>
                             </select>
                             {Array.from({ length: frequency }, (_, i) => (
-                                <div className="input-wrapper">
-                                    <p key={i}>Time {i + 1}:</p>
-                                    <input key={i} type="time" placeholder={`Time ${i + 1}`} />
+                                <div className="input-wrapper" key={`daily_${i}`}>
+                                    <p>Time {i + 1}:</p>
+                                    <input type="time" placeholder={`Time ${i + 1}`} onChange={e => handleTimeChange(e, i)} />
                                 </div>
                             ))}
                         </>
                     )}
                     {repeat === "weekly" && (
                         <>
+                          
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value="1">1 time per week</option>
+                            <option value=""disabled selected>Select Frequency</option>
+                                <option value="1"defaultValue>1 time per week</option>
                                 <option value="2">2 times per week</option>
                                 <option value="3">3 times per week</option>
                             </select>
                             {Array.from({ length: frequency }, (_, i) => (
-                                <div className="input-wrapper">
-                                    <p key={i}>Date {i + 1}:</p>
-                                    <input key={i} type="date" placeholder={`Date ${i + 1}`} />
-                                </div>
-                            ))}
-                            <p>Time:</p>
-                            <input type="time" placeholder="Time" />
+    <div className="input-wrapper" key={`weekly_${i}`}>
+        <p>Day {i + 1}:</p>
+        <select id={`day_${i}`} onChange={e => handleDayChange(e, i)}>
+        <option value="" disabled selected>Select a day</option>
+            <option value="mon">Monday</option>
+            <option value="tue">Tuesday</option>
+            <option value="wed">Wednesday</option>
+            <option value="thu">Thursday</option>
+            <option value="fri">Friday</option>
+            <option value="sat">Saturday</option>
+            <option value="sun">Sunday</option>
+        </select>
+        <p>Time:</p>
+        <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
+    </div>
+))}
                         </>
                     )}
-    
                     {repeat === "monthly" && (
                         <>
+                           
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value="1">1 time per month</option>
+                            <option value=""disabled selected>Select Frequency</option>
+                                <option value="1"defaultValue>1 time per month</option>
                                 <option value="2">2 times per month</option>
                                 <option value="3">3 times per month</option>
                             </select>
                             {Array.from({ length: frequency }, (_, i) => (
-                                <div className="input-wrapper">
-                                    <p key={i}>Date {i + 1}:</p>
-                                    <input key={i} type="date" placeholder={`Date ${i + 1}`} />
+                                <div className="input-wrapper" key={`monthly_${i}`}>
+                                    <p>Date {i + 1}:</p>
+                                    <input type="date" placeholder={`Date ${i + 1}`} id={`date_${i}`} onChange={e => handleDateChange(e, i)} />
+                                    <p>Time:</p>
+                                    <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
                                 </div>
                             ))}
-                            <p>Time:</p>
-                            <input type="time" placeholder="Time" />
                         </>
                     )}
                     <div className="caregiver-medication-actions">
@@ -314,26 +426,26 @@ function CareGiverRxListPage({ apiLink }) {
                                         doctor_first_name={medications[selectedMedicationId].doctor_first_name}
                                         doctor_last_name={medications[selectedMedicationId].doctor_last_name}
                                     />
-                                    
                                 ) : (
                                     <p>No medications found</p>
                                 )}
+                                <div className="caregiver-medication-actions">
+                                    <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
+                                    {renderDeleteButton()}
+                                    <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+                                    <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
+                                    <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>
+                                </div>
                             </div>
                         ) : (
                             <p>Please select a patient to view their medication list</p>
                         )}
-                        <div className="caregiver-medication-actions">
-                            <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
-                            {renderDeleteButton()}
-                            <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
-                            <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
-                            <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>
-                        </div>
                     </div>
                 </div>
             )}
         </div>
     );
+    
 }
 
 export default CareGiverRxListPage;
