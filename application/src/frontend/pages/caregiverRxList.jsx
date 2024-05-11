@@ -8,6 +8,9 @@ import { faChevronCircleLeft, faChevronCircleRight } from "@fortawesome/free-sol
 
 function CareGiverRxListPage({ apiLink }) {
     const [selectedUserId, setSelectedUserId] = useState(null);
+    
+    const [selectedPatientIdMed, setSelectedPatientIdMed] = useState(null);//verification purpose
+    const [selectedPatientId, setSelectedPatientId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [patientList, setPatientList] = useState([]);
     const [userId, setUserId] = useState("");
@@ -45,13 +48,10 @@ function CareGiverRxListPage({ apiLink }) {
             alert("You need to relog in!")
             navigate('/');
         }
-    }, [userId, navigate]);
-
-    // useEffect for fetching patient list
-    useEffect(() => {
-   
         fetchAccountList();
     }, [userId, navigate]);
+
+    
     
 
     const fetchAccountList = async () => {
@@ -74,13 +74,15 @@ function CareGiverRxListPage({ apiLink }) {
         }
     };
     const fetchMedicationList = async () => {
+        console.log("selected Patient: "+selectedPatientId)
         try {
-            if (selectedUserId && viewClicked) {
+            if (selectedPatientId && viewClicked) {
                 const data = {
-                    user_id: selectedUserId
+                    user_id: selectedPatientId
                 };
                 const apiRes = await axios.post('http://localhost:8000/viewmedicine', data);
                 setMedications(apiRes.data);
+                setSelectedPatientIdMed(data.user_id);
                 setSelectedMedicationId(0);
             }
         } catch (error) {
@@ -91,7 +93,7 @@ function CareGiverRxListPage({ apiLink }) {
     useEffect(() => {
         
         fetchMedicationList();
-    }, [selectedUserId, viewClicked]);
+    }, [selectedPatientId, viewClicked]);
   const handleNextClick = () => {
         console.log(selectedMedicationId);
         if (medications.length > selectedMedicationId + 1) {//index0=1,1=2
@@ -128,8 +130,9 @@ function CareGiverRxListPage({ apiLink }) {
             alert("Please fill out userID, Medicine name, dose amount, start date, doctor name, and phone number.");
             return;
         }
+        console.log("selected patient id"+selectedPatientId);
         let userData = {
-            user_id: selectedUserId,//selected patient id
+            user_id: selectedPatientId,//selected patient id
             med_name: medName,
             description: description,
             dose_amt: doseAmt,
@@ -142,7 +145,7 @@ function CareGiverRxListPage({ apiLink }) {
         console.log(userData);
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
-                console.log(selectedUserId);
+              
                 console.log("Medication added successfully:", response.data);
                 fetchMedicationList();
                 window.alert("Medication added successfully");
@@ -159,9 +162,11 @@ function CareGiverRxListPage({ apiLink }) {
             
     };
     const renderDeleteButton = () => {
-        if (medications.length > 0) { 
+        
+        if (medications.length > 0&&selectedPatientId===selectedPatientIdMed) { 
             return (
-                <div>
+                <div className="caregiver-medication-actions">
+                     <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
                     <button className="delete-medication-button" onClick={handleDeleteClick}>Delete medication</button>
                 </div>
             );
@@ -170,6 +175,7 @@ function CareGiverRxListPage({ apiLink }) {
 
     // JSX for medication item
     const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
+
         <div className="medication-item">
             <div className="medication-item-line">
                 <strong>Medication Name: </strong> <span>{med_name}</span>
@@ -211,6 +217,8 @@ function CareGiverRxListPage({ apiLink }) {
             </form>
         </div>
     );
+
+
     //Frontend req: freq, day [array], time [array], prescription_id
     const handleAddAlert = (event) => {
         event.preventDefault(); // Prevent default form submission behavior
@@ -402,7 +410,9 @@ function CareGiverRxListPage({ apiLink }) {
                         <div className="rxlist-account">
                             {patientList.map((patient, index) => (
                                 <div key={index} className="patient" onClick={() => {
-                                    setSelectedUserId(patient.id);
+                                   
+                                    setSelectedPatientId(patient.id);
+                                    console.log("selected patient id:"+selectedPatientId);
                                     setViewClicked(true);
                                 }}>
                                     <p>{patient.first_name} {patient.last_name}</p>
@@ -415,24 +425,24 @@ function CareGiverRxListPage({ apiLink }) {
                         <h1>Medication List</h1>
                         {viewClicked ? (
                             <div>
-                                {medications.length > 0 ? (
-                                    <MedicationItem
-                                        key={medications[selectedMedicationId].id}
-                                        med_name={medications[selectedMedicationId].med_name}
-                                        dosage={medications[selectedMedicationId].dose_amt}
-                                        description={medications[selectedMedicationId].description}
-                                        start_date={medications[selectedMedicationId].start_date}
-                                        end_date={medications[selectedMedicationId].end_date}
-                                        doctor_first_name={medications[selectedMedicationId].doctor_first_name}
-                                        doctor_last_name={medications[selectedMedicationId].doctor_last_name}
-                                    />
-                                ) : (
-                                    <p>No medications found</p>
-                                )}
+                              {medications.length > 0 && selectedPatientId === selectedPatientIdMed ? (
+    <MedicationItem
+        key={medications[selectedMedicationId].id}
+        med_name={medications[selectedMedicationId].med_name}
+        dosage={medications[selectedMedicationId].dose_amt}
+        description={medications[selectedMedicationId].description}
+        start_date={medications[selectedMedicationId].start_date}
+        end_date={medications[selectedMedicationId].end_date}
+        doctor_first_name={medications[selectedMedicationId].doctor_first_name}
+        doctor_last_name={medications[selectedMedicationId].doctor_last_name}
+    />
+) : (
+    <p>No medications found</p>
+)}
+
                                 <div className="caregiver-medication-actions">
                                     <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
                                     {renderDeleteButton()}
-                                    <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
                                     <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
                                     <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>
                                 </div>
