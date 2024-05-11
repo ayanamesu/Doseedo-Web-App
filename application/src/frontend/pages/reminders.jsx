@@ -10,6 +10,7 @@ const Reminders = ({apiLink}) => {
     const [user_id, setUserId] = useState("");
     const [alert_id,setAlert_id]=useState("");
     const [alertData, setAlertData] = useState([]);
+
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
@@ -19,7 +20,7 @@ const Reminders = ({apiLink}) => {
             navigate('/');
         }
         
-        axios.post(apiLink + '/pullAlerts', {user_id})
+        axios.post(apiLink + '/pullAlerts', {user_id: user_id})
         .then(response => {
             console.log("Alert successfuly pulled:", response.data);
             setAlertData(response.data);//list of alerts
@@ -74,7 +75,7 @@ const Reminders = ({apiLink}) => {
     ];
     const handleTaken = () => {
          
-        axios.post(apiLink + '/alertcompleted', {alert_id})
+        axios.post(apiLink + '/alertcompleted', {alert_id: alert_id})
         .then(response => {
             console.log("Alert successfuly archeved:", response.data);
            
@@ -94,7 +95,7 @@ const Reminders = ({apiLink}) => {
                             <strong>{reminder.med_name}</strong>
                             <div className="notification-info">
                                 <p>{reminder.repeat}:</p>
-                                <p>{reminder.dates.join(", ")} at: </p>
+                                {/* <p>{reminder.dates.join(", ")} at: </p> */}
                                 <p>{reminder.time}</p>
                             </div>
                         </div>

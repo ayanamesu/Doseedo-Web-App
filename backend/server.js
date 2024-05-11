@@ -598,6 +598,7 @@ app.post('/addalert', async (req, res) => {
  */ 
 app.post("/pullAlerts", async (req, res) => {
   const { user_id } = req.body;
+  console.log("Pulling alerts for " + user_id)
   if (!user_id) {
     return res.status(400).json({ msg: "Missing user_id from req" });
   }
