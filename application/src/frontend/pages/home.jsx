@@ -97,11 +97,12 @@ const HomePage = ({ apiLink }) => {
             console.log("redirecting based on the account type");
     
 
-        }else if(res.status === 403){
-            console.log("User crendentials are not good");
-        }
+        } //else if(res.status === 403){
+        //     alert(res.data.msg);
+        //     console.log("User crendentials are not good");
+        // }
     })
-    .catch(err => console.log(err));
+    .catch(err => alert("email and password combination is not correct or account doesn't exist"));
 
     console.log("Button has been clicked!");
 }
@@ -118,10 +119,11 @@ function handleRegisterForm(event) {
 
     if (password !== confPassword) {
         console.log("passwords do not match!");
-        setNotificationType('error');
-        setShowNotification(true);
-        setNotificationMessage("Passwords do not match😕");
-        setTimeout(() => setShowNotification(false), 4000);
+        // setNotificationType('error');
+        // setShowNotification(true);
+        // setNotificationMessage("Passwords do not match😕");
+        // setTimeout(() => setShowNotification(false), 4000);
+        alert("Passwords do not match😕");
         return;
     }
     let userData = {
@@ -136,30 +138,14 @@ function handleRegisterForm(event) {
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {
-                setNotificationType('success');
-                console.log("The account successfully made!")
-                setNotificationMessage("Account Creation was successful😀");
-                setShowNotification(true);
-                //this is only here so that it delays the redirect enough for the user to see the notification
-                //insted of using a library like redux that can display the notification on the next page
-                setTimeout(() => {
-                    setShowNotification(false);
-                    navigate('/');
-                }, 200);
+                alert("Account Creation was successful 😀!");
             } else if( res.status === 200){
                 console.log("They already have an account")
-                setNotificationType('error');
-                setShowNotification(true);
-                //this was to to test if the notification was showing up
                 console.log(showNotification);
-                setNotificationMessage("An Account is already associated with this email😕");
-                setTimeout(() => setShowNotification(false), 5000);
+                alert("An Account is already associated with this email😕");
             } else {
                 console.log("Something weird happened...");
-                setNotificationType('error');
-                setShowNotification(true);
-                setNotificationMessage("An error occured😕");
-                setTimeout(() => setShowNotification(false), 5000);
+                alert("An error occured😕");
             }
         })
         .catch(err => console.log(err));
@@ -207,7 +193,7 @@ function handleRegisterForm(event) {
                             <p> Are you a Caregiver or Patient?</p>
                             <div id="account-type-input">
                                 <label>
-                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} />
                                     Caregiver
                                 </label>
                                 <label>

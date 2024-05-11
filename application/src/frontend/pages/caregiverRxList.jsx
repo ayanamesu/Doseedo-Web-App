@@ -137,6 +137,10 @@ function CareGiverRxListPage({ apiLink }) {
             doctor_last_name: doctorLastName,
             doctor_phone: doctorPhone
         };
+        if(userData.doctor_phone.length > 10){
+            alert("Please enter a valid phone number that is 10 digits or less.");
+            return;
+        }
         console.log(userData);
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {

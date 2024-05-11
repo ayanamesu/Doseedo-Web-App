@@ -765,7 +765,7 @@
 .medication-list-container{
     text-align: center;
     justify-content: center;
-    width: 100%;
+    width: 50%;
     min-width: 500px;
     margin: 15px auto;
     background-color: white;

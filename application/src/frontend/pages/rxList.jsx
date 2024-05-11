@@ -41,11 +41,10 @@ function RxListPage({apiLink}) {
             <div className="medication-name">Medication Name: {med_name}</div>
             <div className="medication-dosage">Dosage: {dosage}</div>
             <div className="medication-description">Description: {description}</div>
-            <div className="medication-start-date">Start Date: {start_date}</div>
-            <div className="medication-end-date">End Date: {end_date}</div>
+            <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
+            <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
             <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
             <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
-            <div className="medication-quantity-info">quantity: 30 </div>
         </div>
         //quantity
         //med for the day
@@ -160,7 +159,7 @@ function RxListPage({apiLink}) {
     const switchPage = (showMedList, medications) => {
         if (showMedList) {
             return (
-                <div>
+                <div className="medication-list-container">
                 <h2 className="section-title">Medication List</h2>
                 
                 <div className="medication-list-header" />
@@ -186,8 +185,8 @@ function RxListPage({apiLink}) {
         <MedicationItem
             key={medications[selectedMedicationId].id}
             med_name={medications[selectedMedicationId].med_name}
-            dosage={medications[selectedMedicationId].dosage}
-            descrpiton={medications[selectedMedicationId].descrpiton}
+            dosage={medications[selectedMedicationId].dose_amt}
+            description={medications[selectedMedicationId].description}
             start_date={medications[selectedMedicationId].start_date}
             end_date={medications[selectedMedicationId].end_date}
             doctor_first_name={medications[selectedMedicationId].doctor_first_name}
@@ -245,7 +244,7 @@ function RxListPage({apiLink}) {
     };
 
     const renderAddDeleteButton = () => {
-        if (!showDeleteMed && (medications.length > 0) ) { 
+        if (!showAddMed ) { 
             return (
                 <>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
@@ -267,20 +266,16 @@ function RxListPage({apiLink}) {
 
     return (
         <div className="app-container">
-            <main className="main-content">
+            <main className="rxlist">
                 <div className="columns-container">
-                    <section className="column medication-actions">
-                        <div className="meds-for-the-day">
-                            {renderMedList()}
-                            {renderAddDeleteButton()}
-                        </div>
-                    </section>
                     <section className="column medication-list">
                         <div className="medication-list-container">
                             {switchPage(showMedList, medications)}
                         </div>
                     </section>
                 </div>
+                {/* {renderMedList()}   */}
+                {renderAddDeleteButton()}
             </main>
         </div>
     );
