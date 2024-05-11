@@ -17,6 +17,7 @@ function CareGiverRxListPage({ apiLink }) {
     const [showMedList, setShowMedList] = useState(true);
     const [showAddMed, setShowAddMed] = useState(false);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
+    
     const [medications, setMedications] = useState([]);
     
     const [medName, setMedName] = useState("");
@@ -84,6 +85,9 @@ function CareGiverRxListPage({ apiLink }) {
                 setMedications(apiRes.data);
                 setSelectedPatientIdMed(data.user_id);
                 setSelectedMedicationId(0);
+                
+                 
+                console.log("selected medID:"+apiRes.data.at(selectedMedicationId).id);
             }
         } catch (error) {
             console.error('Error fetching medications:', error);
@@ -234,16 +238,16 @@ function CareGiverRxListPage({ apiLink }) {
             console.log("monthly")
         setIsweekly(false);
         }
+
         
        console.log("isweekly:"+ isWeekly)
         let alertData = {
-            user_id:selectedPatientId,
             freq: frequency,
             day: isWeekly ? dayArray : dateArray,
-            time: timeArray,
-            prescription_id: selectedMedicationId
+            time: timeArray.join(', '),
+            prescription_id: medications[selectedMedicationId].id
         };
-        console.log("patient id: "+selectedUserId);
+        console.log("sending data to backend:")
         console.log("repeat "+repeat);
         console.log("freq:"+alertData.freq);
         console.log("day:"+alertData.day);
@@ -426,8 +430,10 @@ function CareGiverRxListPage({ apiLink }) {
                         {viewClicked ? (
                             <div>
                               {medications.length > 0 && selectedPatientId === selectedPatientIdMed ? (
+                             
     <MedicationItem
         key={medications[selectedMedicationId].id}
+    
         med_name={medications[selectedMedicationId].med_name}
         dosage={medications[selectedMedicationId].dose_amt}
         description={medications[selectedMedicationId].description}
