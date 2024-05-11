@@ -243,9 +243,9 @@ function CareGiverRxListPage({ apiLink }) {
         
        console.log("isweekly:"+ isWeekly)
         let alertData = {
-            freq: frequency,
+            repeat: repeat,
             day: isWeekly ? dayArray : dateArray,
-            time: timeArray.join(', '),
+            time: timeArray,
             prescription_id: medications[selectedMedicationId].id
         };
         console.log("sending data to backend:")
@@ -257,9 +257,8 @@ function CareGiverRxListPage({ apiLink }) {
     
         axios.post(apiLink + '/addalert', alertData)
             .then(response => {
-                console.error('Success adding alert:', response.status);
-               
-                
+                console.log('Success adding alert:', response.status);
+                alert('Success adding alert');
             })
             .catch(error => {
                 console.error('Error adding alert:', error);
