@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
 
-const EmergencyContact = () => {
+const EmergencyContact = ({apiLink}) => {
  
      
  
