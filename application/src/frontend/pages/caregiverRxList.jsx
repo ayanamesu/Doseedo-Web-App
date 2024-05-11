@@ -15,10 +15,7 @@ function CareGiverRxListPage({ apiLink }) {
     const [showAddMed, setShowAddMed] = useState(false);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     const [medications, setMedications] = useState([]);
-    const[isWeekly,setIsweekly]=useState(false);
-    const[dayArray, setDayArray]=useState([]);
-        const[dateArray, setDateArray]=useState([]);
-        const[timeArray, setTimeArray]=useState([]);
+    
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
     const [doseAmt, setDoseAmt] = useState("");
@@ -33,7 +30,10 @@ function CareGiverRxListPage({ apiLink }) {
     const [showReminderForm, setShowReminderForm] = useState(false);
     const [repeat, setRepeat] = useState("");
     const [frequency, setFrequency] = useState(1);
-    
+    const[isWeekly,setIsweekly]=useState(false);
+    const[dayArray, setDayArray]=useState([]);
+        const[dateArray, setDateArray]=useState([]);
+        const[timeArray, setTimeArray]=useState([]);
 
 
     // useEffect for setting user id
