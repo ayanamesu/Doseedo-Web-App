@@ -237,7 +237,7 @@ function CareGiverRxListPage({ apiLink }) {
         
        console.log("isweekly:"+ isWeekly)
         let alertData = {
-            user_id:selectedUserId,
+            user_id:selectedPatientId,
             freq: frequency,
             day: isWeekly ? dayArray : dateArray,
             time: timeArray,
