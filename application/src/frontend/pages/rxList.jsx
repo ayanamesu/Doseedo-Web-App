@@ -424,8 +424,8 @@ const renderReminderForm = () => {
                         {Array.from({ length: frequency }, (_, i) => (
                             <div className="input-wrapper" key={`monthly_${i}`}>
                                 <p>Date {i + 1}:</p>
-                                <input type="date" placeholder={`Date ${i + 1}`} id={`date_${i}`} onChange={e => handleDateChange(e, i)} />
-                                <p>Time:</p>
+                                <input type="number" placeholder={`Date ${i + 1}`} id={`date_${i}`} min="1" max="31"  onChange={e => handleDateChange(e, i)} />
+                                      <p>Time:</p>
                                 <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
                             </div>
                         ))}
