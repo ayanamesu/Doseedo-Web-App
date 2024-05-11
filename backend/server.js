@@ -340,7 +340,29 @@ app.post('/linkAccounts', async (req, res) => {
       throw error;
     }
   });
-
+/** Unlink Accounts
+* Frontend req: caregiver_id (user_id of the CAREGIVER), patient_id(user_id of the PATIENT)
+ * Backend res: message 'Account link deleted successfully'
+ * Postman Check - SUCCESS
+ */
+app.post("/unlinkaccount", async (req, res) => {
+  if (!req.body.caregiver_id || !req.body.patient_id) {
+    return res.status(400).send({ error: 'user_id is required' });
+  }
+  console.log("Unlinking accounts");
+  try {
+    console.log(req.body);
+    const {caregiver_id, patient_id} = req.body;
+    const unlinkquery = 'DELETE FROM account_link WHERE caregiver_id = ? and patient_id = ?;';
+    const [results, fields] = await db.query(unlinkquery, [caregiver_id, patient_id]);
+    if (results.affectedRows == 1) {
+      return res.send({ message: 'Account link deleted successfully' });
+    }
+    return res.status(404).send({ message: 'No account to delete' });
+  } catch (error) {
+    return res.status(500).send({ error: 'Server error' });
+  }
+  });
  /** Add Medication
  * Accounts for nullable entries (description, end date)
  * Frontend req: user_id (patient id), 
@@ -632,6 +654,7 @@ app.post("/alertcompleted", async (req, res) => {
     return res.status(500).json({ "error": "Internal server error" });
   }
 });
+
 /*---------End of Routes-----------*/
 
 /* Where our app will listen from */
