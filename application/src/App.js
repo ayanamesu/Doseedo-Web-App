@@ -3,14 +3,12 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 
 import AboutUsPage from "./frontend/pages/index";
-import profilePage from "./frontend/pages/index";//frontend needs to implment
-import medicationPage from "./frontend/pages/index";//frontend needs to implment
+
 import HomePage from "./frontend/pages/home";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 
 import SettingsPage from "./frontend/pages/settings";
-import Sidebar from "./frontend/Components/Sidebar";
 import Topbar from "./frontend/Components/topbar";
 import RxListPage from "./frontend/pages/rxList";
 import CalendarPage from "./frontend/pages/calendar";
