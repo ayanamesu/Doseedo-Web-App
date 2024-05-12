@@ -493,6 +493,7 @@
     outline: 1px solid rgb(97, 21, 21);
     border-radius: 5px;
     box-shadow: 5px 10px 5px rgba(97, 21, 21, 0.7);
+    min-width: 400px;
 }
 .account-data{
     display: flex;
