@@ -144,11 +144,11 @@ const HomePage = ({ apiLink }) => {
                             <p> Are you a Caregiver or Patient?</p>
                             <div id="account-type-input">
                                 <label>
-                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'Caregiver'} onChange={(e) => setAccountType(e.target.value)} />
+                                    <input required type="radio" name="accountType" value="Caregiver" checked={accountType === 'caregiver'} onChange={(e) => setAccountType(e.target.value)} />
                                     Caregiver
                                 </label>
                                 <label>
-                                    <input type="radio" name="accountType" value="Patient" checked={accountType === 'Patient'} onChange={(e) => setAccountType(e.target.value)} required />
+                                    <input type="radio" name="accountType" value="Patient" checked={accountType === 'patient'} onChange={(e) => setAccountType(e.target.value)} required />
                                     Patient
                                 </label>
                             </div>
