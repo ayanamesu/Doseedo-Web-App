@@ -58,7 +58,7 @@ const Reminders = ({apiLink}) => {
     return (
         <div className="reminder-page">
             <h1>Notifications</h1>
-            <form className="notification-form" onSubmit={handleTaken}>
+            <form className="edit-profile-form" onSubmit={handleTaken}>
                 {alertData.map((reminder) => (
                     <div className="notification-box" key={reminder.id}>
                         <div className="notification-data">
@@ -68,7 +68,8 @@ const Reminders = ({apiLink}) => {
                                 {convertTime(reminder.send_time)}
                             </div>
                         </div>
-                        <button type="button" onClick={() => handleTaken(reminder.id)}>Taken</button>
+                        <button type="submit" id="submitButton">Taken</button>
+                        {setAlert_id(reminder.id)}
                     </div>
                 ))}
             </form>
