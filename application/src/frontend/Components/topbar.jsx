@@ -50,7 +50,7 @@ function Topbar({ apiLink }) {
                 Cookies.remove("session_id");
                 Cookies.remove("user_id");
                 Cookies.remove("accountType");
-                Cookies.remove("connect.sid");
+                // Cookies.remove("connect.sid");
                 alert("Sucessfully logged out!");
                 navigate('/');
             }
