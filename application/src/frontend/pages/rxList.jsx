@@ -4,10 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import Cookies from 'js-cookie';
 import BackButton from "../Components/BackButton";
+import e from "cors";
 
 function RxListPage({apiLink}) {
     const [user_id, setUserId] = useState("");
+    //med
+    const [isMedicationEmpty, setIsMedicationEmpty] = useState(true);
     const [medications, setMedications] = useState([]);
+
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     const [showMedList, setShowMedList] = useState(true); // Define state variables
     const [showAddMed, setShowAddMed] = useState(false);
@@ -21,13 +25,16 @@ function RxListPage({apiLink}) {
     const [doctorLastName, setDoctorLastName] = useState("");
     const [doctorPhone, setDoctorPhone] = useState("");
     const navigate = useNavigate();
+//med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name
+
+    //reminder
     const [showReminderForm, setShowReminderForm] = useState(false);
     const [repeat, setRepeat] = useState("");
     const [frequency, setFrequency] = useState(1);
     const[isWeekly,setIsweekly]=useState(false);
     const[dayArray, setDayArray]=useState([]);
-    const[dateArray, setDateArray]=useState([]);
-    const[timeArray, setTimeArray]=useState([]);
+        const[dateArray, setDateArray]=useState([]);
+        const[timeArray, setTimeArray]=useState([]);
 
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
@@ -39,8 +46,12 @@ function RxListPage({apiLink}) {
         }
         fetchMeds();
     }, [user_id]);
-
-    const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
+    useEffect(() => {
+        if (apiLink) {
+          fetchMeds();
+        }
+      }, [apiLink,medications]); 
+    const MedicationItem = ({med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
         <div className="medication-item">
             <div className="medication-name">Medication Name: {med_name}</div>
             <div className="medication-dosage">Dosage: {dosage}</div>
@@ -50,6 +61,8 @@ function RxListPage({apiLink}) {
             <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
             <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
         </div>
+        //quantity
+        //med for the day
     );
     
     function handleAddMedication(event) {
@@ -85,6 +98,7 @@ function RxListPage({apiLink}) {
                 window.alert("Medication added successfully");
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page
+                setIsMedicationEmpty(true);
                 fetchMeds();
             }, [user_id])
             .catch(error => {
@@ -101,9 +115,17 @@ function RxListPage({apiLink}) {
         }
         const apiRes =  axios.post(apiLink + '/viewmedicine', data)
         .then((res) => {
-                setMedications(res.data);
+              console.log(res.data);
+              console.log(res.status);
+                setMedications(res.data);//list
+               if(res.data!==null){
+                setIsMedicationEmpty(false);
+               }else{
+                setIsMedicationEmpty(true);
+               }
             })
             .catch((error) => {
+                
                 console.error('Error fetching medications:', error);
             })
     };
@@ -119,6 +141,10 @@ function RxListPage({apiLink}) {
           console.log("med list length: " + medications.length);
           if (medications.length > 0){
           let toDelete = medications[selectedMedicationId].id;
+          
+           setSelectedMedicationId(0);
+          
+          
           axios.post(apiLink + '/deletemedicine', { id: toDelete })
           .then(response => {
                 setMedications(response.data);
@@ -144,14 +170,14 @@ function RxListPage({apiLink}) {
         }
     const handleNextClick = () => {
         console.log(selectedMedicationId);
-        if (medications.length > selectedMedicationId + 1) {
+        if (medications.length > selectedMedicationId + 1) {//index0=1,1=2
             setSelectedMedicationId(prevCount => prevCount + 1);
         }
     };
     
-    const handleCancelClick = () => {
+    const handleCancelClick = () => {//for now it is "back"
         console.log(selectedMedicationId);
-        if (-1 < selectedMedicationId - 1) {
+        if (-1 < selectedMedicationId - 1) {//index0=1,1=2
             setSelectedMedicationId(prevCount => prevCount- 1);
         }
     };
@@ -161,6 +187,7 @@ function RxListPage({apiLink}) {
             return (
                 <div className="medication-list-container">
                 <h2 className="section-title">Medication List</h2>
+                
                 <div className="medication-list-header" />
                 <div className="medication-list-item" />
                 <div className="medication-details">
@@ -178,38 +205,44 @@ function RxListPage({apiLink}) {
                                     <div className="medication-name-underline" />
                                 </div>
                             </div>
-                                {medications.length > 0 && (
-                                <MedicationItem
-                                    key={medications[selectedMedicationId].id}
-                                    med_name={medications[selectedMedicationId].med_name}
-                                    dosage={medications[selectedMedicationId].dose_amt}
-                                    description={medications[selectedMedicationId].description}
-                                    start_date={medications[selectedMedicationId].start_date}
-                                    end_date={medications[selectedMedicationId].end_date}
-                                    doctor_first_name={medications[selectedMedicationId].doctor_first_name}
-                                    doctor_last_name={medications[selectedMedicationId].doctor_last_name}
-                                />
-                                )}
+                           
+    
+                            {medications.length > 0 && !isMedicationEmpty&&(
+        <MedicationItem
+            key={medications[selectedMedicationId].id}
+            med_name={medications[selectedMedicationId].med_name}
+            dosage={medications[selectedMedicationId].dose_amt}
+            description={medications[selectedMedicationId].description}
+            start_date={medications[selectedMedicationId].start_date}
+            end_date={medications[selectedMedicationId].end_date}
+            doctor_first_name={medications[selectedMedicationId].doctor_first_name}
+            doctor_last_name={medications[selectedMedicationId].doctor_last_name}
+        />
+    )}
+    
                         </div>
                  
-                        </div>
-                            <div className="medication-actions">
-                            
-                                        <button className="navButtons" onClick={handleCancelClick}>back</button>
-                                        <button className="navButtons" onClick={handleNextClick}>Next</button>
+                    </div>
+                    <div className="medication-actions">
+                    
+                                <button className="navButtons" onClick={handleCancelClick}>back</button>
+                                <button className="navButtons" onClick={handleNextClick}>Next</button>
                             </div>
-                            <div className="medication-notes" />
-                        </div>
+                    <div className="medication-notes" />
                 </div>
+            </div>
             );
         }else if (showAddMed) {
+            
             return (
                 <div>
                     <h2>Add Medication</h2>
                     <form className ="rx-list" onSubmit={handleAddMedication}>
                             <input type="text" placeholder="Medicine Name" id="medName-input" name="medName" onChange={e => setMedName(e.target.value)}/>
                             <input type="text" placeholder="Description" id="description-input" name="description" onChange={e => setDescription(e.target.value)}/>
+                            
                             <input type="text" placeholder="Dose Amount" id="doseAmt-input" name="doseAmt" onChange={e => setDoseAmt(e.target.value)}/>
+                            
                             <input type="date" placeholder="Start Date" id="startDate-input" name="startDate" onChange={e => setStartDate(e.target.value)}/>
                             <input type="date" placeholder="End Date" id="endDate-input" name="endDate" onChange={e => setEndDate(e.target.value)}/>
                             <input type="text" placeholder="Doctor's First Name" id="doctorFirstName-input" name="doctorFirstName" onChange={e => setDoctorFirstName(e.target.value)}/>
@@ -217,7 +250,8 @@ function RxListPage({apiLink}) {
                             <input type="text" placeholder="Doctor's Phone" id="doctorPhone-input" name="doctorPhone" onChange={e => setDoctorPhone(e.target.value)}/>
                             <button type="button" onClick={() => handleMedListClick()}>Cancel</button>
                             <button type="submit" id="submit">submit</button>
-                    </form>
+                        
+                        </form>
                 </div>
             );
         } 
@@ -228,9 +262,10 @@ function RxListPage({apiLink}) {
         if (!showAddMed ) { 
             return (
                 <>
-                    <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+                 <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
+ 
                 </>
             );
         }
@@ -240,28 +275,40 @@ function RxListPage({apiLink}) {
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
                 </>
             );
-        }
-        return null; 
-    };
 
-    const handleAddAlert = (event) => {
-        event.preventDefault(); 
-        if(repeat==='weekly'){
-            setIsweekly(true);
         }
-        else if (repeat === 'daily') {
-            setIsweekly(false);
-            setDateArray([]);
-        }else if(repeat==='monthly'){
-            setIsweekly(false);
-        }
-        
+        return null; // If showAddMed is true, return null (no buttons rendered)
+    };
+  //Frontend req: freq, day [array], time [array], prescription_id
+  const handleAddAlert = (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    if(repeat==='weekly'){
+        console.log("weekly")
+        setIsweekly(true);
+    }
+    else if (repeat === 'daily') {
+        console.log("daily")
+        setIsweekly(false);
+        setDateArray([]);
+    }else if(repeat==='monthly'){
+        console.log("monthly")
+        setIsweekly(false);
+    }
+    
+   console.log("isweekly:"+ isWeekly)
     let alertData = {
         repeat: repeat,
+        // freq: frequency, not needed for abckend
         day: isWeekly ? dayArray : dateArray,
         time: timeArray,
         prescription_id: medications[selectedMedicationId].id
     };
+    console.log("patient id: "+user_id );
+    console.log("repeat "+alertData.repeat);
+    // console.log("freq:"+alertData.freq); not needed for backend
+    console.log("day:"+alertData.day);
+    console.log("time:"+alertData.time);
+    console.log("medID:"+alertData.prescription_id);
 
     axios.post(apiLink + '/addalert', alertData)
         .then(response => {
@@ -273,46 +320,53 @@ function RxListPage({apiLink}) {
             alert("Error adding alert:");
             
         });
+        //initialzie after API
         setDayArray([]);
         setDateArray([]);
         setIsweekly(false);
         setFrequency(1);
         setTimeArray([]);
         setShowReminderForm(false);
-    };
+        
+};
 
-    const handleTimeChange = (event, index) => {
-        // Handle time change for a specific input field
-        const newTime = event.target.value;
-        // Assuming you have an array to store time values
-        setTimeArray(prevTimeArray => {
-            const updatedTimeArray = [...prevTimeArray];
-            updatedTimeArray[index] = newTime;
-            return updatedTimeArray;
-        });
-    };
+const handleTimeChange = (event, index) => {
+    // Handle time change for a specific input field
+    const newTime = event.target.value;
+    // Assuming you have an array to store time values
+    setTimeArray(prevTimeArray => {
+        const updatedTimeArray = [...prevTimeArray];
+        updatedTimeArray[index] = newTime;
+        return updatedTimeArray;
+    });
+};
 
-    const handleDateChange = (event, index) => {
-        // Handle date change for a specific input field
-        const newDate = event.target.value;
-    
-        setDateArray(prevDateArray => {
-            const updatedDateArray = [...prevDateArray];
-            updatedDateArray[index] = newDate;
-            return updatedDateArray;
-        });
-        setIsweekly(false)
-    };
+const handleDateChange = (event, index) => {
+    // Handle date change for a specific input field
+    const newDate = event.target.value;
+    console.log("newdate: "+newDate)
+ 
+    setDateArray(prevDateArray => {
+        const updatedDateArray = [...prevDateArray];
+        updatedDateArray[index] = newDate;
+        return updatedDateArray;
+    });
+    console.log("newdateArray: "+dateArray)
+    setIsweekly(false)
+};
 
 
 const handleDayChange = (event, index) => {
+    // Handle date change for a specific input field
     const newDay = event.target.value;
+    console.log("newday: "+newDay)
     
     setDayArray(prevDayArray => {
         const updatedDateArray = [...prevDayArray];
         updatedDateArray[index] = newDay;
         return updatedDateArray;
     });
+    console.log("newdateArray: "+dayArray)
     setIsweekly(true)
 };
 const renderReminderForm = () => {
