@@ -42,6 +42,9 @@ function RxListPage({apiLink}) {
         }
         fetchMeds();
     }, [user_id]);
+    useEffect(() => {
+        fetchMeds();
+          }, [medications,apiLink]);
 
     const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
         <div className="medication-item">
