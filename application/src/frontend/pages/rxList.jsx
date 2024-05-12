@@ -9,9 +9,12 @@ import e from "cors";
 function RxListPage({apiLink}) {
     const [user_id, setUserId] = useState("");
     //med
+    const [isAdded,setIsAdded]= useState(false);
+    const [isDeleted,setIsDeleted]= useState(false);
+    const [isEndDate,setIsEndDate]= useState(false);
     const [isMedicationEmpty, setIsMedicationEmpty] = useState(true);
     const [medications, setMedications] = useState([]);
-
+  
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     const [showMedList, setShowMedList] = useState(true); // Define state variables
     const [showAddMed, setShowAddMed] = useState(false);
@@ -35,7 +38,15 @@ function RxListPage({apiLink}) {
     const[dayArray, setDayArray]=useState([]);
         const[dateArray, setDateArray]=useState([]);
         const[timeArray, setTimeArray]=useState([]);
-
+        useEffect(() => {
+            // Check if end date exists and update state accordingly
+            if (medications[selectedMedicationId] && medications[selectedMedicationId].end_date !== null) {
+              setIsEndDate(true);
+            } else {
+              setIsEndDate(false);
+            }
+          }, [medications, selectedMedicationId]); // Run effect when medications or selectedMedicationId change
+        
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
@@ -44,40 +55,41 @@ function RxListPage({apiLink}) {
             alert("You need to relog in!")
             navigate('/');
         }
-        fetchMeds();
-    }, [user_id]);
-    useEffect(() => {
-        if (apiLink) {
-          fetchMeds();
-        }
-      }, [apiLink,medications]); 
-    const MedicationItem = ({med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
+        if (apiLink !== null&&user_id!==null) {
+            fetchMeds();
+            setIsAdded(false);
+            setIsDeleted(false);
+          }  
+    }, [apiLink, isAdded, isDeleted,user_id]);
+ 
+      
+      const MedicationItem = ({med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
         <div className="medication-item">
-            <div className="medication-name">Medication Name: {med_name}</div>
-            <div className="medication-dosage">Dosage: {dosage}</div>
-            <div className="medication-description">Description: {description}</div>
-            <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
-            <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
-            <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
-            <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
+          <div className="medication-name">Medication Name: {med_name}</div>
+          <div className="medication-dosage">Dosage: {dosage}</div>
+          <div className="medication-description">Description: {description}</div>
+          <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
+          <div className="medication-end-date">
+            End Date: {end_date ? new Date(end_date).toISOString().slice(0, 10) : "No end date setup yet"}
+          </div>
+          <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
+          <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
         </div>
-        //quantity
-        //med for the day
-    );
+      );
     
     function handleAddMedication(event) {
-
+        event.preventDefault();
         if ( !user_id || !medName ||! doseAmt||!startDate||!doctorFirstName ||!doctorLastName||!doctorPhone) {
             alert("Please fill out userID, Medicine name, dose amount,start date, doctor name and phone number.");
             return;
         }
         if(doctorPhone.length > 10){
-            event.preventDefault();
+         
             alert("Invalid phone number length! Phone numbers should be 10 digits or less.");
             return;
         }
         
-
+        
         event.preventDefault();
         setShowMedList(false);
         setShowAddMed(true);
@@ -92,6 +104,7 @@ function RxListPage({apiLink}) {
             doctor_last_name: doctorLastName,
             doctor_phone: doctorPhone
         }
+        console.log(userData);  
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
                 console.log("Medication added successfully:", response.data);
@@ -99,7 +112,7 @@ function RxListPage({apiLink}) {
                 setShowAddMed(false);
                 setShowMedList(true); // Switch back to the medication list page
                 setIsMedicationEmpty(true);
-                fetchMeds();
+                setIsAdded(true);
             }, [user_id])
             .catch(error => {
                 console.error('Error adding medication:', error);         
@@ -109,7 +122,7 @@ function RxListPage({apiLink}) {
             })
     };
 
-    const fetchMeds = () =>{
+    const fetchMeds = () =>{    
         let data = {
             user_id: user_id
         }
@@ -152,6 +165,7 @@ function RxListPage({apiLink}) {
                 window.alert("Medication deleted successfully");
                 navigate('/rxlist');
                 setShowDeleteMed(false);
+                setIsDeleted(true);
             })
             .catch(error => {
                 console.error('Error deleting medication:', error);
@@ -220,6 +234,7 @@ function RxListPage({apiLink}) {
         />
     )}
     
+    
                         </div>
                  
                     </div>
@@ -257,12 +272,21 @@ function RxListPage({apiLink}) {
         } 
     };
    
-
+    const renderReminder = () => {
+        // Conditional rendering of the button
+        if (!showAddMed && isEndDate) {
+          return (
+            <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+          );
+        }
+        // Return null if the conditions are not met
+        return null;
+      };
     const renderAddDeleteButton = () => {
         if (!showAddMed ) { 
             return (
                 <>
-                 <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+                 
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
  
@@ -471,6 +495,7 @@ const renderReminderForm = () => {
                         </section>
                     </div>
                     {/* {renderMedList()}   */}
+                    {renderReminder ()}
                     {renderAddDeleteButton()} 
                 </main>
             </div>

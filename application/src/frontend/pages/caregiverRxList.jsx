@@ -7,15 +7,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronCircleLeft, faChevronCircleRight } from "@fortawesome/free-solid-svg-icons";
 
 function CareGiverRxListPage({ apiLink }) {
-    const [selectedPatientIdMed, setSelectedPatientIdMed] = useState(null);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    
+    const [selectedPatientIdMed, setSelectedPatientIdMed] = useState(null);//verification purpose
     const [selectedPatientId, setSelectedPatientId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [patientList, setPatientList] = useState([]);
     const [userId, setUserId] = useState("");
+    const [showMedList, setShowMedList] = useState(true);
     const [showAddMed, setShowAddMed] = useState(false);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     
     const [medications, setMedications] = useState([]);
+    
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
     const [doseAmt, setDoseAmt] = useState("");
@@ -34,19 +38,31 @@ function CareGiverRxListPage({ apiLink }) {
     const[dayArray, setDayArray]=useState([]);
     const[dateArray, setDateArray]=useState([]);
     const[timeArray, setTimeArray]=useState([]);
-
+    const [activePatientId, setActivePatientId] = useState(null);
+    const [isEndDate,setIsEndDate]= useState(false);
+    useEffect(() => {
+        // Check if end date exists and update state accordingly
+        if (medications[selectedMedicationId] && medications[selectedMedicationId].end_date !== null) {
+          setIsEndDate(true);
+        } else {
+          setIsEndDate(false);
+        }
+      }, [medications, selectedMedicationId]); // Run effect when medications or selectedMedicationId change
     // useEffect for setting user id
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
             console.log("User id has been set!" + userId);
         } else {
-            alert("You need to relog in!");
+            alert("You need to relog in!")
             navigate('/');
         }
         fetchAccountList();
-    }, [userId, navigate]);
+    }, [userId, navigate,apiLink]);
+
     
+    
+
     const fetchAccountList = async () => {
         try {
             const data = {
@@ -66,43 +82,44 @@ function CareGiverRxListPage({ apiLink }) {
             console.error(error);
         }
     };
-
     const fetchMedicationList = async () => {
+        console.log("selected Patient: "+selectedPatientId)
         try {
             if (selectedPatientId && viewClicked) {
                 const data = {
                     user_id: selectedPatientId
                 };
-            
-                const apiRes = await axios.post(apiLink + '/viewmedicine', data);
+                const apiRes = await axios.post('http://localhost:8000/viewmedicine', data);
+                console.log("fethcing medlist");
                 setMedications(apiRes.data);
                 setSelectedPatientIdMed(data.user_id);
                 setSelectedMedicationId(0);
+                
+                 
+                console.log("selected medID:"+apiRes.data.at(selectedMedicationId).id);
             }
         } catch (error) {
             console.error('Error fetching medications:', error);
         }
     };
-
     // Fetch medication list on user selection
     useEffect(() => {
+        
         fetchMedicationList();
     }, [selectedPatientId, viewClicked]);
-    
-    const handleNextClick = () => {
-        if (medications.length > selectedMedicationId + 1) { //Setting the index in the medications array ex/index0=1,1=2
+  const handleNextClick = () => {
+        console.log(selectedMedicationId);
+        if (medications.length > selectedMedicationId + 1) {//index0=1,1=2
             setSelectedMedicationId(prevCount => prevCount + 1);
         }
     };
     
-    const handleBackClick = () => { // Goes the the previous medication
+    const handleBackClick = () => {//for now it is "back"
         console.log(selectedMedicationId);
-        if (-1 < selectedMedicationId - 1) { //Setting the index in the medications array ex/index0=1,1=2
+        if (-1 < selectedMedicationId - 1) {//index0=1,1=2
             setSelectedMedicationId(prevCount => prevCount- 1);
         }
     };
-    
-    // Handle click for deleting a medication
     const handleDeleteClick = () => {
         console.log("med list length: " + medications.length);
         if (medications.length > 0){
@@ -118,8 +135,7 @@ function CareGiverRxListPage({ apiLink }) {
               console.error('Error deleting medication:', error);
           });
       }
-    };
-
+    }
     // Handle click for adding medication
     const handleAddClick = (event) => {
         event.preventDefault();
@@ -127,9 +143,9 @@ function CareGiverRxListPage({ apiLink }) {
             alert("Please fill out userID, Medicine name, dose amount, start date, doctor name, and phone number.");
             return;
         }
-
+        console.log("selected patient id"+selectedPatientId);
         let userData = {
-            user_id: selectedPatientId,
+            user_id: selectedPatientId,//selected patient id
             med_name: medName,
             description: description,
             dose_amt: doseAmt,
@@ -139,22 +155,20 @@ function CareGiverRxListPage({ apiLink }) {
             doctor_last_name: doctorLastName,
             doctor_phone: doctorPhone
         };
-
         if(userData.doctor_phone.length > 10){
             alert("Please enter a valid phone number that is 10 digits or less.");
             return;
         }
-
+        console.log(userData);
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
-                if (response.status === 201) {
-                    console.log("Medication added successfully:", response.data);
-                    fetchMedicationList();
-                    window.alert("Medication added successfully");
-                    setShowAddMed(false);
-                } else {
-                    alert("An error has occured with adding a medicine");
-                }
+              
+                console.log("Medication added successfully:", response.data);
+                fetchMedicationList();
+                window.alert("Medication added successfully");
+                setShowAddMed(false);
+                
+
             })
             .catch(error => {
                 console.error('Error adding medication:', error);
@@ -169,14 +183,16 @@ function CareGiverRxListPage({ apiLink }) {
         if (medications.length > 0&&selectedPatientId===selectedPatientIdMed) { 
             return (
                 <div className="innerCaregiver-medication-actions">
-                    <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+                  
                     <button className="navButtons" onClick={handleDeleteClick}>Delete medication</button>
                 </div>
             );
         }
     };
 
+    // JSX for medication item
     const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
+
         <div className="medication-item">
             <div className="medication-item-line">
                 <strong>Medication Name: </strong> <span>{med_name}</span>
@@ -191,7 +207,8 @@ function CareGiverRxListPage({ apiLink }) {
                 <strong>Start Date: </strong> <span>{new Date(start_date).toISOString().slice(0, 10)}</span>
             </div>
             <div className="medication-item-line">
-                <strong>End Date: </strong> <span>{new Date(end_date).toISOString().slice(0, 10)}</span>
+            <strong> End Date: </strong>  <span>{end_date ? new Date(end_date).toISOString().slice(0, 10) : "No end date setup yet"}</span>
+         
             </div>
             <div className="medication-item-line">
                 <strong>Doctor First Name: </strong> <span>{doctor_first_name}</span>
@@ -201,7 +218,6 @@ function CareGiverRxListPage({ apiLink }) {
             </div>
         </div>
     );
-
     const renderAddMedicationForm = () => (
         <div className="add-form">
             <h2>Add Medication</h2>
@@ -223,52 +239,70 @@ function CareGiverRxListPage({ apiLink }) {
 
     //Frontend req: freq, day [array], time [array], prescription_id
     const handleAddAlert = (event) => {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission behavior
         if(repeat==='weekly'){
+            console.log("weekly")
             setIsweekly(true);
         }
         else if (repeat === 'daily') {
-            setIsweekly(false);
+            console.log("daily")
+        setIsweekly(false);
             setDateArray([]);
         }else if(repeat==='monthly'){
-            setIsweekly(false);
+            console.log("monthly")
+        setIsweekly(false);
         }
 
+        
+       console.log("isweekly:"+ isWeekly)
         let alertData = {
             repeat: repeat,
             day: isWeekly ? dayArray : dateArray,
             time: timeArray,
             prescription_id: medications[selectedMedicationId].id
         };
+        console.log("sending data to backend:")
+        console.log("repeat "+repeat);
+        console.log("freq:"+alertData.freq);
+        console.log("day:"+alertData.day);
+        console.log("time:"+alertData.time);
+        console.log("medID:"+alertData.prescription_id);
     
         axios.post(apiLink + '/addalert', alertData)
             .then(response => {
-                if (response.status === 201) {
-                    console.log('Success adding alert:', response.status);
-                    alert('Success adding alert');
-                } else {
-                    alert("An error has occured with adding a medicine");
-                }
+                console.log('Success adding alert:', response.status);
+                alert('Success adding alert');
             })
             .catch(error => {
                 console.error('Error adding alert:', error);
                 alert("Error adding alert:");
                 
             });
-
-        //initialzie after API
-        setDayArray([]);
-        setDateArray([]);
-        setIsweekly(false);
-        setFrequency(1);
-        setTimeArray([]);
-        setShowReminderForm(false);
+            //initialzie after API
+            setDayArray([]);
+            setDateArray([]);
+            setIsweekly(false);
+            setFrequency(1);
+            setTimeArray([]);
+            setShowReminderForm(false);
+            
     };
-    
+    const renderReminder = () => {
+        // Conditional rendering of the button
+        if (!showAddMed && isEndDate) {
+          return (
+            <div className="innerCaregiver-medication-actions">
+            <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+            </div>
+          );
+        }
+        // Return null if the conditions are not met
+        return null;
+      };
     const handleTimeChange = (event, index) => {
         // Handle time change for a specific input field
         const newTime = event.target.value;
-
+        // Assuming you have an array to store time values
         setTimeArray(prevTimeArray => {
             const updatedTimeArray = [...prevTimeArray];
             updatedTimeArray[index] = newTime;
@@ -279,45 +313,51 @@ function CareGiverRxListPage({ apiLink }) {
     const handleDateChange = (event, index) => {
         // Handle date change for a specific input field
         const newDate = event.target.value;
-    
+        console.log("newdate: "+newDate)
+     
         setDateArray(prevDateArray => {
             const updatedDateArray = [...prevDateArray];
             updatedDateArray[index] = newDate;
             return updatedDateArray;
         });
-        setIsweekly(false);
+        console.log("newdateArray: "+dateArray)
+        setIsweekly(false)
     };
     
 
     const handleDayChange = (event, index) => {
         // Handle date change for a specific input field
         const newDay = event.target.value;
+        console.log("newday: "+newDay)
         
         setDayArray(prevDayArray => {
             const updatedDateArray = [...prevDayArray];
             updatedDateArray[index] = newDay;
             return updatedDateArray;
         });
-        setIsweekly(true);
+        console.log("newdateArray: "+dayArray)
+        setIsweekly(true)
     };
-
     const renderReminderForm = () => {
+        
         return (
             <div className="add-form">
                 <h2>Add Reminder</h2>
                 <form className="reminder-form" onSubmit={handleAddAlert}>
                     <p>Repeat:</p>
                     <select onChange={e => setRepeat(e.target.value)}>
-                        <option value="" disabled selected>Select...</option>
+                    <option value="" disabled selected>Select...</option>
+
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
                     </select>
                     {repeat === "daily" && (
                         <>
+                          
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value=""disabled selected>Select Frequency</option>
+                            <option value=""disabled selected>Select Frequency</option>
                                 <option value="1"defaultValue>1 time per day</option>
                                 <option value="2">2 times per day</option>
                                 <option value="3">3 times per day</option>
@@ -332,34 +372,36 @@ function CareGiverRxListPage({ apiLink }) {
                     )}
                     {repeat === "weekly" && (
                         <>
+                          
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value=""disabled selected>Select Frequency</option>
+                            <option value=""disabled selected>Select Frequency</option>
                                 <option value="1"defaultValue>1 time per week</option>
                                 <option value="2">2 times per week</option>
                                 <option value="3">3 times per week</option>
                             </select>
                             {Array.from({ length: frequency }, (_, i) => (
-                                <div className="input-wrapper" key={`weekly_${i}`}>
-                                    <p>Day {i + 1}:</p>
-                                    <select id={`day_${i}`} onChange={e => handleDayChange(e, i)}>
-                                        <option value="" disabled selected>Select a day</option>
-                                        <option value="mon">Monday</option>
-                                        <option value="tue">Tuesday</option>
-                                        <option value="wed">Wednesday</option>
-                                        <option value="thu">Thursday</option>
-                                        <option value="fri">Friday</option>
-                                        <option value="sat">Saturday</option>
-                                        <option value="sun">Sunday</option>
-                                    </select>
-                                    <p>Time:</p>
-                                    <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
-                                </div>
-                            ))}
+    <div className="input-wrapper" key={`weekly_${i}`}>
+        <p>Day {i + 1}:</p>
+        <select id={`day_${i}`} onChange={e => handleDayChange(e, i)}>
+        <option value="" disabled selected>Select a day</option>
+            <option value="mon">Monday</option>
+            <option value="tue">Tuesday</option>
+            <option value="wed">Wednesday</option>
+            <option value="thu">Thursday</option>
+            <option value="fri">Friday</option>
+            <option value="sat">Saturday</option>
+            <option value="sun">Sunday</option>
+        </select>
+        <p>Time:</p>
+        <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
+    </div>
+))}
                         </>
                     )}
                     {repeat === "monthly" && (
                         <>
+                           
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
                             <option value=""disabled selected>Select Frequency</option>
@@ -385,7 +427,8 @@ function CareGiverRxListPage({ apiLink }) {
             </div>
         );
     };
-
+    
+    // JSX for rendering medication list
     return (
         <div>
             {showReminderForm ? renderReminderForm() : showAddMed ? renderAddMedicationForm() : (
@@ -409,27 +452,30 @@ function CareGiverRxListPage({ apiLink }) {
                         ))}
                         </div>
                     </div>
-                    <div classN
-                    ame="caregiver-medicationlist">
+                    <div className="caregiver-medicationlist">
                         <h1>Medication List</h1>
                         {viewClicked ? (
                             <div>
                               {medications.length > 0 && selectedPatientId === selectedPatientIdMed ? (
-                                <MedicationItem
-                                    key={medications[selectedMedicationId].id}
-                                    med_name={medications[selectedMedicationId].med_name}
-                                    dosage={medications[selectedMedicationId].dose_amt}
-                                    description={medications[selectedMedicationId].description}
-                                    start_date={medications[selectedMedicationId].start_date}
-                                    end_date={medications[selectedMedicationId].end_date}
-                                    doctor_first_name={medications[selectedMedicationId].doctor_first_name}
-                                    doctor_last_name={medications[selectedMedicationId].doctor_last_name}
-                                />
-                            ) : (
-                                <p>No medications found</p>
-                            )}
+                             
+    <MedicationItem
+        key={medications[selectedMedicationId].id}
+    
+        med_name={medications[selectedMedicationId].med_name}
+        dosage={medications[selectedMedicationId].dose_amt}
+        description={medications[selectedMedicationId].description}
+        start_date={medications[selectedMedicationId].start_date}
+        end_date={medications[selectedMedicationId].end_date}
+        doctor_first_name={medications[selectedMedicationId].doctor_first_name}
+        doctor_last_name={medications[selectedMedicationId].doctor_last_name}
+    />
+) : (
+    <p>No medications found</p>
+)}
+
                                 <div className="caregiver-medication-actions">
                                     <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
+                                    {renderReminder()}
                                     {renderDeleteButton()}
                                     <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
                                     <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>
@@ -443,6 +489,7 @@ function CareGiverRxListPage({ apiLink }) {
             )}
         </div>
     );
+    
 }
 
 export default CareGiverRxListPage;
