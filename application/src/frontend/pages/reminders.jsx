@@ -35,7 +35,8 @@ const Reminders = ({apiLink}) => {
         setAlert_id(id);
         axios.post(apiLink + '/alertcompleted', {alert_id: id})
         .then(response => {
-            console.log("Alert successfuly archeved:", response.data);   
+            console.log("Alert successfuly archeved:", response.data);
+            window.location.reload();   
         })
         .catch(error => {
             console.error('Error archeving Alert:', error);         
