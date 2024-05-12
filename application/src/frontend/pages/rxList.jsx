@@ -167,7 +167,7 @@ function RxListPage({apiLink}) {
                 window.alert("Medication deleted successfully");
                 navigate('/rxlist');
                 setShowDeleteMed(false);
-                isDeleted(true);
+                setIsDeleted(true);
             })
             .catch(error => {
                 console.error('Error deleting medication:', error);

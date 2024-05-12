@@ -39,8 +39,15 @@ function CareGiverRxListPage({ apiLink }) {
     const[dateArray, setDateArray]=useState([]);
     const[timeArray, setTimeArray]=useState([]);
     const [activePatientId, setActivePatientId] = useState(null);
-
-
+    const [isEndDate,setIsEndDate]= useState(false);
+    useEffect(() => {
+        // Check if end date exists and update state accordingly
+        if (medications[selectedMedicationId] && medications[selectedMedicationId].end_date !== null) {
+          setIsEndDate(true);
+        } else {
+          setIsEndDate(false);
+        }
+      }, [medications, selectedMedicationId]); // Run effect when medications or selectedMedicationId change
     // useEffect for setting user id
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
@@ -200,7 +207,8 @@ function CareGiverRxListPage({ apiLink }) {
                 <strong>Start Date: </strong> <span>{new Date(start_date).toISOString().slice(0, 10)}</span>
             </div>
             <div className="medication-item-line">
-                <strong>End Date: </strong> <span>{new Date(end_date).toISOString().slice(0, 10)}</span>
+            <strong> End Date: </strong>  <span>{end_date ? new Date(end_date).toISOString().slice(0, 10) : "No end date setup yet"}</span>
+         
             </div>
             <div className="medication-item-line">
                 <strong>Doctor First Name: </strong> <span>{doctor_first_name}</span>
@@ -279,7 +287,16 @@ function CareGiverRxListPage({ apiLink }) {
             setShowReminderForm(false);
             
     };
-    
+    const renderReminder = () => {
+        // Conditional rendering of the button
+        if (!showAddMed && isEndDate) {
+          return (
+            <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+          );
+        }
+        // Return null if the conditions are not met
+        return null;
+      };
     const handleTimeChange = (event, index) => {
         // Handle time change for a specific input field
         const newTime = event.target.value;
@@ -456,6 +473,7 @@ function CareGiverRxListPage({ apiLink }) {
 
                                 <div className="caregiver-medication-actions">
                                     <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
+                                    {renderReminder()}
                                     {renderDeleteButton()}
                                     <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
                                     <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>
