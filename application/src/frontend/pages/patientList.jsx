@@ -66,7 +66,7 @@ const PatientList = ({ apiLink }) => {
         <div>
             <h2>Patient List:</h2>
             <div className="linkedAccountsContainer">
-                {AccountList.length > 0 ? (
+                {AccountList && Array.isArray(AccountList) && AccountList.length > 0 ? (
                     AccountList.map((accountLink, index) => (
                         <div key={index} className="account">
                             <div className="account-data">
