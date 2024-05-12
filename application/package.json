@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@babel/core": "7.3.4",
         "@fortawesome/fontawesome-svg-core": "^6.5.2",
         "@fortawesome/free-brands-svg-icons": "^6.5.2",
         "@fortawesome/free-regular-svg-icons": "^6.5.2",
@@ -12,23 +13,24 @@
         "@testing-library/react": "^13.4.0",
         "@testing-library/user-event": "^13.5.0",
         "axios": "^1.6.8",
+        "axois": "^0.0.1-security",
+        "cookies": "^0.9.1",
         "cors": "^2.8.5",
         "js-cookie": "^3.0.5",
         "mysql2": "^3.9.1",
-        "react": "^18.2.0",
+        "react": "^18.3.1",
         "react-cookie": "^7.1.4",
         "react-dom": "^18.2.0",
-        "react-native": "^0.73.4",
         "react-query": "^3.39.3",
         "react-router-dom": "^6.22.2",
-        "react-scripts": "5.0.1",
+        "react-scripts": "^5.0.1",
         "web-vitals": "^2.1.4"
     },
     "scripts": {
         "start": "set PORT=3006 && react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "test": "jest"
     },
     "eslintConfig": {
         "extends": [
@@ -47,5 +49,13 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.(js|jsx)$": "babel-jest"
+        }
+    },
+    "devDependencies": {
+        "jest": "^27.5.1"
     }
 }
