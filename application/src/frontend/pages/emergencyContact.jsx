@@ -3,79 +3,57 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import "../App.css";
 import Cookies from 'js-cookie';
-import { fas } from "@fortawesome/free-solid-svg-icons";
-
 
 const EmergencyContact = ({apiLink}) => {
- 
-     
- 
+    let navigate = useNavigate(); 
     const [hasEmergencyContact, setEmergencyContact] = useState(false);
-    
-    const [userId, setUserId] = useState("");
-    let navigate = useNavigate();   
+    const [userId, setUserId] = useState("");  
     const [contactInfo, setContactInfo] = useState({
         first_name: "",
         last_name: "",
         phone: "",
         email: ""
     });
-
   
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
-           // console.log("User id has been set!" + user_id)
         } else {
             alert("You need to relog in!")
             navigate('/');
         }
+
         const data = {
             user_id: userId,
             ...contactInfo
-
         };
-        axios.post(apiLink + '/emergencycontact', data )
-        // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/addEmergencyContact', data )
-            .then((res) => {
-    
-            console.log(res.data);
-            console.log(res.status);
-            setContactInfo(res.data.at(0));
-            setEmergencyContact(true);//emegencylist exist
 
+        axios.post(apiLink + '/emergencycontact', data )
+            .then((res) => {
+                setContactInfo(res.data.at(0));
+                setEmergencyContact(true);
             })
             .catch((error) => {
                 console.error('Error adding emergency contact:', error);
-                setEmergencyContact(false);//no emrgency list
+                setEmergencyContact(false);
             });
+    }, [userId]);
 
-    //api for view medicine
-
-}, [userId]);
         //move outside to a callable function
         const addEmergencyContact = async (contactInfo) =>{
-            
-            
-
-            axios.post(apiLink + '/emergencycontact/add',contactInfo )
-            // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/addEmergencyContact', data )
+            axios.post(apiLink + '/emergencycontact/add', contactInfo)
                 .then((res) => {
-                console.log("we are here");
-                console.log(res.data);
-                console.log(res.status);
+                    if (res.status === 201) {
+                        alert("Successfully edited emergency contact");
+                    } else {
+                        alert("An error has occured with editing your emergency contact");
+                    }
                 })
                 .catch((error) => {
                     console.error('Error adding emergency contact:', error);
                 });
-                
-        
         }
             
-
-
-
-    
     const handleContactSubmit = (e) => {
         e.preventDefault();
         const first_name = document.getElementById("fname-input").value;
@@ -87,6 +65,7 @@ const EmergencyContact = ({apiLink}) => {
         addEmergencyContact(newContactInfo);    
         setEmergencyContact(true);
     };
+
     return (
         <div className='emergencyContact-Page'>
             <h1>Emergency Contact</h1>
@@ -108,8 +87,7 @@ const EmergencyContact = ({apiLink}) => {
                 </form>
             )}
         </div>
-    );
-    
+    );   
 };
 
 export default EmergencyContact;

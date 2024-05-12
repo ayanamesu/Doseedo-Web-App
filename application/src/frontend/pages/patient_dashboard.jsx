@@ -2,7 +2,6 @@
 import React, {useState} from "react";
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPrescriptionBottleMedical, faGear, faCircleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faCalendar } from '@fortawesome/free-regular-svg-icons';
@@ -14,15 +13,14 @@ function DashBoard() {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     const [userId, setUserId] = useState("");
 
-        useEffect(() => {
-            if (Cookies.get('user_id') && Cookies.get('session_id')) {
-                setUserId(Cookies.get('user_id'));
-                console.log("User id has been set!" + userId);
-            } else {
-                alert("You need to relog in!")
-                navigate('/');
-            }
-        }, [userId]);
+    useEffect(() => {
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+        } else {
+            alert("You need to relog in!")
+            navigate('/');
+        }
+    }, [userId]);
 
     const handleCalendarClick = () => {
         navigate("/calendar", { replace: true });
@@ -31,30 +29,27 @@ function DashBoard() {
         navigate("/rxlist", { replace: true });
     };
 
-const handleSettingsClick = () => {
-    navigate("/Settings", { replace: true });  
-};
-const handleProfileClick = () => {
-    navigate("/Profile", { replace: true });  
-};
+    const handleSettingsClick = () => {
+        navigate("/Settings", { replace: true });  
+    };
+    const handleProfileClick = () => {
+        navigate("/Profile", { replace: true });  
+    };
 
-const handleEmergencyClick = () => {
-    navigate("/emergencyContact", { replace: true });  
+    const handleEmergencyClick = () => {
+        navigate("/emergencyContact", { replace: true });  
 
-};
-const getCurrentDate = () => {
-    let today = new Date();
-    let month = today.toLocaleString('default', { month: 'long' });
-    let day = today.getDate();
-    let year = today.getFullYear();
+    };
 
-    return `${month} ${day}, ${year}`;
-}
+    const getCurrentDate = () => {
+        let today = new Date();
+        let month = today.toLocaleString('default', { month: 'long' });
+        let day = today.getDate();
+        let year = today.getFullYear();
 
+        return `${month} ${day}, ${year}`;
+    }
 
-
-//Line24 <img loading="lazy" src="https://cdn.builder.io/api/v1/image/assets/TEMP/221c393dfba4a2642662278dc448772db699328c927f41fa532004df96eee0b9?apiKey=fed26b027e8440e388870d08a2f64afd&" className="img" />
-//this gives ERROR  mages loaded lazily and replaced with placeholders. Load events are deferred
     return (
         <div className="Dashboard-Body">
             <h1 className="Dashboard-Date">{getCurrentDate()}</h1>
@@ -88,4 +83,5 @@ const getCurrentDate = () => {
         </div>
     );
 }
+
 export default DashBoard;

@@ -13,7 +13,6 @@ const PatientList = ({ apiLink }) => {
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
-            console.log("User id has been set!" + userId);
         } else {
             alert("You need to relog in!")
             navigate('/');
@@ -26,19 +25,19 @@ const PatientList = ({ apiLink }) => {
                 };
                 
                 if (data.user_id){
-                const apiRes = await axios.post(apiLink + '/showpatients', data);
-                if (apiRes.status === 200) {
-                    setAccountList(apiRes.data);
-                } else if (apiRes.status === 204) {
-                    console.log("There are no patients for this user");
-                } else {
-                    console.log("Something went wrong with the backend...");
+                    const apiRes = await axios.post(apiLink + '/showpatients', data);
+                    
+                    if (apiRes.status === 200) {
+                        setAccountList(apiRes.data);
+                    } else if (apiRes.status === 204) {
+                        console.log("There are no patients for this user");
+                    } else {
+                        console.log("Something went wrong with the backend...");
+                    }
                 }
-            }
             } catch (error) {
                 console.error(error);
             }
-        
         };
             fetchAccountList();
     }, [userId]);
@@ -71,4 +70,5 @@ const PatientList = ({ apiLink }) => {
         </div>
     );
 };
+
 export default PatientList;

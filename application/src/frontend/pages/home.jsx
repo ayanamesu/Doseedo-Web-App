@@ -7,48 +7,33 @@ import { useEffect } from 'react';
 import Topbar from '../Components/topbar';
 
 const HomePage = ({ apiLink }) => {
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confPassword, setConfPassword] = useState("");
-  let navigate = useNavigate();
-  const [user_id, setUserId] = useState("");
-  //shows notification
-  const [showNotification, setShowNotification] = useState(false);
-  //sets the notification message based on if the account was created or not
-  const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState('');
-  const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
-  const [accountType, setAccountType] = useState("");
+    let navigate = useNavigate();
+    const [fname, setFname] = useState("");
+    const [lname, setLname] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confPassword, setConfPassword] = useState("");
+    const [user_id, setUserId] = useState("");
+    //shows notification
+    const [showNotification, setShowNotification] = useState(false);
+    //sets the notification message based on if the account was created or not
+    const [notificationMessage, setNotificationMessage] = useState('');
+    const [notificationType, setNotificationType] = useState('');
+    const [cookies, setCookie] = useCookies(['access_token', 'refresh_token']);
+    const [accountType, setAccountType] = useState("");
 
-  useEffect(() => {
-    if (!(Cookies.get('user_id') && Cookies.get('session_id'))) {
-        setUserId(Cookies.get('user_id'));
-        console.log("User id has been set!" + user_id)
-       
-    } else{
-        
-        if(Cookies.get('accountType')==='patient'){
-            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
-            
-        }else{
-            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+    useEffect(() => {
+        if (!(Cookies.get('user_id') && Cookies.get('session_id'))) {
+            setUserId(Cookies.get('user_id'));       
+        } else{
+            if(Cookies.get('accountType')==='patient'){
+                navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+                
+            }else{
+                navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+            }
         }
-       
-    }
-
-}, [user_id]);
-//   const sessionUserId = UseSessionCheck();
-
-//   useEffect(() => {
-//     if (sessionUserId === "") 
-//         navigate('/');
-//     } else {
-//         navigate('/dashboard');
-//         setUserId(sessionUserId[0]);
-//     }
-// }, []);
+    }, [user_id]);
     
   function handleLoginForm(event) {
     if ( !email || !password ) {
@@ -56,7 +41,6 @@ const HomePage = ({ apiLink }) => {
         alert("Please fill out all the fields.");
         return;
     }
-    
 
     event.preventDefault();
     let userData = {
@@ -65,105 +49,71 @@ const HomePage = ({ apiLink }) => {
     }
 
     axios.post(apiLink + '/login', userData)
-    .then(res => {
-        console.log(res.status); 
-        //res = backend res.status(200).json(req.session.id); from the post
-        if (res.status === 200) {
-            console.log("User crendentials are good and a session is created in the db");
-
-            // This sets a cookie in the browser
-            /*
-             * To see this:
-             * 1) Make sure you have some log in data (if not make a account via the sign up)
-             * 2) Go to the login page
-             * 3) Open Inspect --> and look for where the cookies are (might be in 'Application' or ' Storage')
-             * 4) Log in --> AND BAM cookies show up (you'll see session_id and a very long thing as the value)
-            */
-            setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
-            setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
-            
-            alert("Successfully logged In!");
-            // TODO: Frontend - 
-            // the dashboard page switch based on userid(account_type)
-            //user switch
-            console.log(userData);
-            console.log("data:"+res.data);
-            if(res.data.user_accountType==='patient'){
-                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
-                navigate('/patient_dashboard');
-            }else{
-                setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
-                navigate('/caregiver_dashboard');
-            }
-            console.log("redirecting based on the account type");
-    
-
-        } //else if(res.status === 403){
-        //     alert(res.data.msg);
-        //     console.log("User crendentials are not good");
-        // }
-    })
-    .catch(err => alert("email and password combination is not correct or account doesn't exist"));
-
-    console.log("Button has been clicked!");
-}
-  
-
-
-function handleRegisterForm(event) {
-    event.preventDefault();
-
-    if (!fname || !lname || !email || !password || !confPassword) {
-        alert("Please fill out all the fields.");
-        return;
-    }
-
-    if (password !== confPassword) {
-        console.log("passwords do not match!");
-        // setNotificationType('error');
-        // setShowNotification(true);
-        // setNotificationMessage("Passwords do not match😕");
-        // setTimeout(() => setShowNotification(false), 4000);
-        alert("Passwords do not match😕");
-        return;
-    }
-    let userData = {
-        first_name: fname,
-        last_name: lname,
-        email: email,
-        account_type:accountType,
-        password: password
-    }
-   
-    axios.post(apiLink + '/register', userData)
         .then(res => {
-            console.log(res.status);
-            if (res.status === 201) {
-                alert("Account Creation was successful 😀!");
-            } else if( res.status === 200){
-                console.log("They already have an account")
-                console.log(showNotification);
-                alert("An Account is already associated with this email😕");
-            } else {
-                console.log("Something weird happened...");
-                alert("An error occured😕");
+            if (res.status === 200) {
+                setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
+                setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
+                
+                alert("Successfully logged In!");
+
+                if(res.data.user_accountType==='patient'){
+                    setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
+                    navigate('/patient_dashboard');
+                }else{
+                    setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
+                    navigate('/caregiver_dashboard');
+                }
             }
         })
-        .catch(err => console.log(err));
-    console.log("Button has been clicked!");
-}
-  const [isLoginForm, setIsLoginForm] = useState(false);
+        .catch(err => alert("email and password combination is not correct or account doesn't exist"));
+    }
 
-  const handleFormSwitch = () => {
+    function handleRegisterForm(event) {
+        event.preventDefault();
+        if (!fname || !lname || !email || !password || !confPassword) {
+            alert("Please fill out all the fields.");
+            return;
+        }
+
+        if (password !== confPassword) {
+            console.log("passwords do not match!");
+            alert("Passwords do not match😕");
+            return;
+        }
+
+        let userData = {
+            first_name: fname,
+            last_name: lname,
+            email: email,
+            account_type: accountType,
+            password: password
+        }
+    
+        axios.post(apiLink + '/register', userData)
+            .then(res => {
+                if (res.status === 201) {
+                    alert("Account Creation was successful 😀!");
+                } else if( res.status === 200){
+                    console.log(showNotification);
+                    alert("An Account is already associated with this email😕");
+                } else {
+                    alert("An error occured😕");
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+    const [isLoginForm, setIsLoginForm] = useState(false);
+
+    const handleFormSwitch = () => {
         setIsLoginForm(!isLoginForm);
     };
 
-
-  const handleButtonClick = (event) => {
-    const buttons = document.querySelectorAll('.btn-field button');
-    buttons.forEach(button => button.classList.remove('active'));
-    event.currentTarget.classList.add('active');
-  };
+    const handleButtonClick = (event) => {
+        const buttons = document.querySelectorAll('.btn-field button');
+        buttons.forEach(button => button.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    };
   
 
     return (
@@ -188,7 +138,7 @@ function handleRegisterForm(event) {
                             <input type="text" placeholder="Last name" id="lastname-input" name="lastName" onChange={e => setLname(e.target.value)}/>
                             <input type="email" placeholder="Email" id="email-input" name="email" onChange={e => setEmail(e.target.value)}/>
                             <input type="password" placeholder="Password" id="password-input" name="password" onChange={e => setPassword(e.target.value)}/>
-                            {/*keeping this feild without a name since im assuming we would check if the passwords
+                            {/*keeping this field without a name since im assuming we would check if the passwords
                             match on the front-end*/}
                             <input type="password" placeholder="Confirm Password" id="password-confirmation-input" onChange={e => setConfPassword(e.target.value)}/>
                             <p> Are you a Caregiver or Patient?</p>
@@ -203,9 +153,6 @@ function handleRegisterForm(event) {
                                 </label>
                             </div>
                             <button type="submit" id="submit">submit</button>
-                            {/* 
-                                this is a quick test to see functionality - wing can change later
-                            */}
                         </form>
                     ) : (
                         <form className="homepage-form" action="/login" method="POST" onSubmit={handleLoginForm}>

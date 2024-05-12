@@ -1,11 +1,7 @@
-//This shold be renamed to aboutUsPage or something
 import React from 'react';
-
 import { BrowserRouter as Outlet, Link } from 'react-router-dom'
-
 import '../AboutUsPage.css'; // Import the CSS file
-//import each pic like this:
-//Name of the picture object, and path:
+
 import Yakoub from '../pics/yak.jpg'
 import Wing from '../pics/wing.jpg'
 import Paige from '../pics/paige.jpg'
