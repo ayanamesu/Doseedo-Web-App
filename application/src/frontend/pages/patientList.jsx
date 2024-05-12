@@ -65,34 +65,38 @@ const PatientList = ({ apiLink }) => {
     return (
         <div>
             <h2>Patient List:</h2>
-             <div className="linkedAccountsContainer">
-                {AccountList.map((accountLink, index) => (
-                    <div key={index} className="account">
-                        <div className="account-data">
-                        <strong>Name: </strong> <span>{accountLink.first_name} {accountLink.last_name}</span>
+            <div className="linkedAccountsContainer">
+                {AccountList.length > 0 ? (
+                    AccountList.map((accountLink, index) => (
+                        <div key={index} className="account">
+                            <div className="account-data">
+                                <strong>Name: </strong> <span>{accountLink.first_name} {accountLink.last_name}</span>
+                            </div>
+                            <div className="account-data">
+                                <strong>Email: </strong> <span>{accountLink.email}</span>
+                            </div>
+                            <div className="account-data">
+                                <strong>Address: </strong> <span>{accountLink.address_1}</span>
+                            </div>
+                            <div className="account-data">
+                                <strong>City: </strong> <span>{accountLink.city}</span>
+                            </div>
+                            <div className="account-data">
+                                <strong>Phone: </strong> <span>{accountLink.phone}</span>
+                            </div>
+                            <button onClick={() => {
+                                const otherUserId = accountLink.id;
+                                setOtherUserId(otherUserId);
+                                handleUnlinkClick(otherUserId);
+                            }}>Unlink</button>
                         </div>
-                        <div className="account-data">
-                            <strong>Email: </strong> <span>{accountLink.email}</span>
-                        </div>
-                        <div className="account-data">
-                            <strong>Address: </strong> <span>{accountLink.address_1}</span>
-                        </div>
-                        <div className="account-data">
-                            <strong>City: </strong> <span>{accountLink.city}</span>
-                        </div>
-                        <div className="account-data">
-                            <strong>Phone: </strong> <span>{accountLink.phone}</span>
-                        </div>
-                        <button onClick={() => {
-                                                const otherUserId = accountLink.id;
-                                                setOtherUserId(otherUserId);
-                                                handleUnlinkClick(otherUserId);
-                                            }}>Unlink</button>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    <h1>No accounts linked🥲</h1>
+                )}
             </div>
         </div>
     );
-};
+}
 
 export default PatientList;
