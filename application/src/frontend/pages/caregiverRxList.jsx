@@ -61,7 +61,7 @@ function CareGiverRxListPage({ apiLink }) {
                 user_id: userId
             };
             if (data.user_id) {
-                const apiRes = await axios.post(apiLink + '/showpatients', data);
+                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
                 if (apiRes.status === 200) {
                     setPatientList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -81,7 +81,8 @@ function CareGiverRxListPage({ apiLink }) {
                 const data = {
                     user_id: selectedPatientId
                 };
-                const apiRes = await axios.post(apiLink + '/viewmedicine', data);
+                const apiRes = await axios.post('http://localhost:8000/viewmedicine', data);
+                console.log("fethcing medlist");
                 setMedications(apiRes.data);
                 setSelectedPatientIdMed(data.user_id);
                 setSelectedMedicationId(0);
@@ -246,9 +247,9 @@ function CareGiverRxListPage({ apiLink }) {
         
        console.log("isweekly:"+ isWeekly)
         let alertData = {
-            freq: frequency,
+            repeat: repeat,
             day: isWeekly ? dayArray : dateArray,
-            time: timeArray.join(', '),
+            time: timeArray,
             prescription_id: medications[selectedMedicationId].id
         };
         console.log("sending data to backend:")
@@ -260,9 +261,8 @@ function CareGiverRxListPage({ apiLink }) {
     
         axios.post(apiLink + '/addalert', alertData)
             .then(response => {
-                console.error('Success adding alert:', response.status);
-               
-                
+                console.log('Success adding alert:', response.status);
+                alert('Success adding alert');
             })
             .catch(error => {
                 console.error('Error adding alert:', error);
@@ -392,8 +392,8 @@ function CareGiverRxListPage({ apiLink }) {
                             {Array.from({ length: frequency }, (_, i) => (
                                 <div className="input-wrapper" key={`monthly_${i}`}>
                                     <p>Date {i + 1}:</p>
-                                    <input type="date" placeholder={`Date ${i + 1}`} id={`date_${i}`} onChange={e => handleDateChange(e, i)} />
-                                    <p>Time:</p>
+                                    <input type="number" placeholder={`Date ${i + 1}`} id={`date_${i}`} min="1" max="31"  onChange={e => handleDateChange(e, i)} />
+                                          <p>Time:</p>
                                     <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
                                 </div>
                             ))}
