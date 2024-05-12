@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
+import Topbar from '../Components/topbar';
 
 const HomePage = ({ apiLink }) => {
   const [fname, setFname] = useState("");
@@ -166,7 +167,7 @@ function handleRegisterForm(event) {
   
 
     return (
-        <div className="main-content">
+        <div className="">
             {showNotification && <div className={`notification ${notificationType}`}>{notificationMessage}</div>}
             <div className="homepage-container">
                 <div className="home-content-left">

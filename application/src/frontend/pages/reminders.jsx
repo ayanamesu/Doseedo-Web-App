@@ -10,7 +10,6 @@ const Reminders = ({apiLink}) => {
     const [user_id, setUserId] = useState("");
     const [alert_id,setAlert_id]=useState("");
     const [alertData, setAlertData] = useState([]);
-
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
@@ -44,23 +43,34 @@ const Reminders = ({apiLink}) => {
             console.error('Error archeving Alert:', error);         
         })
     }
+    let convertTime = (inputTime) => {
+        let utcDate = new Date(inputTime);
+        let pacificDate = new Date(utcDate.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
+        let date = pacificDate.toLocaleDateString();
+        let time = pacificDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
+        return(
+            <div>
+                <p>Date: {date} Time: {time}</p>
+            </div>
+        );
+    }
         // pullAlerts returns: (alert_id) id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
 
     return (
         <div className="reminder-page">
             <h1>Notifications</h1>
-            <form className="edit-profile-form" onSubmit={handleTaken}>
+            <form className="notification-form" onSubmit={handleTaken}>
                 {alertData.map((reminder) => (
                     <div className="notification-box" key={reminder.id}>
                         <div className="notification-data">
                             <strong>{reminder.med_name}</strong>
                             <div className="notification-info">
-                                <p>{reminder.dose_amt}:</p>
-                                <p>{reminder.send_time}:</p>
-
+                                <p>Dose amount: {reminder.dose_amt}</p>
+                                {/* <p>{reminder.send_time}</p> */}
+                                {convertTime(reminder.send_time)}
                             </div>
                         </div>
-                        <button type="button" id="submitButton" onClick={() => handleTaken(reminder.id)}>Taken</button>
+                        <button type="button" onClick={() => handleTaken(reminder.id)}>Taken</button>
                     </div>
                 ))}
             </form>
