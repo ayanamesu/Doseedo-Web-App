@@ -183,7 +183,7 @@ function CareGiverRxListPage({ apiLink }) {
         if (medications.length > 0&&selectedPatientId===selectedPatientIdMed) { 
             return (
                 <div className="innerCaregiver-medication-actions">
-                    <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+                  
                     <button className="navButtons" onClick={handleDeleteClick}>Delete medication</button>
                 </div>
             );
@@ -291,7 +291,9 @@ function CareGiverRxListPage({ apiLink }) {
         // Conditional rendering of the button
         if (!showAddMed && isEndDate) {
           return (
+            <div className="innerCaregiver-medication-actions">
             <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+            </div>
           );
         }
         // Return null if the conditions are not met
