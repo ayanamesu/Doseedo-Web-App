@@ -48,7 +48,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <Router>
           <div>
-            <Sidebar />
+            {/* <Sidebar /> */}
             <Topbar apiLink={apiLink} />
             <BackButton />
             {/*All routes must go here in App.js*/}

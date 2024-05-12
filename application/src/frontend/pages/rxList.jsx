@@ -50,8 +50,6 @@ function RxListPage({apiLink}) {
             <div className="medication-description">Description: {description}</div>
             <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
             <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
-            <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
-            <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
             <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
             <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
         </div>

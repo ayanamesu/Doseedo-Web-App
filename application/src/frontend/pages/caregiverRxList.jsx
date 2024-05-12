@@ -36,8 +36,9 @@ function CareGiverRxListPage({ apiLink }) {
     const [frequency, setFrequency] = useState(1);
     const[isWeekly,setIsweekly]=useState(false);
     const[dayArray, setDayArray]=useState([]);
-        const[dateArray, setDateArray]=useState([]);
-        const[timeArray, setTimeArray]=useState([]);
+    const[dateArray, setDateArray]=useState([]);
+    const[timeArray, setTimeArray]=useState([]);
+    const [activePatientId, setActivePatientId] = useState(null);
 
 
     // useEffect for setting user id
@@ -416,17 +417,20 @@ function CareGiverRxListPage({ apiLink }) {
                     <div className="patient-list-container">
                         <h1>List of patients:</h1>
                         <div className="rxlist-account">
-                            {patientList.map((patient, index) => (
-                                <div key={index} className="patient" onClick={() => {
-                                   
+                        {patientList.map((patient, index) => (
+                            <div 
+                                key={index} 
+                                className={`patient ${patient.id === selectedPatientId ? 'active' : ''}`} 
+                                onClick={() => {
                                     setSelectedPatientId(patient.id);
                                     console.log("selected patient id:"+selectedPatientId);
                                     setViewClicked(true);
-                                }}>
-                                    <p>{patient.first_name} {patient.last_name}</p>
-                                    <p>{patient.email}</p>
-                                </div>
-                            ))}
+                                }}
+                            >
+                                <p>{patient.first_name} {patient.last_name}</p>
+                                <p>{patient.email}</p>
+                            </div>
+                        ))}
                         </div>
                     </div>
                     <div className="caregiver-medicationlist">
