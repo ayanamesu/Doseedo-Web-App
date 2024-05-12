@@ -69,7 +69,7 @@ function CareGiverRxListPage({ apiLink }) {
                 user_id: userId
             };
             if (data.user_id) {
-                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
+                const apiRes = await axios.post(apiLink + '/showpatients', data);
                 if (apiRes.status === 200) {
                     setPatientList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -89,7 +89,7 @@ function CareGiverRxListPage({ apiLink }) {
                 const data = {
                     user_id: selectedPatientId
                 };
-                const apiRes = await axios.post('http://localhost:8000/viewmedicine', data);
+                const apiRes = await axios.post(apiLink + '/viewmedicine', data);
                 console.log("fethcing medlist");
                 setMedications(apiRes.data);
                 setSelectedPatientIdMed(data.user_id);
