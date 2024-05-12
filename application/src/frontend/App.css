@@ -982,6 +982,13 @@
     justify-content: center;;
     padding: 5px;
 }
+.innerCaregiver-medication-actions{
+    display: flex;
+    justify-content: center;
+}
+.innerCaregiver-medication-actions button{
+    width: 85px;
+} 
 .caregiver-medicine{
     display: flex;
     flex-direction: column;

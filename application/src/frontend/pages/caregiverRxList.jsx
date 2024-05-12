@@ -8,15 +8,18 @@ import { faChevronCircleLeft, faChevronCircleRight } from "@fortawesome/free-sol
 
 function CareGiverRxListPage({ apiLink }) {
     const [selectedUserId, setSelectedUserId] = useState(null);
+    
+    const [selectedPatientIdMed, setSelectedPatientIdMed] = useState(null);//verification purpose
+    const [selectedPatientId, setSelectedPatientId] = useState(null);
     const [viewClicked, setViewClicked] = useState(false);
     const [patientList, setPatientList] = useState([]);
     const [userId, setUserId] = useState("");
     const [showMedList, setShowMedList] = useState(true);
     const [showAddMed, setShowAddMed] = useState(false);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
+    
     const [medications, setMedications] = useState([]);
-
-   
+    
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
     const [doseAmt, setDoseAmt] = useState("");
@@ -31,7 +34,10 @@ function CareGiverRxListPage({ apiLink }) {
     const [showReminderForm, setShowReminderForm] = useState(false);
     const [repeat, setRepeat] = useState("");
     const [frequency, setFrequency] = useState(1);
-    
+    const[isWeekly,setIsweekly]=useState(false);
+    const[dayArray, setDayArray]=useState([]);
+        const[dateArray, setDateArray]=useState([]);
+        const[timeArray, setTimeArray]=useState([]);
 
 
     // useEffect for setting user id
@@ -43,13 +49,10 @@ function CareGiverRxListPage({ apiLink }) {
             alert("You need to relog in!")
             navigate('/');
         }
-    }, [userId, navigate]);
-
-    // useEffect for fetching patient list
-    useEffect(() => {
-   
         fetchAccountList();
     }, [userId, navigate]);
+
+    
     
 
     const fetchAccountList = async () => {
@@ -58,7 +61,7 @@ function CareGiverRxListPage({ apiLink }) {
                 user_id: userId
             };
             if (data.user_id) {
-                const apiRes = await axios.post('http://localhost:8000/showpatients', data);
+                const apiRes = await axios.post(apiLink + '/showpatients', data);
                 if (apiRes.status === 200) {
                     setPatientList(apiRes.data);
                 } else if (apiRes.status === 204) {
@@ -72,14 +75,19 @@ function CareGiverRxListPage({ apiLink }) {
         }
     };
     const fetchMedicationList = async () => {
+        console.log("selected Patient: "+selectedPatientId)
         try {
-            if (selectedUserId && viewClicked) {
+            if (selectedPatientId && viewClicked) {
                 const data = {
-                    user_id: selectedUserId
+                    user_id: selectedPatientId
                 };
-                const apiRes = await axios.post('http://localhost:8000/viewmedicine', data);
+                const apiRes = await axios.post(apiLink + '/viewmedicine', data);
                 setMedications(apiRes.data);
+                setSelectedPatientIdMed(data.user_id);
                 setSelectedMedicationId(0);
+                
+                 
+                console.log("selected medID:"+apiRes.data.at(selectedMedicationId).id);
             }
         } catch (error) {
             console.error('Error fetching medications:', error);
@@ -89,7 +97,7 @@ function CareGiverRxListPage({ apiLink }) {
     useEffect(() => {
         
         fetchMedicationList();
-    }, [selectedUserId, viewClicked]);
+    }, [selectedPatientId, viewClicked]);
   const handleNextClick = () => {
         console.log(selectedMedicationId);
         if (medications.length > selectedMedicationId + 1) {//index0=1,1=2
@@ -126,8 +134,9 @@ function CareGiverRxListPage({ apiLink }) {
             alert("Please fill out userID, Medicine name, dose amount, start date, doctor name, and phone number.");
             return;
         }
+        console.log("selected patient id"+selectedPatientId);
         let userData = {
-            user_id: selectedUserId,//selected patient id
+            user_id: selectedPatientId,//selected patient id
             med_name: medName,
             description: description,
             dose_amt: doseAmt,
@@ -144,24 +153,29 @@ function CareGiverRxListPage({ apiLink }) {
         console.log(userData);
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
-                console.log(selectedUserId);
+              
                 console.log("Medication added successfully:", response.data);
                 fetchMedicationList();
                 window.alert("Medication added successfully");
                 setShowAddMed(false);
-                setShowMedList(true);
+                
 
             })
             .catch(error => {
                 console.error('Error adding medication:', error);
                 alert("Error adding medication:");
+                setShowAddMed(false);
+          
             });
+            
     };
     const renderDeleteButton = () => {
-        if (medications.length > 0) { 
+        
+        if (medications.length > 0&&selectedPatientId===selectedPatientIdMed) { 
             return (
-                <div>
-                    <button className="delete-medication-button" onClick={handleDeleteClick}>Delete medication</button>
+                <div className="innerCaregiver-medication-actions">
+                    <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+                    <button className="navButtons" onClick={handleDeleteClick}>Delete medication</button>
                 </div>
             );
         }
@@ -169,6 +183,7 @@ function CareGiverRxListPage({ apiLink }) {
 
     // JSX for medication item
     const MedicationItem = ({ med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
+
         <div className="medication-item">
             <div className="medication-item-line">
                 <strong>Medication Name: </strong> <span>{med_name}</span>
@@ -210,72 +225,181 @@ function CareGiverRxListPage({ apiLink }) {
             </form>
         </div>
     );
+
+
+    //Frontend req: freq, day [array], time [array], prescription_id
+    const handleAddAlert = (event) => {
+        event.preventDefault(); // Prevent default form submission behavior
+        if(repeat==='weekly'){
+            console.log("weekly")
+            setIsweekly(true);
+        }
+        else if (repeat === 'daily') {
+            console.log("daily")
+        setIsweekly(false);
+            setDateArray([]);
+        }else if(repeat==='monthly'){
+            console.log("monthly")
+        setIsweekly(false);
+        }
+
+        
+       console.log("isweekly:"+ isWeekly)
+        let alertData = {
+            freq: frequency,
+            day: isWeekly ? dayArray : dateArray,
+            time: timeArray.join(', '),
+            prescription_id: medications[selectedMedicationId].id
+        };
+        console.log("sending data to backend:")
+        console.log("repeat "+repeat);
+        console.log("freq:"+alertData.freq);
+        console.log("day:"+alertData.day);
+        console.log("time:"+alertData.time);
+        console.log("medID:"+alertData.prescription_id);
+    
+        axios.post(apiLink + '/addalert', alertData)
+            .then(response => {
+                console.error('Success adding alert:', response.status);
+               
+                
+            })
+            .catch(error => {
+                console.error('Error adding alert:', error);
+                alert("Error adding alert:");
+                
+            });
+            //initialzie after API
+            setDayArray([]);
+            setDateArray([]);
+            setIsweekly(false);
+            setFrequency(1);
+            setTimeArray([]);
+            setShowReminderForm(false);
+            
+    };
+    
+    const handleTimeChange = (event, index) => {
+        // Handle time change for a specific input field
+        const newTime = event.target.value;
+        // Assuming you have an array to store time values
+        setTimeArray(prevTimeArray => {
+            const updatedTimeArray = [...prevTimeArray];
+            updatedTimeArray[index] = newTime;
+            return updatedTimeArray;
+        });
+    };
+    
+    const handleDateChange = (event, index) => {
+        // Handle date change for a specific input field
+        const newDate = event.target.value;
+        console.log("newdate: "+newDate)
+     
+        setDateArray(prevDateArray => {
+            const updatedDateArray = [...prevDateArray];
+            updatedDateArray[index] = newDate;
+            return updatedDateArray;
+        });
+        console.log("newdateArray: "+dateArray)
+        setIsweekly(false)
+    };
+    
+
+    const handleDayChange = (event, index) => {
+        // Handle date change for a specific input field
+        const newDay = event.target.value;
+        console.log("newday: "+newDay)
+        
+        setDayArray(prevDayArray => {
+            const updatedDateArray = [...prevDayArray];
+            updatedDateArray[index] = newDay;
+            return updatedDateArray;
+        });
+        console.log("newdateArray: "+dayArray)
+        setIsweekly(true)
+    };
     const renderReminderForm = () => {
+        
         return (
             <div className="add-form">
                 <h2>Add Reminder</h2>
-                <form className="reminder-form" onSubmit="">
+                <form className="reminder-form" onSubmit={handleAddAlert}>
                     <p>Repeat:</p>
                     <select onChange={e => setRepeat(e.target.value)}>
-                        <option value="">Select...</option>
+                    <option value="" disabled selected>Select...</option>
+
                         <option value="daily">Daily</option>
                         <option value="weekly">Weekly</option>
                         <option value="monthly">Monthly</option>
                     </select>
                     {repeat === "daily" && (
                         <>
+                          
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value="1">1 time per day</option>
+                            <option value=""disabled selected>Select Frequency</option>
+                                <option value="1"defaultValue>1 time per day</option>
                                 <option value="2">2 times per day</option>
                                 <option value="3">3 times per day</option>
                             </select>
                             {Array.from({ length: frequency }, (_, i) => (
-                                <div className="input-wrapper">
-                                    <p key={i}>Time {i + 1}:</p>
-                                    <input key={i} type="time" placeholder={`Time ${i + 1}`} />
+                                <div className="input-wrapper" key={`daily_${i}`}>
+                                    <p>Time {i + 1}:</p>
+                                    <input type="time" placeholder={`Time ${i + 1}`} onChange={e => handleTimeChange(e, i)} />
                                 </div>
                             ))}
                         </>
                     )}
                     {repeat === "weekly" && (
                         <>
+                          
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value="1">1 time per week</option>
+                            <option value=""disabled selected>Select Frequency</option>
+                                <option value="1"defaultValue>1 time per week</option>
                                 <option value="2">2 times per week</option>
                                 <option value="3">3 times per week</option>
                             </select>
                             {Array.from({ length: frequency }, (_, i) => (
-                                <div className="input-wrapper">
-                                    <p key={i}>Date {i + 1}:</p>
-                                    <input key={i} type="date" placeholder={`Date ${i + 1}`} />
-                                </div>
-                            ))}
-                            <p>Time:</p>
-                            <input type="time" placeholder="Time" />
+    <div className="input-wrapper" key={`weekly_${i}`}>
+        <p>Day {i + 1}:</p>
+        <select id={`day_${i}`} onChange={e => handleDayChange(e, i)}>
+        <option value="" disabled selected>Select a day</option>
+            <option value="mon">Monday</option>
+            <option value="tue">Tuesday</option>
+            <option value="wed">Wednesday</option>
+            <option value="thu">Thursday</option>
+            <option value="fri">Friday</option>
+            <option value="sat">Saturday</option>
+            <option value="sun">Sunday</option>
+        </select>
+        <p>Time:</p>
+        <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
+    </div>
+))}
                         </>
                     )}
-    
                     {repeat === "monthly" && (
                         <>
+                           
                             <p>Frequency:</p>
                             <select onChange={e => setFrequency(Number(e.target.value))}>
-                                <option value="1">1 time per month</option>
+                            <option value=""disabled selected>Select Frequency</option>
+                                <option value="1"defaultValue>1 time per month</option>
                                 <option value="2">2 times per month</option>
                                 <option value="3">3 times per month</option>
                             </select>
                             {Array.from({ length: frequency }, (_, i) => (
-                                <div className="input-wrapper">
-                                    <p key={i}>Date {i + 1}:</p>
-                                    <input key={i} type="date" placeholder={`Date ${i + 1}`} />
+                                <div className="input-wrapper" key={`monthly_${i}`}>
+                                    <p>Date {i + 1}:</p>
+                                    <input type="date" placeholder={`Date ${i + 1}`} id={`date_${i}`} onChange={e => handleDateChange(e, i)} />
+                                    <p>Time:</p>
+                                    <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
                                 </div>
                             ))}
-                            <p>Time:</p>
-                            <input type="time" placeholder="Time" />
                         </>
                     )}
-                    <div className="caregiver-medication-actions">
+                    <div className="">
                         <button className="navButtons" type="button" onClick={() => setShowReminderForm(false)}>Cancel</button>
                         <button className="navButtons" type="submit">Submit</button>
                     </div>
@@ -294,7 +418,9 @@ function CareGiverRxListPage({ apiLink }) {
                         <div className="rxlist-account">
                             {patientList.map((patient, index) => (
                                 <div key={index} className="patient" onClick={() => {
-                                    setSelectedUserId(patient.id);
+                                   
+                                    setSelectedPatientId(patient.id);
+                                    console.log("selected patient id:"+selectedPatientId);
                                     setViewClicked(true);
                                 }}>
                                     <p>{patient.first_name} {patient.last_name}</p>
@@ -307,37 +433,39 @@ function CareGiverRxListPage({ apiLink }) {
                         <h1>Medication List</h1>
                         {viewClicked ? (
                             <div>
-                                {medications.length > 0 ? (
-                                    <MedicationItem
-                                        key={medications[selectedMedicationId].id}
-                                        med_name={medications[selectedMedicationId].med_name}
-                                        dosage={medications[selectedMedicationId].dose_amt}
-                                        description={medications[selectedMedicationId].description}
-                                        start_date={medications[selectedMedicationId].start_date}
-                                        end_date={medications[selectedMedicationId].end_date}
-                                        doctor_first_name={medications[selectedMedicationId].doctor_first_name}
-                                        doctor_last_name={medications[selectedMedicationId].doctor_last_name}
-                                    />
-                                    
-                                ) : (
-                                    <p>No medications found</p>
-                                )}
+                              {medications.length > 0 && selectedPatientId === selectedPatientIdMed ? (
+                             
+    <MedicationItem
+        key={medications[selectedMedicationId].id}
+    
+        med_name={medications[selectedMedicationId].med_name}
+        dosage={medications[selectedMedicationId].dose_amt}
+        description={medications[selectedMedicationId].description}
+        start_date={medications[selectedMedicationId].start_date}
+        end_date={medications[selectedMedicationId].end_date}
+        doctor_first_name={medications[selectedMedicationId].doctor_first_name}
+        doctor_last_name={medications[selectedMedicationId].doctor_last_name}
+    />
+) : (
+    <p>No medications found</p>
+)}
+
+                                <div className="caregiver-medication-actions">
+                                    <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
+                                    {renderDeleteButton()}
+                                    <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
+                                    <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>
+                                </div>
                             </div>
                         ) : (
                             <p>Please select a patient to view their medication list</p>
                         )}
-                        <div className="caregiver-medication-actions">
-                            <button className="navButtons" title="Back" onClick={handleBackClick}><FontAwesomeIcon icon={faChevronCircleLeft} /></button>
-                            {renderDeleteButton()}
-                            <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
-                            <button className="navButtons" onClick={() => setShowAddMed(true)}>Add Medicine</button>
-                            <button className="navButtons" title="Next" onClick={handleNextClick}><FontAwesomeIcon icon={faChevronCircleRight} /></button>
-                        </div>
                     </div>
                 </div>
             )}
         </div>
     );
+    
 }
 
 export default CareGiverRxListPage;

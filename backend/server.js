@@ -340,7 +340,29 @@ app.post('/linkAccounts', async (req, res) => {
       throw error;
     }
   });
-
+/** Unlink Accounts
+* Frontend req: caregiver_id (user_id of the CAREGIVER), patient_id(user_id of the PATIENT)
+ * Backend res: message 'Account link deleted successfully'
+ * Postman Check - SUCCESS
+ */
+app.post("/unlinkaccount", async (req, res) => {
+  if (!req.body.caregiver_id || !req.body.patient_id) {
+    return res.status(400).send({ error: 'user_id is required' });
+  }
+  console.log("Unlinking accounts");
+  try {
+    console.log(req.body);
+    const {caregiver_id, patient_id} = req.body;
+    const unlinkquery = 'DELETE FROM account_link WHERE caregiver_id = ? and patient_id = ?;';
+    const [results, fields] = await db.query(unlinkquery, [caregiver_id, patient_id]);
+    if (results.affectedRows == 1) {
+      return res.send({ message: 'Account link deleted successfully' });
+    }
+    return res.status(404).send({ message: 'No account to delete' });
+  } catch (error) {
+    return res.status(500).send({ error: 'Server error' });
+  }
+  });
  /** Add Medication
  * Accounts for nullable entries (description, end date)
  * Frontend req: user_id (patient id), 
@@ -517,32 +539,18 @@ app.post("/logout", async (req, res) => {
 });
 
 /** Add Alert
- * Frontend req: freq, day [array], time [array], prescription_id
+ * Frontend req: repeat, day [array], time [array], prescription_id
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */
 app.post('/addalert', async (req, res) => {
-  const freq = req.body.freq;
+  const repeat = req.body.repeat;
   let day = req.body.day;
   let time = req.body.time;
   const prescription_id = req.body.prescription_id;
 
-  if ( !freq || !time || !prescription_id ) {
+  if ( !repeat || !time || !prescription_id ) {
     return res.status(400).json({ msg: "Missing one or more required fields in req" });
-  }
-
-  time = time.slice(1, -1);
-  time = time
-          .replace(/'/g, '')
-          .split(',')
-          .map(str => str.trim());
-
-  if (day !== null) {
-    day = day.slice(1, -1);
-    day = day
-          .replace(/'/g, '')
-          .split(',')
-          .map(str => str.trim());
   }
 
   try {
@@ -555,7 +563,9 @@ app.post('/addalert', async (req, res) => {
     const startDate = prescription_info[1];
     const endDate = prescription_info[2];
 
-    const date_time = await getDateTimeArr(freq, day, time, startDate, endDate);
+    const date_time = await getDateTimeArr(repeat, day, time, startDate, endDate);
+
+    console.log("THIS IS THE DATETIME ARR: " + date_time)
 
     const insertQuery = `INSERT INTO alert (receiver, prescription_id, send_time, is_active) VALUES (?, ?, ?, 1);`;
     let add_success = 0;
@@ -632,6 +642,7 @@ app.post("/alertcompleted", async (req, res) => {
     return res.status(500).json({ "error": "Internal server error" });
   }
 });
+
 /*---------End of Routes-----------*/
 
 /* Where our app will listen from */
@@ -745,8 +756,14 @@ function isDayIncluded(dayArr, date) {
 
 // Formats dates to a datetime format for the 
 async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_date) {
+  console.log("getDateTimeArr")
   let date_time = [];
-  let current_date = new Date(start_date);
+  let current_date = new Date();
+  let pres_start_date = new Date(start_date);
+
+  if (pres_start_date > current_date) {
+    current_date = pres_start_date;
+  }
 
   switch (freq) {
     case 'daily':
@@ -763,6 +780,7 @@ async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_d
 
           current_date.setDate(current_date.getDate() + 1);
       }
+      console.log(date_time)
       return date_time;
     
     case 'weekly':
