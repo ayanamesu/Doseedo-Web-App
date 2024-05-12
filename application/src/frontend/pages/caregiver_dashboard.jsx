@@ -17,7 +17,13 @@ function Caregiver() {
 
     useEffect(() => {
 
-         
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!" + userId);
+        } else {
+            alert("You need to relog in!")
+            navigate('/');
+        }
     }, [userId]);
 
     const handleCalendarClick = () => {
