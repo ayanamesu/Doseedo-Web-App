@@ -10,16 +10,15 @@ const Reminders = ({apiLink}) => {
     const [user_id, setUserId] = useState("");
     const [alert_id,setAlert_id]=useState("");
     const [alertData, setAlertData] = useState([]);
+
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
             setUserId(Cookies.get('user_id'));
-           // console.log("User id has been set!" + user_id)
         } else {
             alert("You need to relog in!")
             navigate('/');
         }
         
-        // pullAlerts returns: (alert_id) id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
         axios.post(apiLink + '/pullAlerts', {user_id: user_id})
         .then(response => {
             console.log("Alert successfuly pulled:", response.data);
@@ -33,8 +32,7 @@ const Reminders = ({apiLink}) => {
     }, [user_id, apiLink]);
 
     const handleTaken = (id) => {
-         setAlert_id(id);
-
+        setAlert_id(id);
         axios.post(apiLink + '/alertcompleted', {alert_id: id})
         .then(response => {
             console.log("Alert successfuly archeved:", response.data);   
@@ -43,6 +41,7 @@ const Reminders = ({apiLink}) => {
             console.error('Error archeving Alert:', error);         
         })
     }
+
     let convertTime = (inputTime) => {
         let utcDate = new Date(inputTime);
         let pacificDate = new Date(utcDate.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
@@ -54,7 +53,6 @@ const Reminders = ({apiLink}) => {
             </div>
         );
     }
-        // pullAlerts returns: (alert_id) id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
 
     return (
         <div className="reminder-page">
@@ -66,7 +64,6 @@ const Reminders = ({apiLink}) => {
                             <strong>{reminder.med_name}</strong>
                             <div className="notification-info">
                                 <p>Dose amount: {reminder.dose_amt}</p>
-                                {/* <p>{reminder.send_time}</p> */}
                                 {convertTime(reminder.send_time)}
                             </div>
                         </div>
