@@ -34,7 +34,7 @@ function App() {
 
   // TO DO: May need to change this to the ec2 instance when we finally migrate to the server
   useEffect(() => {
-    axios.get('http://localhost:8000/env-var')
+    axios.get('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/api/env-var')
       .then(response => {
         setApiLink(response.data.API_LINK);
         console.log("This is the apiLink: " + apiLink);
