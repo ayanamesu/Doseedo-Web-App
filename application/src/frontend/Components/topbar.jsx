@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faRightFromBracket, faCircleInfo, faBell, faAddressBook } from '@fortawesome/free-solid-svg-icons';
 
-function Topbar() {
+function Topbar({ apiLink }) {
     const navigate = useNavigate(); // Initialize navigate using useNavigate hook
     // const [isSessionActive] = UseSessionCheck();
     const session_id = Cookies.get('session_id');
@@ -17,19 +17,18 @@ function Topbar() {
     const handleHomeClick = () => {
         if(Cookies.get('accountType')==='patient'){
             navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
-            
         }else{
             navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
         }
       
     };
 
-    const NavigateToContacts = () => {
-        navigate("/Contacts", { replace: true }); // Programmatically navigate to "/Contacts"
-    };
+    // const NavigateToContacts = () => {
+    //     navigate("/Contacts", { replace: true }); // Programmatically navigate to "/Contacts"
+    // };
     
     const NavigateToNotifications = () => {
-        navigate("/Notifications", { replace: true }); // Programmatically navigate to "/Notifications"
+        navigate("/reminders", { replace: true }); // Programmatically navigate to "/Notifications"
     };
     
     const NavigateToAbout = () => {
@@ -40,15 +39,15 @@ function Topbar() {
              
         // Handle sign out
        
-        axios.post('http://localhost:8000/logout', data)//userData contains session id 
+        axios.post(apiLink + '/logout', data)//userData contains session id 
         .then((response) => {
             console.log("response Status"+response.status);
             if (response.status == 200) {
                 // document.cookie = "session_id=; expires=Thu, 01 Jan 1942 00:00:00 UTC; path=/;";
                 Cookies.remove("session_id");
                 Cookies.remove("user_id");
-                Cookies.remove("user_accountType");
-                alert("Sucessfuly logged out!");
+                Cookies.remove("accountType");
+                alert("Sucessfully logged out!");
                 navigate('/');
             }
         })
@@ -63,7 +62,7 @@ function Topbar() {
             <div className="topbar">
                 <h1 className="site-logo" onClick={handleHomeClick}>Doseedo</h1>
                 <div className="topbar-buttons">
-                    <button className="topbar-button" onClick={NavigateToContacts}><FontAwesomeIcon icon={faAddressBook}/> Contacts</button>
+                    {/* <button className="topbar-button" onClick={NavigateToContacts}><FontAwesomeIcon icon={faAddressBook}/> Contacts</button> */}
                     <button className="topbar-button" onClick={NavigateToNotifications}><FontAwesomeIcon icon={faBell}/> Notifications</button>
                     <button className="topbar-button" onClick={NavigateToAbout}><FontAwesomeIcon icon={faCircleInfo} /> About Us</button>
                     <button className="topbar-button" onClick={NavigateToSignOut}><FontAwesomeIcon icon={faRightFromBracket} /> Sign Out</button>

@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
-const HomePage = () => {
+
+const HomePage = ({ apiLink }) => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
@@ -50,6 +51,7 @@ const HomePage = () => {
     
   function handleLoginForm(event) {
     if ( !email || !password ) {
+        event.preventDefault();
         alert("Please fill out all the fields.");
         return;
     }
@@ -61,7 +63,7 @@ const HomePage = () => {
         password: password
     }
 
-    axios.post('http://localhost:8000/login', userData)
+    axios.post(apiLink + '/login', userData)
     .then(res => {
         console.log(res.status); 
         //res = backend res.status(200).json(req.session.id); from the post
@@ -79,12 +81,12 @@ const HomePage = () => {
             setCookie("session_id", res.data.session_id, { sameSite: 'lax'});
             setCookie("user_id", res.data.user_id, { sameSite: 'lax'});
             
-            alert("Successfuly logged In!");
+            alert("Successfully logged In!");
             // TODO: Frontend - 
             // the dashboard page switch based on userid(account_type)
             //user switch
             console.log(userData);
-            console.log(res.data);
+            console.log("data:"+res.data);
             if(res.data.user_accountType==='patient'){
                 setCookie('accountType', res.data.user_accountType, { sameSite: 'lax'});
                 navigate('/patient_dashboard');
@@ -93,8 +95,10 @@ const HomePage = () => {
                 navigate('/caregiver_dashboard');
             }
             console.log("redirecting based on the account type");
+    
 
-
+        }else if(res.status === 403){
+            console.log("User crendentials are not good");
         }
     })
     .catch(err => console.log(err));
@@ -128,7 +132,7 @@ function handleRegisterForm(event) {
         password: password
     }
    
-    axios.post('http://localhost:8000/Register', userData)
+    axios.post(apiLink + '/register', userData)
         .then(res => {
             console.log(res.status);
             if (res.status === 201) {

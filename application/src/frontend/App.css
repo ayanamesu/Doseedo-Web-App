@@ -148,6 +148,7 @@
     padding: 30px 90px;
     width: 30%;
     outline: 1px solid black;
+    
 }
 
 .homepage-form {
@@ -155,6 +156,7 @@
     border-radius: 1%;
     outline: 4px solid black;
     padding: 10px;
+    overflow: auto;
 }
 
 .signup-box h2{
@@ -482,7 +484,7 @@
 }
 
 .account {
-    box-sizing: border-box; /* Include padding and border in the width */
+    box-sizing: border-box;
     text-align: center;
     width: 20%;
     margin: 10px;
@@ -492,7 +494,12 @@
     border-radius: 5px;
     box-shadow: 5px 10px 5px rgba(97, 21, 21, 0.7);
 }
-.account p {
+.account-data{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.account span {
     font-size: 16px;
     margin-bottom: 5px;
     font-style: italic;
@@ -577,6 +584,7 @@
 
 .profile-container #profile-name {
     font-size: 15px;
+    display: flex;
 }
 
 .profile-buttons button {
@@ -601,15 +609,49 @@
     padding: 10px;
     background-color: white;
 }
+.profile-details{
+    width:400px;
+}
 .detail-line {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin: 5px;
+    border-bottom: 1px solid black;
+    margin-bottom: 20px;
 }
+.edit-profile-form{
+    display: grid;
+    gap: 15px;
+}
+.edit-profile-form input{
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+}
+#submitButton{
+    background-color: var(--navbar-background-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+    width: 100%;
+    margin: 0 auto;
+}
+#submitButton:hover{
+    background-color: #967259;
+}
+
 
 /*---------------------------    Medication List Page    --------------------------------- */
 
+.rxlist{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+}
 .pill {
     height: 110vh;
     background-image: url("./pics/pillbottle.jpg");
@@ -629,12 +671,53 @@
     width: 95%;
     outline: 1px solid black;
 }
+.medication-actions{
+    display: flex;
+    justify-content: space-between;
+    padding: 0 5px;
+}
+.navButtons{
+    background-color: var(--navbar-background-color);
+    color: white;
+    flex: 1 0 calc(25% - 10px);
+    margin: 5px;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    border-radius: 0.5em;
+    outline: none;
+    cursor: pointer;
+}
+.navButtons:hover{
+    background-color: #967259;
+}
 .meds-buttons{
     display: flex;
     justify-content: space-between;
     width: 100%;
     padding: 0 5px;
 }
+.medlist-button{
+    display: flex;
+    justify-content: center;
+}
+
+.medlist-button button{
+    background-color: var(--navbar-background-color);
+    color: white;
+    margin: 5px;
+    padding: 10px;
+    text-align: center;
+    border: none;
+    border-radius: 0.5em;
+    outline: none;
+    cursor: pointer;
+}
+
+.medlist-button button:hover{
+    background-color: #967259;
+}
+
 .med-for-day-button{
     /* this is for subtracting margin pixels from button width */
     /* shout out copilot for this*/
@@ -664,6 +747,7 @@
 }
 
 .add-medication-button {
+    justify-content: center;
     background-color: var(--navbar-background-color);
     color: white;
     flex: 1 0 calc(25% - 10px);
@@ -675,17 +759,42 @@
     outline: none;
     cursor: pointer;
 }
-
+.add-medication-button:hover {
+    background-color: #967259;
+}
 .medication-list-container{
     text-align: center;
     justify-content: center;
-    width: 47%;
+    width: 100%;
+    min-width: 500px;
     margin: 15px auto;
-    padding: 5px;
     background-color: white;
     outline: 1px solid rgb(97, 21, 21);
     border-radius: 5px;
     box-shadow: 5px 10px 5px rgba(97, 21, 21, 0.7);
+}
+.rx-list{
+    display: grid;
+    padding: 10px;
+    gap: 15px;
+}
+.rx-list input {
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+}
+.rx-list button {
+    background-color: var(--navbar-background-color);
+    height: 35px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    outline: none;
+}
+.rx-list button:hover {
+    background-color: #967259;
 }
 
 .rx-pill-bottle-form{
@@ -795,26 +904,26 @@
 /*---------------------------    caregiver rxList    -------------------------------------- */
 .caregiver-rxlist {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin: 10px;
     padding: 20px;
-    gap: 10px;
+    gap: 20px;
+    align-items: flex-start;
 }
 
 .paitent-list-container {
+    flex: 1;
     flex: 0 0 20%; 
     padding: 10px;
     box-sizing: border-box;
-    background-color: white;
-    border: 1px solid maroon;
-    border-radius: 10px;
+    /* background-color: white; */
+    border: 1px solid black;
+    border-radius: 5px;
 }
-
-.medication-list-container {
-    flex: 0 0 80%; 
-    padding: 10px;
-    box-sizing: border-box;
+.paitent-list-container h1 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-style: italic;
+    text-decoration: underline;
 }
 
 .rxlist-account {
@@ -823,9 +932,202 @@
     gap: 10px;
 }
 
-.paitent {
-    border: 1px solid #ccc;
+.patient {
+    display: flex;
+    flex-direction: column;
+    background-color: #FAF9F6;
+    border: 1px solid black;
     padding: 10px;
     border-radius: 5px;
-    border-color: maroon;
+    align-items: center;
+    justify-content: center;
+}
+.patient p{
+    margin: 10px;
+}
+.patient:hover {
+    background-color: var(--navbar-background-color);
+    color: white;
+    cursor: pointer;
+}
+.caregiver-medicationlist{
+    flex: 1;
+    /* flex: 0 0 75%; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white;
+}
+.medication-item{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.medication-item-line{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid black;
+    width: 100%;
+}
+.caregiver-medication-actions{
+    display: flex;
+    justify-content: center;;
+    padding: 5px;
+}
+.caregiver-medicine{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.add-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 5px;
+    width: 100%;
+}
+.add-form .rx-list{
+    width: 40%;
+}
+
+@media (max-width: 600px) {
+    .caregiver-rxlist {
+        flex-direction: column;
+        align-items: normal;
+    }
+}
+.reminder-form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    background-color: whitesmoke;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+.reminder-form p{
+    font-size: 20px;
+    font-weight: bold;
+    font-style: italic;
+    text-align: center;
+}
+.input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+.reminder-form input{
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+    width: 80%;
+}
+.reminder-form select{
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 5px;
+    outline: none;
+    width: 85%;
+}
+/*---------------------------    Emergency Contact    -------------------------------------- */
+.emergencyContact-Page{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.emergency-contact-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: white;
+    border-radius: 1px;
+    box-shadow: 5px 10px 5px rgba(0, 0, 0, 0.5);
+    margin: 5px auto;
+    outline: 1px solid maroon;
+    gap: 20px;
+}
+.emergency-contact-form input{
+    padding: 10px;
+    border: 1px solid grey;
+    border-radius: 1px;
+    outline: none;
+}
+.emergency-contact-form button{
+    background-color: var(--navbar-background-color);
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.emergency-contact-form input::placeholder {
+    color: var(--navbar-background-color);
+    opacity: 0.5;
+}
+/*---------------------------    reminder-page    -------------------------------------- */
+.reminder-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.notification-box{
+    display: flex;
+    justify-content: space-between;
+    width: 70%; 
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: var(--navbar-background-color);
+}
+.notification-data{
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    padding: 15px;
+    color: white;
+}
+.notification-data p{
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.notification-info{
+    display: flex;
+    gap: 10px;
+}
+.notification-box button{
+    margin: 10px;
+    background-color: #967259;
+    
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: black;
+}
+.notification-box button:hover{
+    background-color: var(--accent-colors);
 }
