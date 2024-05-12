@@ -20,6 +20,7 @@ const Reminders = ({apiLink}) => {
             navigate('/');
         }
         
+        // pullAlerts returns: (alert_id) id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
         axios.post(apiLink + '/pullAlerts', {user_id: user_id})
         .then(response => {
             console.log("Alert successfuly pulled:", response.data);
@@ -43,6 +44,7 @@ const Reminders = ({apiLink}) => {
             console.error('Error archeving Alert:', error);         
         })
     }
+        // pullAlerts returns: (alert_id) id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
 
     return (
         <div className="reminder-page">
@@ -53,8 +55,9 @@ const Reminders = ({apiLink}) => {
                         <div className="notification-data">
                             <strong>{reminder.med_name}</strong>
                             <div className="notification-info">
-                                <p>{reminder.repeat}:</p>
-                                <p>{reminder.time}</p>
+                                <p>{reminder.dose_amt}:</p>
+                                <p>{reminder.send_time}:</p>
+
                             </div>
                         </div>
                         <button type="button" id="submitButton" onClick={() => handleTaken(reminder.id)}>Taken</button>
