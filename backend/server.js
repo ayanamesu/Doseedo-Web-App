@@ -760,7 +760,7 @@ function isDayIncluded(dayArr, date) {
   return dayArr.includes(dayName);
 }
 
-// Formats dates to a datetime format for the 
+// Formats dates to a datetime format for the database
 async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_date) {
   console.log("getDateTimeArr")
   let date_time = [];
