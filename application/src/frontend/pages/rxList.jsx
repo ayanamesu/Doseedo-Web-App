@@ -6,15 +6,13 @@ import Cookies from 'js-cookie';
 import BackButton from "../Components/BackButton";
 
 function RxListPage({apiLink}) {
-    
+    const [user_id, setUserId] = useState("");
+    //med
     const [medications, setMedications] = useState([]);
     const [selectedMedicationId, setSelectedMedicationId] = useState(0);
     const [showMedList, setShowMedList] = useState(true); // Define state variables
     const [showAddMed, setShowAddMed] = useState(false);
     const [showDeleteMed, setShowDeleteMed]= useState(false);
-  
-    const [user_id, setUserId] = useState("");
-    const [id, setPrescriptionId]= useState("");
     const [medName, setMedName] = useState("");
     const [description, setDescription] = useState("");
     const [doseAmt, setDoseAmt] = useState("");
@@ -24,6 +22,15 @@ function RxListPage({apiLink}) {
     const [doctorLastName, setDoctorLastName] = useState("");
     const [doctorPhone, setDoctorPhone] = useState("");
     const navigate = useNavigate();
+
+    //reminder
+    const [showReminderForm, setShowReminderForm] = useState(false);
+    const [repeat, setRepeat] = useState("");
+    const [frequency, setFrequency] = useState(1);
+    const[isWeekly,setIsweekly]=useState(false);
+    const[dayArray, setDayArray]=useState([]);
+        const[dateArray, setDateArray]=useState([]);
+        const[timeArray, setTimeArray]=useState([]);
 
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
@@ -230,23 +237,13 @@ function RxListPage({apiLink}) {
             );
         } 
     };
-    const renderMedList = () => {
-        if (showMedList) {
-            // return <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button>;
-        }  else if (showAddMed) {
-            return (
-                <div> 
-                    {/* <button className="section-title" onClick={handleMedsForTheDayClick}>Meds for <br /> the day</button> */}
-                    <button className="section-title" onClick={handleMedListClick}>Medication list</button>
-                </div>
-            );
-        }
-    };
+   
 
     const renderAddDeleteButton = () => {
         if (!showAddMed ) { 
             return (
                 <>
+                 <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
                     <button className="delete-medication-button" onClick={handleDeleteMedicationClick}>Delete medication</button>
                     <button className="add-medication-button" onClick={handleAddMedicationClick}>Add medication</button>
  
@@ -263,22 +260,205 @@ function RxListPage({apiLink}) {
         }
         return null; // If showAddMed is true, return null (no buttons rendered)
     };
+  //Frontend req: freq, day [array], time [array], prescription_id
+  const handleAddAlert = (event) => {
+    event.preventDefault(); // Prevent default form submission behavior
+    if(repeat==='weekly'){
+        console.log("weekly")
+        setIsweekly(true);
+    }
+    else if (repeat === 'daily') {
+        console.log("daily")
+        setIsweekly(false);
+        setDateArray([]);
+    }else if(repeat==='monthly'){
+        console.log("monthly")
+        setIsweekly(false);
+    }
+    
+   console.log("isweekly:"+ isWeekly)
+    let alertData = {
+        repeat: repeat,
+        // freq: frequency, not needed for abckend
+        day: isWeekly ? dayArray : dateArray,
+        time: timeArray,
+        prescription_id: medications[selectedMedicationId].id
+    };
+    console.log("patient id: "+user_id );
+    console.log("repeat "+alertData.repeat);
+    // console.log("freq:"+alertData.freq); not needed for backend
+    console.log("day:"+alertData.day);
+    console.log("time:"+alertData.time);
+    console.log("medID:"+alertData.prescription_id);
 
+    axios.post(apiLink + '/addalert', alertData)
+        .then(response => {
+            console.log('Success adding alert:', response.status);
+            alert("Reminder successfully made!") 
+        })
+        .catch(error => {
+            console.error('Error adding alert:', error);
+            alert("Error adding alert:");
+            
+        });
+        //initialzie after API
+        setDayArray([]);
+        setDateArray([]);
+        setIsweekly(false);
+        setFrequency(1);
+        setTimeArray([]);
+        setShowReminderForm(false);
+        
+};
+
+const handleTimeChange = (event, index) => {
+    // Handle time change for a specific input field
+    const newTime = event.target.value;
+    // Assuming you have an array to store time values
+    setTimeArray(prevTimeArray => {
+        const updatedTimeArray = [...prevTimeArray];
+        updatedTimeArray[index] = newTime;
+        return updatedTimeArray;
+    });
+};
+
+const handleDateChange = (event, index) => {
+    // Handle date change for a specific input field
+    const newDate = event.target.value;
+    console.log("newdate: "+newDate)
+ 
+    setDateArray(prevDateArray => {
+        const updatedDateArray = [...prevDateArray];
+        updatedDateArray[index] = newDate;
+        return updatedDateArray;
+    });
+    console.log("newdateArray: "+dateArray)
+    setIsweekly(false)
+};
+
+
+const handleDayChange = (event, index) => {
+    // Handle date change for a specific input field
+    const newDay = event.target.value;
+    console.log("newday: "+newDay)
+    
+    setDayArray(prevDayArray => {
+        const updatedDateArray = [...prevDayArray];
+        updatedDateArray[index] = newDay;
+        return updatedDateArray;
+    });
+    console.log("newdateArray: "+dayArray)
+    setIsweekly(true)
+};
+const renderReminderForm = () => {
+    
     return (
-        <div className="app-container">
-            <main className="rxlist">
-                <div className="columns-container">
-                    <section className="column medication-list">
-                        <div className="medication-list-container">
-                            {switchPage(showMedList, medications)}
+        <div className="add-form">
+            <h2>Add Reminder</h2>
+            <form className="reminder-form" onSubmit={handleAddAlert}>
+                <p>Repeat:</p>
+                <select onChange={e => setRepeat(e.target.value)}>
+                <option value="" disabled selected>Select...</option>
+
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+                {repeat === "daily" && (
+                    <>
+                      
+                        <p>Frequency:</p>
+                        <select onChange={e => setFrequency(Number(e.target.value))}>
+                        <option value=""disabled selected>Select Frequency</option>
+                            <option value="1"defaultValue>1 time per day</option>
+                            <option value="2">2 times per day</option>
+                            <option value="3">3 times per day</option>
+                        </select>
+                        {Array.from({ length: frequency }, (_, i) => (
+                            <div className="input-wrapper" key={`daily_${i}`}>
+                                <p>Time {i + 1}:</p>
+                                <input type="time" placeholder={`Time ${i + 1}`} onChange={e => handleTimeChange(e, i)} />
+                            </div>
+                        ))}
+                    </>
+                )}
+                {repeat === "weekly" && (
+                    <>
+                      
+                        <p>Frequency:</p>
+                        <select onChange={e => setFrequency(Number(e.target.value))}>
+                        <option value=""disabled selected>Select Frequency</option>
+                            <option value="1"defaultValue>1 time per week</option>
+                            <option value="2">2 times per week</option>
+                            <option value="3">3 times per week</option>
+                        </select>
+                        {Array.from({ length: frequency }, (_, i) => (
+                        <div className="input-wrapper" key={`weekly_${i}`}>
+                            <p>Day {i + 1}:</p>
+                            <select id={`day_${i}`} onChange={e => handleDayChange(e, i)}>
+                            <option value="" disabled selected>Select a day</option>
+                                <option value="mon">Monday</option>
+                                <option value="tue">Tuesday</option>
+                                <option value="wed">Wednesday</option>
+                                <option value="thu">Thursday</option>
+                                <option value="fri">Friday</option>
+                                <option value="sat">Saturday</option>
+                                <option value="sun">Sunday</option>
+                            </select>
+                            <p>Time:</p>
+                            <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
                         </div>
-                    </section>
+                        ))}
+                    </>
+                )}
+                {repeat === "monthly" && (
+                    <>
+                       
+                        <p>Frequency:</p>
+                        <select onChange={e => setFrequency(Number(e.target.value))}>
+                        <option value=""disabled selected>Select Frequency</option>
+                            <option value="1"defaultValue>1 time per month</option>
+                            <option value="2">2 times per month</option>
+                            <option value="3">3 times per month</option>
+                        </select>
+                        {Array.from({ length: frequency }, (_, i) => (
+                            <div className="input-wrapper" key={`monthly_${i}`}>
+                                <p>Date {i + 1}:</p>
+                                <input type="number" placeholder={`Date ${i + 1}`} id={`date_${i}`} min="1" max="31"  onChange={e => handleDateChange(e, i)} />
+                                      <p>Time:</p>
+                                <input type="time" placeholder="Time" onChange={e => handleTimeChange(e, i)} />
+                            </div>
+                        ))}
+                    </>
+                )}
+                <div className="caregiver-medication-actions">
+                    <button className="navButtons" type="button" onClick={() => setShowReminderForm(false)}>Cancel</button>
+                    <button className="navButtons" type="submit">Submit</button>
                 </div>
-                {/* {renderMedList()}   */}
-                {renderAddDeleteButton()}
-            </main>
+            </form>
         </div>
     );
-}
+    };
+        return (
+            <div>
+            {showReminderForm ? renderReminderForm() : (
+            <div className="app-container">
+                <main className="rxlist">
+                    <div className="columns-container">
+                        <section className="column medication-list">
+                            <div className="medication-list-container">
+                                {switchPage(showMedList, medications)}
+                            </div>
+                        </section>
+                    </div>
+                    {/* {renderMedList()}   */}
+                    {renderAddDeleteButton()} 
+                </main>
+            </div>
+            )}
+            </div>
+        );
+    }
+
 
 export default RxListPage;

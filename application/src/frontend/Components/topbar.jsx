@@ -15,12 +15,16 @@ function Topbar({ apiLink }) {
         session_id : session_id
     }
     const handleHomeClick = () => {
-        if(Cookies.get('accountType')==='patient'){
-            navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
-        }else{
-            navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+        if(window.location.pathname !== '/'){
+            if(Cookies.get('accountType')==='patient'){
+                navigate("/patient_dashboard", { replace: true }); // Programmatically navigate to "/"
+            }else if(window.location.pathname === '/about' && !session_id){
+                navigate("/");
+            }
+            else{
+                navigate("/caregiver_dashboard", { replace: true }); // Programmatically navigate to "/"
+            }
         }
-      
     };
 
     // const NavigateToContacts = () => {
@@ -56,20 +60,30 @@ function Topbar({ apiLink }) {
         });
         
     }; 
+    const renderNavBarButtons = () => {
+        return window.location.pathname !== '/' && session_id ? (
+            <>
+                <button className="topbar-button" onClick={NavigateToNotifications}><FontAwesomeIcon icon={faBell}/> Notifications</button>
+                <button className="topbar-button" onClick={NavigateToAbout}><FontAwesomeIcon icon={faCircleInfo} /> About Us</button>
+                <button className="topbar-button" onClick={NavigateToSignOut}><FontAwesomeIcon icon={faRightFromBracket} /> Sign Out</button>
+            </>
+        ) : (
+            <>
+                <button className="topbar-button" onClick={NavigateToAbout}><FontAwesomeIcon icon={faCircleInfo} /> About Us</button>
+            </>
+        );
+    }
 
-    if(window.location.pathname !== "/"){
         return (
             <div className="topbar">
                 <h1 className="site-logo" onClick={handleHomeClick}>Doseedo</h1>
                 <div className="topbar-buttons">
                     {/* <button className="topbar-button" onClick={NavigateToContacts}><FontAwesomeIcon icon={faAddressBook}/> Contacts</button> */}
-                    <button className="topbar-button" onClick={NavigateToNotifications}><FontAwesomeIcon icon={faBell}/> Notifications</button>
-                    <button className="topbar-button" onClick={NavigateToAbout}><FontAwesomeIcon icon={faCircleInfo} /> About Us</button>
-                    <button className="topbar-button" onClick={NavigateToSignOut}><FontAwesomeIcon icon={faRightFromBracket} /> Sign Out</button>
+                    {renderNavBarButtons()}
                 </div>
             </div>
         );
     }
-}
+
 
 export default Topbar;

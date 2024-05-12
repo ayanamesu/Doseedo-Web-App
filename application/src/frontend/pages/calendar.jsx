@@ -1,12 +1,26 @@
 // still debugging skeleton code
 
-import React from "react";
-import { Navigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+// import useSessionCheck from '../Components/UseSessionCheck';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
 import "../App.css";
+import { useEffect } from 'react';
+import Cookies from 'js-cookie';
 
 function Header() {
+    const navigate = useNavigate();
+    const [userId, setUserId] = useState("" );
+
+    useEffect(() => {
+        if (Cookies.get('user_id') && Cookies.get('session_id')) {
+            setUserId(Cookies.get('user_id'));
+            console.log("User id has been set!" + userId);
+        } else {
+            alert("You need to relog in!")
+            navigate('/');
+        }
+    }, [userId]);
     const handleSignOut = () => {
         // Sign out logic here
         console.log("Sign out clicked");

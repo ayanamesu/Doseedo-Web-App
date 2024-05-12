@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 import { fas } from "@fortawesome/free-solid-svg-icons";
 
 
-const EmergencyContact = () => {
+const EmergencyContact = ({apiLink}) => {
  
      
  
@@ -35,7 +35,7 @@ const EmergencyContact = () => {
             ...contactInfo
 
         };
-        axios.post('http://localhost:8000/emergencycontact', data )
+        axios.post(apiLink + '/emergencycontact', data )
         // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/addEmergencyContact', data )
             .then((res) => {
     
@@ -58,7 +58,7 @@ const EmergencyContact = () => {
             
             
 
-            axios.post('http://localhost:8000/emergencycontact/add',contactInfo )
+            axios.post(apiLink + '/emergencycontact/add',contactInfo )
             // axios.post('http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com/addEmergencyContact', data )
                 .then((res) => {
                 console.log("we are here");

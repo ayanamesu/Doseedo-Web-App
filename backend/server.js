@@ -539,32 +539,18 @@ app.post("/logout", async (req, res) => {
 });
 
 /** Add Alert
- * Frontend req: freq, day [array], time [array], prescription_id
+ * Frontend req: repeat, day [array], time [array], prescription_id
  * Backend res: Status code, msg
  * Postman Check - SUCCESS
  */
 app.post('/addalert', async (req, res) => {
-  const freq = req.body.freq;
+  const repeat = req.body.repeat;
   let day = req.body.day;
   let time = req.body.time;
   const prescription_id = req.body.prescription_id;
 
-  if ( !freq || !time || !prescription_id ) {
+  if ( !repeat || !time || !prescription_id ) {
     return res.status(400).json({ msg: "Missing one or more required fields in req" });
-  }
-
-  time = time.slice(1, -1);
-  time = time
-          .replace(/'/g, '')
-          .split(',')
-          .map(str => str.trim());
-
-  if (day !== null) {
-    day = day.slice(1, -1);
-    day = day
-          .replace(/'/g, '')
-          .split(',')
-          .map(str => str.trim());
   }
 
   try {
@@ -577,7 +563,9 @@ app.post('/addalert', async (req, res) => {
     const startDate = prescription_info[1];
     const endDate = prescription_info[2];
 
-    const date_time = await getDateTimeArr(freq, day, time, startDate, endDate);
+    const date_time = await getDateTimeArr(repeat, day, time, startDate, endDate);
+
+    console.log("THIS IS THE DATETIME ARR: " + date_time)
 
     const insertQuery = `INSERT INTO alert (receiver, prescription_id, send_time, is_active) VALUES (?, ?, ?, 1);`;
     let add_success = 0;
@@ -605,17 +593,23 @@ app.post('/addalert', async (req, res) => {
 
 /** Get Alerts
  * Frontend req: user_id
- * Backend res: Status code, id, receiver, prescription_id, send_time, is_active
+ * Backend res: Status code, id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
  * Postman Check - SUCCESS
  */ 
 app.post("/pullAlerts", async (req, res) => {
   const { user_id } = req.body;
+  console.log("Pulling alerts for " + user_id)
   if (!user_id) {
     return res.status(400).json({ msg: "Missing user_id from req" });
   }
 
   try{
-    const alertQuery = `SELECT * FROM alert WHERE receiver = ? AND is_active = 1 AND send_time <= NOW()`
+    const alertQuery = `SELECT a.*, p.med_name, p.dose_amt
+                        FROM alert AS a
+                        JOIN prescription AS p ON a.prescription_id = p.id
+                        WHERE a.receiver = ? 
+                        AND a.is_active = 1 
+                        AND a.send_time <= NOW();`
     const [results, fields] = await db.query(alertQuery, [user_id]);
     if (results && results.length > 0) {
       return res.status(200).json(results);
@@ -768,8 +762,14 @@ function isDayIncluded(dayArr, date) {
 
 // Formats dates to a datetime format for the 
 async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_date) {
+  console.log("getDateTimeArr")
   let date_time = [];
-  let current_date = new Date(start_date);
+  let current_date = new Date();
+  let pres_start_date = new Date(start_date);
+
+  if (pres_start_date > current_date) {
+    current_date = pres_start_date;
+  }
 
   switch (freq) {
     case 'daily':
@@ -786,6 +786,7 @@ async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_d
 
           current_date.setDate(current_date.getDate() + 1);
       }
+      console.log(date_time)
       return date_time;
     
     case 'weekly':
