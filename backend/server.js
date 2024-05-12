@@ -593,7 +593,7 @@ app.post('/addalert', async (req, res) => {
 
 /** Get Alerts
  * Frontend req: user_id
- * Backend res: Status code, id, receiver, prescription_id, send_time, is_active
+ * Backend res: Status code, id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
  * Postman Check - SUCCESS
  */ 
 app.post("/pullAlerts", async (req, res) => {
@@ -604,7 +604,12 @@ app.post("/pullAlerts", async (req, res) => {
   }
 
   try{
-    const alertQuery = `SELECT * FROM alert WHERE receiver = ? AND is_active = 1 AND send_time <= NOW()`
+    const alertQuery = `SELECT a.*, p.med_name, p.dose_amt
+                        FROM alert AS a
+                        JOIN prescription AS p ON a.prescription_id = p.id
+                        WHERE a.receiver = ? 
+                        AND a.is_active = 1 
+                        AND a.send_time <= NOW();`
     const [results, fields] = await db.query(alertQuery, [user_id]);
     if (results && results.length > 0) {
       return res.status(200).json(results);

@@ -20,6 +20,7 @@ const Reminders = ({apiLink}) => {
             navigate('/');
         }
         
+        // (alert_id) id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
         axios.post(apiLink + '/pullAlerts', {user_id: user_id})
         .then(response => {
             console.log("Alert successfuly pulled:", response.data);
