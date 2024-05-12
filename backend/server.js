@@ -760,16 +760,11 @@ function isDayIncluded(dayArr, date) {
   return dayArr.includes(dayName);
 }
 
-// Formats dates to a datetime format for the 
+// Formats dates to a datetime format for the database
 async function getDateTimeArr(freq, dayArr = [], timeArr = [], start_date, end_date) {
   console.log("getDateTimeArr")
   let date_time = [];
-  let current_date = new Date();
-  let pres_start_date = new Date(start_date);
-
-  if (pres_start_date > current_date) {
-    current_date = pres_start_date;
-  }
+  let current_date = new Date(start_date);
 
   switch (freq) {
     case 'daily':
