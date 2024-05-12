@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import "../App.css";
-import { useEffect } from 'react';
 import Cookies from 'js-cookie';
 
 const PatientList = ({ apiLink }) => {
     const navigate = useNavigate();
     const [userId, setUserId] = useState("");
     const [AccountList, setAccountList] = useState([]);
+    const [otherUserId, setOtherUserId] = useState("");
+    
 
     useEffect(() => {
         if (Cookies.get('user_id') && Cookies.get('session_id')) {
@@ -26,8 +27,9 @@ const PatientList = ({ apiLink }) => {
                 
                 if (data.user_id){
                     const apiRes = await axios.post(apiLink + '/showpatients', data);
-                    
                     if (apiRes.status === 200) {
+                        setOtherUserId(apiRes.data[0].patient_id);
+                        console.log(apiRes.data);
                         setAccountList(apiRes.data);
                     } else if (apiRes.status === 204) {
                         console.log("There are no patients for this user");
@@ -39,8 +41,26 @@ const PatientList = ({ apiLink }) => {
                 console.error(error);
             }
         };
-            fetchAccountList();
-    }, [userId]);
+        fetchAccountList();
+    }, [userId, apiLink]);
+
+    const handleUnlinkClick = async (otherUserId) => {
+        try {
+            const data = {
+                caregiver_id: userId, 
+                patient_id: otherUserId 
+            };
+            const apiRes = await axios.post(apiLink + '/unlinkaccount', data);
+            if (apiRes.status === 200) {
+                window.location.reload();
+                alert("Account unlinked successfully!");
+            } else {
+                alert("Account unlink failed");
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     return (
         <div>
@@ -63,7 +83,11 @@ const PatientList = ({ apiLink }) => {
                         <div className="account-data">
                             <strong>Phone: </strong> <span>{accountLink.phone}</span>
                         </div>
-                        <button>Unlink</button>
+                        <button onClick={() => {
+                                                const otherUserId = accountLink.id;
+                                                setOtherUserId(otherUserId);
+                                                handleUnlinkClick(otherUserId);
+                                            }}>Unlink</button>
                     </div>
                 ))}
             </div>
