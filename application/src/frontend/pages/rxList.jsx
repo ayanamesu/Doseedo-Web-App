@@ -55,15 +55,13 @@ function RxListPage({apiLink}) {
             alert("You need to relog in!")
             navigate('/');
         }
-        
-    }, [user_id]);
-    useEffect(() => {
-        if (apiLink) {
-          fetchMeds();
-          setIsAdded(false);
-          setIsDeleted(false);
-        }
-      }, [apiLink,isAdded,isDeleted]); 
+        if (apiLink !== null&&user_id!==null) {
+            fetchMeds();
+            setIsAdded(false);
+            setIsDeleted(false);
+          }  
+    }, [apiLink, isAdded, isDeleted,user_id]);
+ 
       
       const MedicationItem = ({med_name, dosage, description, start_date, end_date, doctor_first_name, doctor_last_name }) => (
         <div className="medication-item">
@@ -80,13 +78,13 @@ function RxListPage({apiLink}) {
       );
     
     function handleAddMedication(event) {
-        
+        event.preventDefault();
         if ( !user_id || !medName ||! doseAmt||!startDate||!doctorFirstName ||!doctorLastName||!doctorPhone) {
             alert("Please fill out userID, Medicine name, dose amount,start date, doctor name and phone number.");
             return;
         }
         if(doctorPhone.length > 10){
-            event.preventDefault();
+         
             alert("Invalid phone number length! Phone numbers should be 10 digits or less.");
             return;
         }
