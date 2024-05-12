@@ -528,7 +528,7 @@ app.post("/logout", async (req, res) => {
     const updateQuery = "UPDATE session SET logout_time = NOW() WHERE id = ?";
     const [results, fields] = await db.query(updateQuery, [session_id]);
     if (results && results.affectedRows == 1) {
-      return res.status(200).json({msg: "Logout successful"});
+      return res.clearCookie('connect.sid', {path: '/'}).status(200).json({msg: "Logout successful"});
     } else {
       return res.status(404).json({ "error": "Session not found" });
     }
