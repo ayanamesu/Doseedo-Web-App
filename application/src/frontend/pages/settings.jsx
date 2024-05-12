@@ -44,7 +44,7 @@ const SettingsPage = ({ apiLink }) => {
             }
         };
             fetchAccountList();
-    }, [userId]);
+    }, [userId,apiLink]);
 
     const handleGeneralClick = () => {
         navigate("/settings/General", { replace: true }); 

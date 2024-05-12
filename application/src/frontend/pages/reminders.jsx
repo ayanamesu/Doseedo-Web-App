@@ -30,47 +30,36 @@ const Reminders = ({apiLink}) => {
         })
 
 
-    }, [user_id, apiLink]);
-
-    const handleTaken = (id) => {
-         setAlert_id(id);
-
-        axios.post(apiLink + '/alertcompleted', {alert_id: id})
+    }, [user_id,apiLink]);
+   
+    const handleTaken = () => {
+         
+        axios.post(apiLink + '/alertcompleted', {alert_id: alert_id})
         .then(response => {
-            console.log("Alert successfuly archeved:", response.data);   
+            console.log("Alert successfuly archeved:", response.data);
+           
         })
         .catch(error => {
             console.error('Error archeving Alert:', error);         
         })
     }
-    let convertTime = (inputTime) => {
-        let utcDate = new Date(inputTime);
-        let pacificDate = new Date(utcDate.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
-        let date = pacificDate.toLocaleDateString();
-        let time = pacificDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
-        return(
-            <div>
-                <p>Date: {date} Time: {time}</p>
-            </div>
-        );
-    }
-        // pullAlerts returns: (alert_id) id, receiver, prescription_id, send_time, is_active, prescription name, prescription dose_amt 
 
     return (
         <div className="reminder-page">
             <h1>Notifications</h1>
-            <form className="notification-form" onSubmit={handleTaken}>
+            <form className="edit-profile-form" onSubmit={handleTaken}>
                 {alertData.map((reminder) => (
                     <div className="notification-box" key={reminder.id}>
                         <div className="notification-data">
                             <strong>{reminder.med_name}</strong>
                             <div className="notification-info">
-                                <p>Dose amount: {reminder.dose_amt}</p>
-                                {/* <p>{reminder.send_time}</p> */}
-                                {convertTime(reminder.send_time)}
+                                <p>{reminder.repeat}:</p>
+                                {/* <p>{reminder.dates.join(", ")} at: </p> */}
+                                <p>{reminder.time}</p>
                             </div>
                         </div>
-                        <button type="button" onClick={() => handleTaken(reminder.id)}>Taken</button>
+                        <button type="submit" id="submitButton">Taken</button>
+                        {setAlert_id(reminder.id)}
                     </div>
                 ))}
             </form>

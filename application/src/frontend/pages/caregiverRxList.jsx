@@ -51,7 +51,7 @@ function CareGiverRxListPage({ apiLink }) {
             navigate('/');
         }
         fetchAccountList();
-    }, [userId, navigate]);
+    }, [userId, navigate,apiLink]);
 
     
     
