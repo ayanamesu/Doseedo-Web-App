@@ -147,6 +147,10 @@ function CareGiverRxListPage({ apiLink }) {
             doctor_last_name: doctorLastName,
             doctor_phone: doctorPhone
         };
+        if(userData.doctor_phone.length > 10){
+            alert("Please enter a valid phone number that is 10 digits or less.");
+            return;
+        }
         console.log(userData);
         axios.post(apiLink + '/addmedicine', userData)
             .then(response => {
@@ -170,9 +174,9 @@ function CareGiverRxListPage({ apiLink }) {
         
         if (medications.length > 0&&selectedPatientId===selectedPatientIdMed) { 
             return (
-                <div className="caregiver-medication-actions">
-                     <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
-                    <button className="delete-medication-button" onClick={handleDeleteClick}>Delete medication</button>
+                <div className="innerCaregiver-medication-actions">
+                    <button className="navButtons" onClick={() => setShowReminderForm(true)}>Add Reminder</button>
+                    <button className="navButtons" onClick={handleDeleteClick}>Delete medication</button>
                 </div>
             );
         }
@@ -395,7 +399,7 @@ function CareGiverRxListPage({ apiLink }) {
                             ))}
                         </>
                     )}
-                    <div className="caregiver-medication-actions">
+                    <div className="">
                         <button className="navButtons" type="button" onClick={() => setShowReminderForm(false)}>Cancel</button>
                         <button className="navButtons" type="submit">Submit</button>
                     </div>

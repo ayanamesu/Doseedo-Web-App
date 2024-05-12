@@ -50,6 +50,8 @@ function RxListPage({apiLink}) {
             <div className="medication-description">Description: {description}</div>
             <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
             <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
+            <div className="medication-start-date">Start Date: {new Date(start_date).toISOString().slice(0, 10)}</div>
+            <div className="medication-end-date">End Date: {new Date(end_date).toISOString().slice(0, 10)}</div>
             <div className="medication-doctor-first-name">Doctor First Name: {doctor_first_name}</div>
             <div className="medication-doctor-last-name">Doctor Last Name: {doctor_last_name}</div>
         </div>
@@ -438,26 +440,27 @@ const renderReminderForm = () => {
             </form>
         </div>
     );
-};
-    return (
-        <div>
-        {showReminderForm ? renderReminderForm() : (
-        <div className="app-container">
-            <main className="rxlist">
-                <div className="columns-container">
-                    <section className="column medication-list">
-                        <div className="medication-list-container">
-                            {switchPage(showMedList, medications)}
-                        </div>
-                    </section>
-                </div>
-                {/* {renderMedList()}   */}
-                {renderAddDeleteButton()}
-            </main>
-        </div>
-        )}
-        </div>
-    );
-}
+    };
+        return (
+            <div>
+            {showReminderForm ? renderReminderForm() : (
+            <div className="app-container">
+                <main className="rxlist">
+                    <div className="columns-container">
+                        <section className="column medication-list">
+                            <div className="medication-list-container">
+                                {switchPage(showMedList, medications)}
+                            </div>
+                        </section>
+                    </div>
+                    {/* {renderMedList()}   */}
+                    {renderAddDeleteButton()} 
+                </main>
+            </div>
+            )}
+            </div>
+        );
+    }
+
 
 export default RxListPage;
