@@ -43,17 +43,24 @@ const Reminders = ({apiLink}) => {
         })
     }
 
+    //Put into YYYY-MM-DD HH:MM (AM/PM) format
     let convertTime = (inputTime) => {
-        let utcDate = new Date(inputTime);
-        let pacificDate = new Date(utcDate.toLocaleString("en-US", {timeZone: "America/Los_Angeles"}));
-        let date = pacificDate.toLocaleDateString();
-        let time = pacificDate.toLocaleTimeString("en-US", { hour: '2-digit', minute: '2-digit' });
-        return(
+        let date = inputTime.slice(0, 10);
+        let time = inputTime.slice(11, 16);
+
+        const [hour, minute] = time.split(':').map(num => parseInt(num, 10));
+        const period = hour >= 12 ? 'PM' : 'AM';
+        const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+
+        const formattedTime = `${hour12}:${minute < 10 ? '0' : ''}${minute} ${period}`;
+
+        return (
             <div>
-                <p>Date: {date} Time: {time}</p>
+                <p>Date: {date} Time: {formattedTime}</p>
             </div>
         );
     }
+    
 
     return (
         <div className="reminder-page">
