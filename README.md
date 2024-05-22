@@ -1,8 +1,10 @@
 **Application URL: <http://ec2-3-144-15-61.us-east-2.compute.amazonaws.com>**
 
+## Image of Web Application 
+
    ![doseedo](https://github.com/CSC-648-SFSU/csc648-01-sp24-csc-01-team04/assets/81396481/2beddedd-0e9a-4900-93a6-a8df3614a9ac)
 
-   
+
 1. Fill out the table below
 
 | Student Name | Student Email | GitHub Username | Student's role |
