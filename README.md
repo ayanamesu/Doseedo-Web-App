@@ -8,6 +8,7 @@
 ## This is a collaborative project where we developed a web application to assist seniors with medication reminders.
 
 1. Fill out the table below
+
 | Student Name | Student Email | GitHub Username | Student's role |
 | :----------: | :-----------: | :-------------: | :------------: |
 |   Yuto Mori   | ymori@sfsu.edu |      ymorisfsu   |  Team Leader   |
