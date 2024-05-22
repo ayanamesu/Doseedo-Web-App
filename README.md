@@ -5,8 +5,9 @@
    ![doseedo](https://github.com/CSC-648-SFSU/csc648-01-sp24-csc-01-team04/assets/81396481/2beddedd-0e9a-4900-93a6-a8df3614a9ac)
 
 
-1. Fill out the table below
+## This is a collaborative project where we developed a web application to assist seniors with medication reminders.
 
+1. Fill out the table below
 | Student Name | Student Email | GitHub Username | Student's role |
 | :----------: | :-----------: | :-------------: | :------------: |
 |   Yuto Mori   | ymori@sfsu.edu |      ymorisfsu   |  Team Leader   |
