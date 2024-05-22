@@ -76,7 +76,7 @@ const AboutUsPage = () => {
                 <div className="team-member">
                     <h3>Wing Lee</h3>
                     <img src={Wing}></img>
-                    <p class = "title">Git-Hub Master</p>
+                    <p class = "title">Git-Hub Master/Back-end</p>
                     <p class = "Description">I am a current undergrad just trying to graduate at this point and get my Computer Science degree and hopefully go into my masters, currently I am working as a Git-Hub master and back-end flex.</p>
                     <p><a href ="https://github.com/Ayanamesu" target = "_blank"><button class = "button">GitHub</button></a></p>
                 </div>
